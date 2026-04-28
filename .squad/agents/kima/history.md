@@ -40,3 +40,16 @@
 - All skills enforce team decisions #7 (threat model mandatory) and #8 (MITRE tagging mandatory)
 - Every skill cross-references related KQL and SOAR skills
 - Format follows the established pattern from `skills/kql/threat-hunting-foundations.md`
+
+📌 **Microsoft Security Product Skills Library Created** (2026-04-28)
+- Wrote 8 Microsoft Security product skills in `skills/msft-security/`:
+  1. `sentinel-workspace-setup.md` — Workspace provisioning via Bicep, Content Hub installation, data connector priority, UEBA/Entity Analytics/Anomalies, Lighthouse MSSP config, cost estimation
+  2. `defender-xdr-configuration.md` — Unified portal config, alert suppression rules, custom detection rules from Advanced Hunting, auto-investigation levels, Safe Attachments/Links/Anti-phish, cross-product correlation
+  3. `defender-for-cloud-policies.md` — Policy assignments at subscription/MG level, regulatory compliance (NIST/CIS/PCI-DSS/ISO 27001), Defender plans Bicep (Servers/Storage/SQL/AppService/KeyVault/ARM/DNS/Containers), CSPM vs CWP, workflow automation, secure score methodology
+  4. `defender-for-identity.md` — DC sensor prerequisites/sizing/installation, coverage planning by org size, alert tuning for service accounts, lateral movement path detection, XDR integration; MITRE: T1078, T1087, T1003, T1558
+  5. `defender-for-endpoint.md` — Onboarding via Intune/GPO/SCCM/local script, ASR rules with phased rollout, custom indicators (hash/IP/URL/cert), Live Response commands, device groups and RBAC, auto-investigation levels; MITRE: T1059, T1203, T1053
+  6. `entra-id-protection.md` — User/sign-in risk policies via Graph, risk detection types mapped to severity, SSPR config, Conditional Access Zero Trust policy set (10 policies), gap analysis methodology with What-If; MITRE: T1078, T1110, T1556
+  7. `microsoft-graph-security.md` — Security API endpoints (alerts_v2, incidents, TI, secureScores), app-only vs delegated auth, batch operations and pagination, webhook subscriptions with handler example, PowerShell and Python SDK examples
+  8. `purview-dlp-patterns.md` — DLP policy creation across Exchange/SPO/OD/Teams/Endpoints, sensitivity label taxonomy, custom SITs, endpoint DLP with blocked apps/domains, alert investigation workflow, Sentinel KQL for exfiltration detection; MITRE: T1567, T1048, T1537
+- All skills include: YAML frontmatter, Bicep/ARM snippets, PowerShell/CLI commands, KQL queries, MITRE ATT&CK references, cross-references to related skills across all categories
+- Total library: ~109 KB across 8 production-ready skill files
