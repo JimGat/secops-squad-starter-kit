@@ -1,0 +1,37 @@
+{
+  "name": "@secops-squad/secops-squad",
+  "version": "0.1.0",
+  "description": "SecOps-focused AI team framework for Microsoft Security products",
+  "main": "cli/index.js",
+  "bin": {
+    "secops-squad": "cli/index.js"
+  },
+  "scripts": {
+    "init": "node cli/index.js init",
+    "doctor": "node cli/index.js doctor",
+    "test": "node --test lib/**/*.test.js",
+    "lint": "eslint cli/ lib/ --ext .ts,.js",
+    "validate:kql": "node cli/index.js kql validate"
+  },
+  "keywords": [
+    "secops",
+    "sentinel",
+    "kql",
+    "soar",
+    "security",
+    "microsoft",
+    "defender",
+    "squad"
+  ],
+  "author": "jospaid",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jospaid/secops-squad.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

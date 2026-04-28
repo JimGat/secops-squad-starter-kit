@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/jospaid/secops-squad/secops-squad.config.schema.json",
+  "title": "secops-squad configuration",
+  "description": "Configuration schema for secops-squad projects",
+  "type": "object",
+  "properties": {
+    "teamName": {
+      "type": "string",
+      "description": "Display name for this SecOps squad instance"
+    },
+    "persona": {
+      "type": "string",
+      "enum": [
+        "soc-analyst",
+        "detection-engineering",
+        "threat-hunting",
+        "cloud-security",
+        "incident-response",
+        "full-soc"
+      ],
+      "description": "Active persona defining the squad's focus and loaded skills"
+    },
+    "azure": {
+      "type": "object",
+      "description": "Azure subscription and tenant configuration",
+      "properties": {
+        "subscriptionId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Azure subscription ID (GUID)"
+        },
+        "tenantId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Azure AD tenant ID (GUID)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sentinel": {
+      "type": "object",
+      "description": "Microsoft Sentinel workspace configuration",
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Log Analytics workspace ID (GUID)"
+        },
+        "workspaceName": {
+          "type": "string",
+          "description": "Log Analytics workspace name"
+        },
+        "resourceGroup": {
+          "type": "string",
+          "description": "Resource group containing the Sentinel workspace"
+        }
+      },
+      "additionalProperties": false
+    },
+    "products": {
+      "type": "array",
+      "description": "Enabled Microsoft Security products",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sentinel",
+          "defender-for-endpoint",
+          "defender-for-cloud",
+          "defender-for-identity",
+          "defender-for-office365",
+          "defender-xdr",
+          "entra-id-protection",
+          "purview",
+          "intune"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "skills": {
+      "type": "object",
+      "description": "Skill loading configuration",
+      "properties": {
+        "loaded": {
+          "type": "array",
+          "description": "Built-in skills to load by name",
+          "items": {
+            "type": "string",
+            "enum": [
+              "kql",
+              "soar",
+              "detection",
+              "log-analytics",
+              "adx",
+              "msft-security"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "custom": {
+          "type": "array",
+          "description": "Paths to custom skill definition files",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["teamName", "persona"],
+  "additionalProperties": false
+}

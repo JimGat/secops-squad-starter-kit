@@ -1,0 +1,71 @@
+{
+  "persona": "soc-analyst",
+  "version": "1.0.0",
+  "description": "Skills for L1/L2/L3 SOC analyst operations",
+  "skills": {
+    "shared": [
+      {
+        "name": "incident-investigation",
+        "description": "Core incident investigation methodology — triage, scoping, evidence collection, timeline reconstruction, and documentation. Used by all tiers."
+      },
+      {
+        "name": "teams-notification",
+        "description": "Send notifications to Microsoft Teams channels for incident updates, escalations, and shift communications."
+      }
+    ],
+    "per_agent": {
+      "bunk": [
+        {
+          "name": "phishing-response",
+          "description": "Automated phishing response playbook — email header analysis, URL/attachment detonation, mailbox search-and-purge, user notification, IOC extraction."
+        },
+        {
+          "name": "compromised-account",
+          "description": "Automated compromised account playbook — force password reset, revoke sessions, review sign-in logs, check MFA status, assess blast radius."
+        }
+      ],
+      "kima": [
+        {
+          "name": "sentinel-analytics-rules",
+          "description": "Create, tune, and validate Microsoft Sentinel analytics rules — scheduled queries, NRT rules, fusion rules, threshold calibration, entity mapping, false positive reduction."
+        },
+        {
+          "name": "sentinel-enrichment-ip",
+          "description": "IP address enrichment — threat intelligence lookups, geo-location, ASN/ISP identification, reputation scoring, historical activity correlation, VPN/Tor/proxy detection."
+        },
+        {
+          "name": "sentinel-enrichment-user",
+          "description": "User entity enrichment — Entra ID profile, group membership, recent sign-in activity, risk score, device registrations, privilege level, behavioral baseline comparison."
+        }
+      ],
+      "freamon": [
+        {
+          "name": "threat-hunting-foundations",
+          "description": "Hypothesis-driven threat hunting — formulate hypotheses from threat intelligence, map to MITRE ATT&CK techniques, design hunt queries, document findings and detection gaps."
+        },
+        {
+          "name": "cross-workspace-queries",
+          "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions, ADX proxy queries, multi-tenant hunting, performance optimization for large-scale joins."
+        },
+        {
+          "name": "ueba-patterns",
+          "description": "User and Entity Behavior Analytics patterns — anomaly detection baselines, peer group analysis, impossible travel, unusual resource access, privilege escalation sequences."
+        },
+        {
+          "name": "defender-xdr-hunting",
+          "description": "Microsoft Defender XDR advanced hunting — DeviceEvents, EmailEvents, IdentityLogonEvents, CloudAppEvents, cross-domain correlation, custom detection rules."
+        }
+      ],
+      "daniels": [
+        {
+          "name": "teams-notification",
+          "description": "Send notifications to Microsoft Teams channels for incident updates, escalations, and shift communications."
+        },
+        {
+          "name": "ticket-create",
+          "description": "Create and update tickets in the incident management system — severity classification, assignment, SLA tracking, stakeholder notification, status updates."
+        }
+      ]
+    }
+  }
+}
