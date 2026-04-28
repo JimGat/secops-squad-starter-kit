@@ -46,6 +46,80 @@
 
 **Phase 1 Exit Criteria:** Working init wizard, `soc-analyst` persona, 3 KQL skills, 3 SOAR skills, KQL validation CI, getting-started docs. Target: New user → working SecOps team with KQL hunting and phishing response in ≤ 15 minutes.
 
+### 2026-04-28T12:01:11-05:00: KQL Validator Library Design
+
+**By:** Freamon (KQL Engineer)
+
+**Status:** Implemented
+
+**What:** Built `lib/kql-validator/` — offline KQL syntax validation with 4 modules (index, parser, reporter, operators). ~60 operators, 250+ functions, ~50 Sentinel/Defender tables. 56/57 tests passing.
+
+**Key Choices:**
+- Offline-only (no Azure workspace connectivity)
+- Error vs Warning distinction (= in where clause is error; project * is warning)
+- Where-clause scoping prevents false positives on join patterns
+- Markdown extraction supports both ````kql` and ````kusto` blocks
+- CommonJS modules, zero dependencies
+
+**Why:** CI pipeline requires KQL validation on every PR. CLI command `secops-squad kql validate` needs a library to call.
+
+### 2026-04-28T14:08:04-05:00: ADX Table Schemas Use Staging + Update Policy Pattern
+
+**By:** Herc (Automation/SOAR)
+
+**What:** All ADX security tables use two-table ingestion: `*_Raw` staging table receives raw JSON, update policy transforms to structured target table.
+
+**Impact:**
+- Freamon: ADX skills and queries target structured tables (SecurityEvents, NetworkTraffic, etc.), not `*_Raw`
+- Kima: Detection rules via `adx()` proxy use structured table names
+- All: Adding new columns requires updating KQL scripts in `templates/bicep/adx/scripts/`
+
+**Why:** Allows schema evolution without breaking ingestion pipelines. New columns can be added to transform query without re-creating data connections.
+
+### 2026-04-28T12:34:12-05:00: Persona Template Architecture and Character Assignments
+
+**By:** McNulty (Lead)
+
+**Status:** Active
+
+**What:** All 6 personas are self-contained, installable team configurations with no cross-persona dependencies. Each uses unique Wire characters with thematic alignment:
+- soc-analyst: Bunk, Kima, Freamon, Daniels
+- detection-engineering: Daniels, Lester, Prop Joe, Landsman
+- threat-hunting: Omar, Slim Charles, Bubbles, Rhonda
+- cloud-security: Avon, Stringer, D'Angelo
+- incident-response: Rawls, Sydnor, Beadie, Prez
+- full-soc: Bunny Colvin, Bodie, Poot, Carver, Herc, Cutty, McNulty, Lester
+
+**Key Choices:**
+1. Self-contained — each installs complete working team with no external dependencies
+2. Consistent format — all follow 5-file structure from soc-analyst
+3. Skill references forward-compatible — reference Phase 2 skills to be created
+4. Full-SOC is additive — shows integration, not concatenation
+5. Ceremonies domain-specific
+
+**Why:** Users pick any persona and get working team immediately.
+
+### 2026-04-28T14:08:04-05:00: Structured Result Objects for API Libraries
+
+**By:** Sydnor (Platform Dev)
+
+**Status:** Proposed
+
+**What:** All API-wrapping libraries return structured result objects instead of throwing exceptions:
+```javascript
+// Success: { ok: true, data: ..., nextLink?: string }
+// Failure: { ok: false, error: string, status?: number, code?: string }
+```
+
+**Why:** SOC automation runs unattended in Logic Apps and Functions. Thrown exceptions cause silent failures. Structured results force explicit error handling, make context available, compose cleanly in async pipelines.
+
+**Scope:**
+- Applies to all `lib/*/` API wrapper modules
+- Does NOT apply to CLI commands (use `fatal()`)
+- `createClient()` may throw for invalid config (programmer error)
+
+**Established in:** `lib/graph-security/` (Carver's test suite validates pattern)
+
 ## Governance
 
 - All meaningful changes require team consensus

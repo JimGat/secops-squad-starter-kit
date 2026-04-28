@@ -67,3 +67,16 @@
 - Cost comparison framework: Sentinel vs ADX ingestion/retention cost analysis with break-even guidance
 - All skills cross-reference KQL and Log Analytics skills, forming a complete three-tier learning path (KQL → Log Analytics → ADX)
 - Combined project total: 26 skills (10 KQL + 8 Log Analytics + 8 ADX), ~7,877 lines, ~188+ code blocks
+
+📌 **Cross-Team Context: ADX Staging + Update Policy Pattern** (2026-04-28)
+- Herc decision: All ADX security tables use two-table ingestion (Raw staging → structured table via update policy)
+- Impact: Freamon's ADX skills reference structured tables (SecurityEvents, NetworkTraffic, etc.), NOT staging tables
+- Implication: When writing ADX queries for detection/hunting, always query the transformed structured tables
+- Herc rationale: Allows schema evolution without breaking ingestion pipelines; new columns added to transform without re-creating data connections
+- Related: Herc Phase 3 Bicep templates implement staging table pattern in `templates/bicep/adx/scripts/`
+
+📌 **Cross-Team Context: KQL Validator Pattern** (2026-04-28)
+- Sydnor decision: All API-wrapping libraries return structured results (ok/error pattern), never throw exceptions
+- Freamon contribution: KQL validator is pure library following this pattern
+- Carver validation: Graph Security API test suite (169 tests) validates structured result pattern for all libraries
+- Related: Pattern established in `lib/graph-security/` and adopted by `lib/kql-validator/` and future API wrappers

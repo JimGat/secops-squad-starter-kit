@@ -84,3 +84,24 @@
 - Coverage percentage is misleading for pre-compromise tactics (Reconnaissance, Resource Development) — Microsoft's detection surface starts at Initial Access
 - The 52 skills naturally divide into "detection-relevant" (36 skills with MITRE mappings) and "infrastructure" (16 skills without) — both are essential but serve different purposes
 - When building coverage maps, always scan both frontmatter AND body text — 11 of 52 skills had techniques in body that weren't in frontmatter
+
+📌 **Cross-Team Context: ADX Staging + Update Policy Pattern** (2026-04-28)
+- Herc decision: All ADX security tables use two-table ingestion (Raw staging → structured table via update policy)
+- Impact on Kima: All detection rules querying ADX via `adx()` proxy should use structured table names (SecurityEvents, NetworkTraffic, ThreatIntelligence, IdentityEvents, CloudAudit)
+- Do NOT query `*_Raw` staging tables directly
+- Pattern rationale: Allows schema evolution without breaking detection rules; new columns added to update policy transformation
+- Related: Freamon's ADX skills query structured tables; Herc's Bicep templates in `templates/bicep/adx/` implement this architecture
+
+📌 **Cross-Team Context: Persona Template Architecture** (2026-04-28)
+- McNulty decision: All 6 personas are self-contained, installable team configurations with no cross-persona dependencies
+- Each persona uses unique Wire characters (Kima only in soc-analyst persona)
+- Personas: soc-analyst, detection-engineering, threat-hunting, cloud-security, incident-response, full-soc
+- Implication: Kima as character only appears in soc-analyst; other personas have different team rosters
+- Personas reference Kima's skills (detection-engineering, threat-hunting personas) but don't depend on soc-analyst persona configuration
+- Related: McNulty's personas-guide with full team rosters and skill routing
+
+📌 **Cross-Team Context: Structured Result Pattern** (2026-04-28)
+- Sydnor decision: All API-wrapping libraries return structured results (ok/error), never throw exceptions
+- Pattern: Success = `{ ok: true, data: ..., nextLink?: string }` | Failure = `{ ok: false, error: string, status?: number, code?: string }`
+- Carver validation: Graph Security API test suite validates this pattern for all libraries
+- Implication: Kima's detection skills and Microsoft Security skills won't call APIs that throw; all error handling is explicit

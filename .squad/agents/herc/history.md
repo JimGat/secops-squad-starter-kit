@@ -71,3 +71,19 @@
 - ~65KB of deployable IaC + ~28KB of KQL table definitions
 - Complements Freamon's ADX skills with deployable infrastructure
 - Consistent patterns with Phase 2b SOAR templates: @description decorators, @allowed validators, camelCase params, tag propagation
+
+📌 **Cross-Team Context: Staging + Update Policy Pattern** (2026-04-28)
+- Herc architectural decision: All ADX security tables use two-table ingestion pattern
+- Pattern: Raw JSON → `*_Raw` staging table → update policy → structured target table
+- Why: Allows schema evolution without breaking data connections; new columns added to transform query, not re-creating connections
+- Impact on Freamon: All ADX KQL queries should target structured tables (SecurityEvents, NetworkTraffic, etc.), NOT staging tables
+- Impact on Kima: All detection rules via `adx()` proxy should use structured table names, not staging
+- When adding new columns: Update KQL script in `templates/bicep/adx/scripts/`, and update policy query must project the new column
+- Related: Herc's Bicep templates implement this pattern in table definitions; Freamon's ADX skills reference this pattern
+
+📌 **Cross-Team Context: Structured Result Pattern** (2026-04-28)
+- Sydnor decision: All API-wrapping libraries return structured results (ok/error), never throw exceptions
+- Pattern: Success = `{ ok: true, data: ..., nextLink?: string }` | Failure = `{ ok: false, error: string, status?: number, code?: string }`
+- Why: Unattended automation (Logic Apps, Functions, scheduled jobs) needs explicit error handling; structured results available immediately for callers
+- Herc implication: Future API wrappers for Defender, Sentinel workspace management, Entra ID follow this pattern
+- Carver validation: Graph Security API test suite (169 tests, all passing) validates this pattern
