@@ -7,6 +7,7 @@ mitre_attack:
   - T1048  # Exfiltration Over Alternative Protocol
   - T1537  # Transfer Data to Cloud Account
   - T1114  # Email Collection
+  - T1565.001  # Stored Data Manipulation
 products:
   - Microsoft Purview
   - Microsoft Purview Data Loss Prevention

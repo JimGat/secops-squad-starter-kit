@@ -6,6 +6,7 @@ mitre_attack:
   - T1566  # Phishing
   - T1078  # Valid Accounts
   - T1059  # Command and Scripting Interpreter
+  - T1059.001  # PowerShell
   - T1486  # Data Encrypted for Impact
 products:
   - Microsoft Defender XDR

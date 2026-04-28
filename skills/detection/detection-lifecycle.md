@@ -4,8 +4,11 @@ category: detection
 difficulty: intermediate
 mitre_attack:
   - T1110  # Brute Force
+  - T1110.003  # Password Spraying
   - T1566  # Phishing
+  - T1566.001  # Spearphishing Attachment
   - T1078  # Valid Accounts
+  - T1133  # External Remote Services
 products:
   - Microsoft Sentinel
   - Microsoft Defender for Endpoint

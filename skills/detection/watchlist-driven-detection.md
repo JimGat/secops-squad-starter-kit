@@ -6,6 +6,7 @@ mitre_attack:
   - T1078  # Valid Accounts
   - T1078.004  # Cloud Accounts
   - T1566  # Phishing
+  - T1071  # Application Layer Protocol
 products:
   - Microsoft Sentinel
 author: Kima

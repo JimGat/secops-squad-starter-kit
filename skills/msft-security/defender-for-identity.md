@@ -5,8 +5,14 @@ difficulty: advanced
 mitre_attack:
   - T1078  # Valid Accounts
   - T1087  # Account Discovery
+  - T1087.001  # Local Account
+  - T1087.002  # Domain Account
   - T1003  # OS Credential Dumping
+  - T1003.006  # DCSync
   - T1558  # Steal or Forge Kerberos Tickets
+  - T1558.001  # Golden Ticket
+  - T1558.003  # Kerberoasting
+  - T1550.002  # Pass the Hash
 products:
   - Microsoft Defender for Identity
   - Microsoft Defender XDR

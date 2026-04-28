@@ -7,7 +7,11 @@ mitre_attack:
   - T1566.001  # Spearphishing Attachment
   - T1566.002  # Spearphishing Link
   - T1078  # Valid Accounts
+  - T1078.004  # Cloud Accounts
   - T1539  # Steal Web Session Cookie
+  - T1056.004  # Credential API Hooking
+  - T1114  # Email Collection
+  - T1114.003  # Email Forwarding Rule
 products:
   - Microsoft Sentinel
   - Microsoft Defender for Office 365

@@ -4,6 +4,8 @@ category: kql
 difficulty: advanced
 mitre_attack:
   - T1021  # Remote Services
+  - T1021.001  # Remote Desktop Protocol
+  - T1021.006  # Windows Remote Management
   - T1071  # Application Layer Protocol
   - T1048  # Exfiltration Over Alternative Protocol
 products:

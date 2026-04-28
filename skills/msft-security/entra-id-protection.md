@@ -5,8 +5,11 @@ difficulty: intermediate
 mitre_attack:
   - T1078  # Valid Accounts
   - T1110  # Brute Force
+  - T1110.003  # Password Spraying
   - T1556  # Modify Authentication Process
   - T1539  # Steal Web Session Cookie
+  - T1114.003  # Email Forwarding Rule
+  - T1090  # Proxy
 products:
   - Microsoft Entra ID Protection
   - Microsoft Entra ID

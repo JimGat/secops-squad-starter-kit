@@ -64,3 +64,23 @@
 - Total techniques covered: ~35 unique techniques/sub-techniques with attack flows and detection guidance
 - Every template links back to relevant skills in `skills/detection/` and `skills/msft-security/`
 - Key insight: Exfiltration tactic has 0 techniques at "Full" coverage — behavioral detection against legitimate data sharing patterns remains the hardest detection challenge in the Microsoft stack
+
+📌 **MITRE ATT&CK Coverage Map Created** (2026-04-28)
+- Built `docs/mitre-coverage.md` — comprehensive coverage mapping of all 52 skills to MITRE ATT&CK Enterprise v15
+- Created `lib/mitre-mapping/index.js` — zero-dependency Node.js utility (scanSkills, buildCoverageMap, findGaps, generateReport) with built-in YAML frontmatter parser
+- Updated 11 skill frontmatter files to sync `mitre_attack` field with techniques referenced in body text (detection/*, kql/incident-investigation, msft-security/*)
+- Coverage stats: 48 unique techniques across 14 tactics, 20% overall Enterprise ATT&CK coverage
+- Strongest areas: Initial Access (80%), Credential Access (59%), Persistence (50%)
+- Weakest areas: Reconnaissance (0%), Resource Development (0%), Discovery (9%), Impact (14%)
+- T1078 (Valid Accounts) referenced by 29 skills — most cross-cutting technique
+- Identified 13 missing top-20 techniques; T1055 (Process Injection), T1036 (Masquerading), T1204 (User Execution) are highest priority gaps
+- Key insight: log-analytics and adx categories are infrastructure-focused with minimal direct ATT&CK mapping — this is expected and correct
+- Key insight: T1086 appears in mitre-attack-mapping.md body but is deprecated (replaced by T1059.001) — intentionally excluded from frontmatter
+
+## Learnings
+
+- YAML frontmatter parsing needs only handle strings and arrays for skill files — keep it simple
+- Sub-techniques (T####.###) should be listed alongside parent techniques in frontmatter for complete machine-readable coverage
+- Coverage percentage is misleading for pre-compromise tactics (Reconnaissance, Resource Development) — Microsoft's detection surface starts at Initial Access
+- The 52 skills naturally divide into "detection-relevant" (36 skills with MITRE mappings) and "infrastructure" (16 skills without) — both are essential but serve different purposes
+- When building coverage maps, always scan both frontmatter AND body text — 11 of 52 skills had techniques in body that weren't in frontmatter

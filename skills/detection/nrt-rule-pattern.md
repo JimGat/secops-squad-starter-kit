@@ -5,6 +5,7 @@ difficulty: advanced
 mitre_attack:
   - T1190  # Exploit Public-Facing Application
   - T1078  # Valid Accounts
+  - T1078.002  # Domain Accounts
   - T1133  # External Remote Services
 products:
   - Microsoft Sentinel
