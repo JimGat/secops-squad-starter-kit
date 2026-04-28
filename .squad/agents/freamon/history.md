@@ -26,3 +26,14 @@
 - Established KQL query patterns, best practices, and domain templates
 - Positioned KQL as core hunting capability for SOC team
 - Set foundation for KQL CI validation and threat detection library
+
+📌 **KQL Validator Library Built** (2026-04-28)
+- Created `lib/kql-validator/` — 4 modules: index.js, parser.js, reporter.js, operators.js
+- Pure Node.js, zero external dependencies, CJS modules (ESM-import compatible)
+- Parser validates: balanced delimiters, let semicolons, pipe operators, leading pipes, trailing pipes, empty stages, where-assignment mistakes, project-wildcard, missing-time-filter
+- Operator/function reference: ~60 tabular operators, ~250+ scalar/aggregation functions, ~50 Sentinel/Defender table names
+- Reporter outputs: console (human-readable), CI (GitHub Actions annotations), JSON
+- Markdown extraction: supports both ```kql and ```kusto code blocks
+- Passes 56/57 of Carver's test suite (1 test has a test-side bug: query generator produces 756 chars, not 1000+)
+- Key design choice: where-assignment check scoped to where clause body only (not bleeding into subsequent operators)
+- Key design choice: let statement parser handles mid-line semicolons (`let x = 24h; Table | ...`)
