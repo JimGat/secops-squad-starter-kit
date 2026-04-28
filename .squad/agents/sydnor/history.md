@@ -49,3 +49,20 @@
 - All native fetch, zero npm dependencies, Node 18+ required.
 
 📌 **Graph Security library pattern established** — structured result objects `{ok, data?, error?, status?}` are the standard return shape for all API-wrapping libraries in this project. Matches the squad zero-dep convention.
+
+🔷 **Phase 3 Round 2: CLI Commands + Plugin Architecture** (2026-04-28T14:27:56-05:00)
+- Built 5 new CLI commands, all zero-dependency, following existing init/doctor patterns:
+  - **`cli/commands/skill.js`** — `skill list` scans skills/ with YAML frontmatter parsing (title, category, difficulty, MITRE tags, products). Supports `--category` filter and `--json` output. `skill add <name>` copies from library to `.squad/skills/`.
+  - **`cli/commands/persona.js`** — `persona list` shows all 6 personas with readiness status and current active indicator. `persona switch <name>` backs up current config, copies persona files, updates config, and shows skill diff (added/removed/kept).
+  - **`cli/commands/kql-validate.js`** — `kql validate <file|glob>` integrates with `lib/kql-validator/`. Handles .kql files directly and extracts KQL blocks from .md files. Table and JSON output formats. Exit code 1 on any failure.
+  - **`cli/commands/playbook.js`** — `playbook list` scans `templates/bicep/soar/`. `playbook deploy <name>` generates `az deployment group create` command, reads parameters from Bicep and config, supports `--dry-run`. Validates az CLI auth before live deploy.
+  - **`cli/commands/plugin.js`** — `plugin install/list/remove` CLI surface for plugin system.
+- Built **plugin architecture** in `lib/plugins/`:
+  - **`index.js`** — Plugin loader: scans `.squad/plugins/`, validates `plugin.json` manifests (name, version, type, description, files), lists/loads plugins.
+  - **`installer.js`** — Install from local path, git URL, or npm package. Auto-detects source type. Copies to `.squad/plugins/{name}/`, validates manifest schema.
+  - **`registry.js`** — Tracks installed plugins in `.squad/plugins/registry.json` with version, source, install date. Supports list/get/register/unregister.
+- Updated **`cli/index.js`** — registered all 5 new commands with module paths and updated help text.
+- Created **install scripts**: `install.sh` (bash) and `install.ps1` (PowerShell) — prerequisite checks (Node 18+, git, gh, az), clone, npm install, PATH guidance.
+- All files tested: skill list/add, persona list, kql validate with glob, playbook list/deploy --dry-run, plugin list. Zero external dependencies.
+
+📌 **YAML frontmatter parsing** — skill .md files use `---` delimited YAML with arrays (mitre_attack, products). Parser handles inline comments on array items (e.g., `- T1078  # Valid Accounts`).

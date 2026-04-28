@@ -21,12 +21,14 @@ const COMMANDS = {
     usage: "secops-squad status",
   },
   skill: {
-    description: "Load, inspect, or list available skills",
-    usage: "secops-squad skill [list|info <name>|load <name>]",
+    description: "List and add skills from the built-in library",
+    usage: "secops-squad skill [list|add <name>] [--category <cat>] [--json]",
+    module: "./commands/skill.js",
   },
   persona: {
     description: "Switch or inspect the active persona",
-    usage: "secops-squad persona [list|switch <name>|info <name>]",
+    usage: "secops-squad persona [list|switch <name>]",
+    module: "./commands/persona.js",
   },
   workspace: {
     description: "Manage Microsoft Sentinel workspace connection",
@@ -34,11 +36,18 @@ const COMMANDS = {
   },
   kql: {
     description: "KQL query tools — validate, format, explain",
-    usage: "secops-squad kql [validate|run <file>|explain <file>]",
+    usage: "secops-squad kql validate <file|glob> [--format table|json]",
+    module: "./commands/kql-validate.js",
   },
   playbook: {
-    description: "SOAR playbook scaffolding and deployment",
-    usage: "secops-squad playbook [scaffold|deploy|list]",
+    description: "SOAR playbook deployment and management",
+    usage: "secops-squad playbook [list|deploy <name>] [--dry-run]",
+    module: "./commands/playbook.js",
+  },
+  plugin: {
+    description: "Install, list, or remove plugins",
+    usage: "secops-squad plugin [install <source>|list|remove <name>]",
+    module: "./commands/plugin.js",
   },
 };
 
