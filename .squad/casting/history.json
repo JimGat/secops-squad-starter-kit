@@ -1,0 +1,17 @@
+{
+  "universe_usage_history": [
+    {
+      "universe": "The Wire",
+      "assigned_at": "2026-04-28T09:16:43-05:00",
+      "assigned_by": "Sydnor",
+      "reason": "Initial squad scaffolding for secops-squad"
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "2026-04-28T09:16:43-05:00": {
+      "universe": "The Wire",
+      "agents": ["mcnulty", "kima", "freamon", "herc", "sydnor", "carver"],
+      "exempt": ["scribe", "ralph"]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "model_overrides": {},
+  "features": {
+    "casting": true,
+    "ceremonies": true,
+    "decision_inbox": true
+  }
+}
