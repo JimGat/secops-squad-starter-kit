@@ -1,0 +1,57 @@
+// IdentityEvents table — Sign-in and audit logs
+// Schema for Entra ID sign-in events and directory audit trail
+
+.create-merge table IdentityEvents (
+    TimeGenerated: datetime,
+    OperationName: string,
+    Category: string,
+    ResultType: string,
+    ResultDescription: string,
+    CorrelationId: string,
+    Identity: string,
+    UserPrincipalName: string,
+    UserDisplayName: string,
+    UserId: string,
+    UserType: string,
+    AppDisplayName: string,
+    AppId: string,
+    ResourceDisplayName: string,
+    ResourceId: string,
+    IPAddress: string,
+    Location: string,
+    City: string,
+    State: string,
+    CountryOrRegion: string,
+    DeviceDetail: dynamic,
+    ClientAppUsed: string,
+    Browser: string,
+    OperatingSystem: string,
+    ConditionalAccessStatus: string,
+    ConditionalAccessPolicies: dynamic,
+    IsInteractive: bool,
+    RiskState: string,
+    RiskLevelDuringSignIn: string,
+    RiskLevelAggregated: string,
+    RiskDetail: string,
+    RiskEventTypes: dynamic,
+    MfaDetail: dynamic,
+    AuthenticationRequirement: string,
+    AuthenticationMethodsUsed: dynamic,
+    TokenIssuerType: string,
+    TokenIssuerName: string,
+    HomeTenantId: string,
+    ResourceTenantId: string,
+    SourceSystem: string,
+    TenantId: string,
+    IngestionTime: datetime
+) with (docstring = "Identity events from Entra ID including sign-in logs, audit events, risk detections, and MFA status.", folder = "Identity")
+
+.alter-merge table IdentityEvents policy retention softdelete = 365d
+
+.alter table IdentityEvents policy streamingingestion enable
+
+.create-or-alter table IdentityEvents ingestion json mapping 'IdentityEvents_JsonMapping' '[{"column":"TimeGenerated","path":"$.TimeGenerated","datatype":"datetime"},{"column":"OperationName","path":"$.OperationName","datatype":"string"},{"column":"Category","path":"$.Category","datatype":"string"},{"column":"ResultType","path":"$.ResultType","datatype":"string"},{"column":"ResultDescription","path":"$.ResultDescription","datatype":"string"},{"column":"CorrelationId","path":"$.CorrelationId","datatype":"string"},{"column":"Identity","path":"$.Identity","datatype":"string"},{"column":"UserPrincipalName","path":"$.UserPrincipalName","datatype":"string"},{"column":"UserDisplayName","path":"$.UserDisplayName","datatype":"string"},{"column":"UserId","path":"$.UserId","datatype":"string"},{"column":"UserType","path":"$.UserType","datatype":"string"},{"column":"AppDisplayName","path":"$.AppDisplayName","datatype":"string"},{"column":"AppId","path":"$.AppId","datatype":"string"},{"column":"ResourceDisplayName","path":"$.ResourceDisplayName","datatype":"string"},{"column":"ResourceId","path":"$.ResourceId","datatype":"string"},{"column":"IPAddress","path":"$.IPAddress","datatype":"string"},{"column":"Location","path":"$.Location","datatype":"string"},{"column":"City","path":"$.City","datatype":"string"},{"column":"State","path":"$.State","datatype":"string"},{"column":"CountryOrRegion","path":"$.CountryOrRegion","datatype":"string"},{"column":"DeviceDetail","path":"$.DeviceDetail","datatype":"dynamic"},{"column":"ClientAppUsed","path":"$.ClientAppUsed","datatype":"string"},{"column":"Browser","path":"$.Browser","datatype":"string"},{"column":"OperatingSystem","path":"$.OperatingSystem","datatype":"string"},{"column":"ConditionalAccessStatus","path":"$.ConditionalAccessStatus","datatype":"string"},{"column":"ConditionalAccessPolicies","path":"$.ConditionalAccessPolicies","datatype":"dynamic"},{"column":"IsInteractive","path":"$.IsInteractive","datatype":"bool"},{"column":"RiskState","path":"$.RiskState","datatype":"string"},{"column":"RiskLevelDuringSignIn","path":"$.RiskLevelDuringSignIn","datatype":"string"},{"column":"RiskLevelAggregated","path":"$.RiskLevelAggregated","datatype":"string"},{"column":"RiskDetail","path":"$.RiskDetail","datatype":"string"},{"column":"RiskEventTypes","path":"$.RiskEventTypes","datatype":"dynamic"},{"column":"MfaDetail","path":"$.MfaDetail","datatype":"dynamic"},{"column":"AuthenticationRequirement","path":"$.AuthenticationRequirement","datatype":"string"},{"column":"AuthenticationMethodsUsed","path":"$.AuthenticationMethodsUsed","datatype":"dynamic"},{"column":"TokenIssuerType","path":"$.TokenIssuerType","datatype":"string"},{"column":"TokenIssuerName","path":"$.TokenIssuerName","datatype":"string"},{"column":"HomeTenantId","path":"$.HomeTenantId","datatype":"string"},{"column":"ResourceTenantId","path":"$.ResourceTenantId","datatype":"string"},{"column":"SourceSystem","path":"$.SourceSystem","datatype":"string"},{"column":"TenantId","path":"$.TenantId","datatype":"string"},{"column":"IngestionTime","path":"$.IngestionTime","datatype":"datetime"}]'
+
+.create-merge table IdentityEvents_Raw (RawData: dynamic, IngestionTime: datetime) with (docstring = "Raw ingestion staging for IdentityEvents update policy", folder = "Staging")
+
+.alter table IdentityEvents policy update '[{"IsEnabled": true, "Source": "IdentityEvents_Raw", "Query": "IdentityEvents_Raw | extend d = RawData | project TimeGenerated = todatetime(d.TimeGenerated), OperationName = tostring(d.OperationName), Category = tostring(d.Category), ResultType = tostring(d.ResultType), ResultDescription = tostring(d.ResultDescription), CorrelationId = tostring(d.CorrelationId), Identity = tostring(d.Identity), UserPrincipalName = tostring(d.UserPrincipalName), UserDisplayName = tostring(d.UserDisplayName), UserId = tostring(d.UserId), UserType = tostring(d.UserType), AppDisplayName = tostring(d.AppDisplayName), AppId = tostring(d.AppId), ResourceDisplayName = tostring(d.ResourceDisplayName), ResourceId = tostring(d.ResourceId), IPAddress = tostring(d.IPAddress), Location = tostring(d.Location), City = tostring(d.City), State = tostring(d.State), CountryOrRegion = tostring(d.CountryOrRegion), DeviceDetail = d.DeviceDetail, ClientAppUsed = tostring(d.ClientAppUsed), Browser = tostring(d.Browser), OperatingSystem = tostring(d.OperatingSystem), ConditionalAccessStatus = tostring(d.ConditionalAccessStatus), ConditionalAccessPolicies = d.ConditionalAccessPolicies, IsInteractive = tobool(d.IsInteractive), RiskState = tostring(d.RiskState), RiskLevelDuringSignIn = tostring(d.RiskLevelDuringSignIn), RiskLevelAggregated = tostring(d.RiskLevelAggregated), RiskDetail = tostring(d.RiskDetail), RiskEventTypes = d.RiskEventTypes, MfaDetail = d.MfaDetail, AuthenticationRequirement = tostring(d.AuthenticationRequirement), AuthenticationMethodsUsed = d.AuthenticationMethodsUsed, TokenIssuerType = tostring(d.TokenIssuerType), TokenIssuerName = tostring(d.TokenIssuerName), HomeTenantId = tostring(d.HomeTenantId), ResourceTenantId = tostring(d.ResourceTenantId), SourceSystem = tostring(d.SourceSystem), TenantId = tostring(d.TenantId), IngestionTime = IngestionTime", "IsTransactional": true, "PropagateIngestionProperties": true}]'

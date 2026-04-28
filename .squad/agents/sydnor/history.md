@@ -34,3 +34,18 @@
 - Added `secops-squad.config.json` to `.gitignore` — it's user-generated per-machine config.
 - Only `soc-analyst` persona has full files — other 5 are scaffolds. Init handles this gracefully with a warning.
 - Zero external dependencies — readline, fs, path, child_process only. Cross-platform (path.join everywhere).
+
+🔷 **Phase 3: Graph Security API Library** (2026-04-28T14:08:04-05:00)
+- Built `lib/graph-security/` — zero-dependency Node.js library for Microsoft Graph Security API v1.0.
+- **auth.js** — Three auth flows: client credentials, managed identity (App Service + IMDS), device code (interactive CLI). In-memory token cache with 5-min expiry buffer and `clearTokenCache()` for testing.
+- **alerts.js** — `listAlerts`, `getAlert`, `updateAlert`, `listAlertsByEntity` (user/IP/host/fileHash). OData filtering, pagination via nextLink, constants for `SEVERITY` and `ALERT_STATUS`.
+- **incidents.js** — `listIncidents`, `getIncident`, `updateIncident`, `addComment`, `getIncidentAlerts`. Constants for `INCIDENT_STATUS`, `INCIDENT_CLASSIFICATION`, `INCIDENT_DETERMINATION`.
+- **threat-intelligence.js** — `listIndicators`, `createIndicator`, `deleteIndicator`, `bulkCreateIndicators` (rate-limited batch), `convertIOCToIndicator` (IOC format converter). Constants for `INDICATOR_TYPE`, `INDICATOR_ACTION`, `THREAT_TYPE`.
+- **secure-score.js** — `getSecureScore`, `getSecureScoreHistory`, `getControlProfiles`, `getRecommendations` (sorted by impact, filters out already-implemented controls).
+- **utils.js** — Shared HTTP layer: `graphGet/Post/Patch/Delete` with auto-retry on 429 (exponential backoff, 3 retries), structured error normalization for all HTTP status codes, OData value-array unwrapping, nextLink extraction.
+- **index.js** — `createClient(config)` factory supporting 4 auth methods (clientCredentials, managedIdentity, deviceCode, pre-acquired token). Re-exports all modules and constants.
+- **README.md** — Full docs: app registration setup, permission table, quick-start per module, error handling patterns, pagination recipes, rate limiting guidance, Sentinel/Logic App integration examples.
+- Design: every function validates inputs, returns `{ok, data?, error?, status?}` result objects (never throws for API errors), full JSDoc on all exports.
+- All native fetch, zero npm dependencies, Node 18+ required.
+
+📌 **Graph Security library pattern established** — structured result objects `{ok, data?, error?, status?}` are the standard return shape for all API-wrapping libraries in this project. Matches the squad zero-dep convention.

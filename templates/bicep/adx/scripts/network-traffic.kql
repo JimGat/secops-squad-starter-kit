@@ -1,0 +1,47 @@
+// NetworkTraffic table — Firewall and NSG flow logs
+// Schema for network security monitoring and lateral movement detection
+
+.create-merge table NetworkTraffic (
+    TimeGenerated: datetime,
+    SourceIP: string,
+    SourcePort: int,
+    DestinationIP: string,
+    DestinationPort: int,
+    Protocol: string,
+    Direction: string,
+    Action: string,
+    BytesSent: long,
+    BytesReceived: long,
+    PacketsSent: long,
+    PacketsReceived: long,
+    FlowState: string,
+    FlowStartTime: datetime,
+    FlowEndTime: datetime,
+    DeviceName: string,
+    DeviceVendor: string,
+    DeviceAction: string,
+    RuleName: string,
+    NsgName: string,
+    SubnetName: string,
+    VNetName: string,
+    ResourceGroup: string,
+    SubscriptionId: string,
+    Region: string,
+    FlowDirection: string,
+    TrafficDecision: string,
+    ThreatSeverity: string,
+    Category: string,
+    SourceSystem: string,
+    TenantId: string,
+    IngestionTime: datetime
+) with (docstring = "Network traffic logs from firewalls and NSG flow logs for network security monitoring.", folder = "Security")
+
+.alter-merge table NetworkTraffic policy retention softdelete = 365d
+
+.alter table NetworkTraffic policy streamingingestion enable
+
+.create-or-alter table NetworkTraffic ingestion json mapping 'NetworkTraffic_JsonMapping' '[{"column":"TimeGenerated","path":"$.TimeGenerated","datatype":"datetime"},{"column":"SourceIP","path":"$.SourceIP","datatype":"string"},{"column":"SourcePort","path":"$.SourcePort","datatype":"int"},{"column":"DestinationIP","path":"$.DestinationIP","datatype":"string"},{"column":"DestinationPort","path":"$.DestinationPort","datatype":"int"},{"column":"Protocol","path":"$.Protocol","datatype":"string"},{"column":"Direction","path":"$.Direction","datatype":"string"},{"column":"Action","path":"$.Action","datatype":"string"},{"column":"BytesSent","path":"$.BytesSent","datatype":"long"},{"column":"BytesReceived","path":"$.BytesReceived","datatype":"long"},{"column":"PacketsSent","path":"$.PacketsSent","datatype":"long"},{"column":"PacketsReceived","path":"$.PacketsReceived","datatype":"long"},{"column":"FlowState","path":"$.FlowState","datatype":"string"},{"column":"FlowStartTime","path":"$.FlowStartTime","datatype":"datetime"},{"column":"FlowEndTime","path":"$.FlowEndTime","datatype":"datetime"},{"column":"DeviceName","path":"$.DeviceName","datatype":"string"},{"column":"DeviceVendor","path":"$.DeviceVendor","datatype":"string"},{"column":"DeviceAction","path":"$.DeviceAction","datatype":"string"},{"column":"RuleName","path":"$.RuleName","datatype":"string"},{"column":"NsgName","path":"$.NsgName","datatype":"string"},{"column":"SubnetName","path":"$.SubnetName","datatype":"string"},{"column":"VNetName","path":"$.VNetName","datatype":"string"},{"column":"ResourceGroup","path":"$.ResourceGroup","datatype":"string"},{"column":"SubscriptionId","path":"$.SubscriptionId","datatype":"string"},{"column":"Region","path":"$.Region","datatype":"string"},{"column":"FlowDirection","path":"$.FlowDirection","datatype":"string"},{"column":"TrafficDecision","path":"$.TrafficDecision","datatype":"string"},{"column":"ThreatSeverity","path":"$.ThreatSeverity","datatype":"string"},{"column":"Category","path":"$.Category","datatype":"string"},{"column":"SourceSystem","path":"$.SourceSystem","datatype":"string"},{"column":"TenantId","path":"$.TenantId","datatype":"string"},{"column":"IngestionTime","path":"$.IngestionTime","datatype":"datetime"}]'
+
+.create-merge table NetworkTraffic_Raw (RawData: dynamic, IngestionTime: datetime) with (docstring = "Raw ingestion staging for NetworkTraffic update policy", folder = "Staging")
+
+.alter table NetworkTraffic policy update '[{"IsEnabled": true, "Source": "NetworkTraffic_Raw", "Query": "NetworkTraffic_Raw | extend d = RawData | project TimeGenerated = todatetime(d.TimeGenerated), SourceIP = tostring(d.SourceIP), SourcePort = toint(d.SourcePort), DestinationIP = tostring(d.DestinationIP), DestinationPort = toint(d.DestinationPort), Protocol = tostring(d.Protocol), Direction = tostring(d.Direction), Action = tostring(d.Action), BytesSent = tolong(d.BytesSent), BytesReceived = tolong(d.BytesReceived), PacketsSent = tolong(d.PacketsSent), PacketsReceived = tolong(d.PacketsReceived), FlowState = tostring(d.FlowState), FlowStartTime = todatetime(d.FlowStartTime), FlowEndTime = todatetime(d.FlowEndTime), DeviceName = tostring(d.DeviceName), DeviceVendor = tostring(d.DeviceVendor), DeviceAction = tostring(d.DeviceAction), RuleName = tostring(d.RuleName), NsgName = tostring(d.NsgName), SubnetName = tostring(d.SubnetName), VNetName = tostring(d.VNetName), ResourceGroup = tostring(d.ResourceGroup), SubscriptionId = tostring(d.SubscriptionId), Region = tostring(d.Region), FlowDirection = tostring(d.FlowDirection), TrafficDecision = tostring(d.TrafficDecision), ThreatSeverity = tostring(d.ThreatSeverity), Category = tostring(d.Category), SourceSystem = tostring(d.SourceSystem), TenantId = tostring(d.TenantId), IngestionTime = IngestionTime", "IsTransactional": true, "PropagateIngestionProperties": true}]'

@@ -1,0 +1,45 @@
+// ThreatIntelligence table — IOC storage and enrichment
+// Schema for threat intelligence indicators (IPs, domains, URLs, hashes)
+
+.create-merge table ThreatIntelligence (
+    TimeGenerated: datetime,
+    IndicatorType: string,
+    IndicatorValue: string,
+    ThreatType: string,
+    ThreatSeverity: string,
+    Confidence: int,
+    Description: string,
+    Action: string,
+    Active: bool,
+    ExpirationDateTime: datetime,
+    FirstReportedDateTime: datetime,
+    LastReportedDateTime: datetime,
+    Source: string,
+    SourceSystem: string,
+    Tags: dynamic,
+    TlpLevel: string,
+    KillChainPhases: dynamic,
+    MitreAttackTechniques: dynamic,
+    NetworkSourceIP: string,
+    NetworkDestinationIP: string,
+    DomainName: string,
+    Url: string,
+    FileHashType: string,
+    FileHashValue: string,
+    FileName: string,
+    EmailSenderAddress: string,
+    EmailSubject: string,
+    AdditionalInfo: dynamic,
+    TenantId: string,
+    IngestionTime: datetime
+) with (docstring = "Threat intelligence indicators (IOCs) for correlation with security events. Stores IPs, domains, URLs, and file hashes.", folder = "ThreatIntel")
+
+.alter-merge table ThreatIntelligence policy retention softdelete = 365d
+
+.alter table ThreatIntelligence policy streamingingestion enable
+
+.create-or-alter table ThreatIntelligence ingestion json mapping 'ThreatIntelligence_JsonMapping' '[{"column":"TimeGenerated","path":"$.TimeGenerated","datatype":"datetime"},{"column":"IndicatorType","path":"$.IndicatorType","datatype":"string"},{"column":"IndicatorValue","path":"$.IndicatorValue","datatype":"string"},{"column":"ThreatType","path":"$.ThreatType","datatype":"string"},{"column":"ThreatSeverity","path":"$.ThreatSeverity","datatype":"string"},{"column":"Confidence","path":"$.Confidence","datatype":"int"},{"column":"Description","path":"$.Description","datatype":"string"},{"column":"Action","path":"$.Action","datatype":"string"},{"column":"Active","path":"$.Active","datatype":"bool"},{"column":"ExpirationDateTime","path":"$.ExpirationDateTime","datatype":"datetime"},{"column":"FirstReportedDateTime","path":"$.FirstReportedDateTime","datatype":"datetime"},{"column":"LastReportedDateTime","path":"$.LastReportedDateTime","datatype":"datetime"},{"column":"Source","path":"$.Source","datatype":"string"},{"column":"SourceSystem","path":"$.SourceSystem","datatype":"string"},{"column":"Tags","path":"$.Tags","datatype":"dynamic"},{"column":"TlpLevel","path":"$.TlpLevel","datatype":"string"},{"column":"KillChainPhases","path":"$.KillChainPhases","datatype":"dynamic"},{"column":"MitreAttackTechniques","path":"$.MitreAttackTechniques","datatype":"dynamic"},{"column":"NetworkSourceIP","path":"$.NetworkSourceIP","datatype":"string"},{"column":"NetworkDestinationIP","path":"$.NetworkDestinationIP","datatype":"string"},{"column":"DomainName","path":"$.DomainName","datatype":"string"},{"column":"Url","path":"$.Url","datatype":"string"},{"column":"FileHashType","path":"$.FileHashType","datatype":"string"},{"column":"FileHashValue","path":"$.FileHashValue","datatype":"string"},{"column":"FileName","path":"$.FileName","datatype":"string"},{"column":"EmailSenderAddress","path":"$.EmailSenderAddress","datatype":"string"},{"column":"EmailSubject","path":"$.EmailSubject","datatype":"string"},{"column":"AdditionalInfo","path":"$.AdditionalInfo","datatype":"dynamic"},{"column":"TenantId","path":"$.TenantId","datatype":"string"},{"column":"IngestionTime","path":"$.IngestionTime","datatype":"datetime"}]'
+
+.create-merge table ThreatIntelligence_Raw (RawData: dynamic, IngestionTime: datetime) with (docstring = "Raw ingestion staging for ThreatIntelligence update policy", folder = "Staging")
+
+.alter table ThreatIntelligence policy update '[{"IsEnabled": true, "Source": "ThreatIntelligence_Raw", "Query": "ThreatIntelligence_Raw | extend d = RawData | project TimeGenerated = todatetime(d.TimeGenerated), IndicatorType = tostring(d.IndicatorType), IndicatorValue = tostring(d.IndicatorValue), ThreatType = tostring(d.ThreatType), ThreatSeverity = tostring(d.ThreatSeverity), Confidence = toint(d.Confidence), Description = tostring(d.Description), Action = tostring(d.Action), Active = tobool(d.Active), ExpirationDateTime = todatetime(d.ExpirationDateTime), FirstReportedDateTime = todatetime(d.FirstReportedDateTime), LastReportedDateTime = todatetime(d.LastReportedDateTime), Source = tostring(d.Source), SourceSystem = tostring(d.SourceSystem), Tags = d.Tags, TlpLevel = tostring(d.TlpLevel), KillChainPhases = d.KillChainPhases, MitreAttackTechniques = d.MitreAttackTechniques, NetworkSourceIP = tostring(d.NetworkSourceIP), NetworkDestinationIP = tostring(d.NetworkDestinationIP), DomainName = tostring(d.DomainName), Url = tostring(d.Url), FileHashType = tostring(d.FileHashType), FileHashValue = tostring(d.FileHashValue), FileName = tostring(d.FileName), EmailSenderAddress = tostring(d.EmailSenderAddress), EmailSubject = tostring(d.EmailSubject), AdditionalInfo = d.AdditionalInfo, TenantId = tostring(d.TenantId), IngestionTime = IngestionTime", "IsTransactional": true, "PropagateIngestionProperties": true}]'

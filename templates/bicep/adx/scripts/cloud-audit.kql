@@ -1,0 +1,44 @@
+// CloudAudit table — Azure activity and audit logs
+// Schema for cloud resource operations and administrative actions
+
+.create-merge table CloudAudit (
+    TimeGenerated: datetime,
+    OperationName: string,
+    OperationNameValue: string,
+    Category: string,
+    CategoryValue: string,
+    Level: string,
+    ResultType: string,
+    ResultSignature: string,
+    ResultDescription: string,
+    CorrelationId: string,
+    CallerIpAddress: string,
+    Caller: string,
+    Claims: dynamic,
+    Authorization: dynamic,
+    HttpRequest: dynamic,
+    ResourceId: string,
+    ResourceGroup: string,
+    ResourceProviderName: string,
+    ResourceProviderValue: string,
+    ResourceType: string,
+    SubscriptionId: string,
+    TenantId: string,
+    Properties: dynamic,
+    EventSubmissionTimestamp: datetime,
+    ActivityStatusValue: string,
+    ActivitySubstatus: string,
+    ActivitySubstatusValue: string,
+    SourceSystem: string,
+    IngestionTime: datetime
+) with (docstring = "Azure Activity and audit logs for cloud resource operations, RBAC changes, and administrative actions.", folder = "CloudOps")
+
+.alter-merge table CloudAudit policy retention softdelete = 365d
+
+.alter table CloudAudit policy streamingingestion enable
+
+.create-or-alter table CloudAudit ingestion json mapping 'CloudAudit_JsonMapping' '[{"column":"TimeGenerated","path":"$.TimeGenerated","datatype":"datetime"},{"column":"OperationName","path":"$.OperationName","datatype":"string"},{"column":"OperationNameValue","path":"$.OperationNameValue","datatype":"string"},{"column":"Category","path":"$.Category","datatype":"string"},{"column":"CategoryValue","path":"$.CategoryValue","datatype":"string"},{"column":"Level","path":"$.Level","datatype":"string"},{"column":"ResultType","path":"$.ResultType","datatype":"string"},{"column":"ResultSignature","path":"$.ResultSignature","datatype":"string"},{"column":"ResultDescription","path":"$.ResultDescription","datatype":"string"},{"column":"CorrelationId","path":"$.CorrelationId","datatype":"string"},{"column":"CallerIpAddress","path":"$.CallerIpAddress","datatype":"string"},{"column":"Caller","path":"$.Caller","datatype":"string"},{"column":"Claims","path":"$.Claims","datatype":"dynamic"},{"column":"Authorization","path":"$.Authorization","datatype":"dynamic"},{"column":"HttpRequest","path":"$.HttpRequest","datatype":"dynamic"},{"column":"ResourceId","path":"$.ResourceId","datatype":"string"},{"column":"ResourceGroup","path":"$.ResourceGroup","datatype":"string"},{"column":"ResourceProviderName","path":"$.ResourceProviderName","datatype":"string"},{"column":"ResourceProviderValue","path":"$.ResourceProviderValue","datatype":"string"},{"column":"ResourceType","path":"$.ResourceType","datatype":"string"},{"column":"SubscriptionId","path":"$.SubscriptionId","datatype":"string"},{"column":"TenantId","path":"$.TenantId","datatype":"string"},{"column":"Properties","path":"$.Properties","datatype":"dynamic"},{"column":"EventSubmissionTimestamp","path":"$.EventSubmissionTimestamp","datatype":"datetime"},{"column":"ActivityStatusValue","path":"$.ActivityStatusValue","datatype":"string"},{"column":"ActivitySubstatus","path":"$.ActivitySubstatus","datatype":"string"},{"column":"ActivitySubstatusValue","path":"$.ActivitySubstatusValue","datatype":"string"},{"column":"SourceSystem","path":"$.SourceSystem","datatype":"string"},{"column":"IngestionTime","path":"$.IngestionTime","datatype":"datetime"}]'
+
+.create-merge table CloudAudit_Raw (RawData: dynamic, IngestionTime: datetime) with (docstring = "Raw ingestion staging for CloudAudit update policy", folder = "Staging")
+
+.alter table CloudAudit policy update '[{"IsEnabled": true, "Source": "CloudAudit_Raw", "Query": "CloudAudit_Raw | extend d = RawData | project TimeGenerated = todatetime(d.TimeGenerated), OperationName = tostring(d.OperationName), OperationNameValue = tostring(d.OperationNameValue), Category = tostring(d.Category), CategoryValue = tostring(d.CategoryValue), Level = tostring(d.Level), ResultType = tostring(d.ResultType), ResultSignature = tostring(d.ResultSignature), ResultDescription = tostring(d.ResultDescription), CorrelationId = tostring(d.CorrelationId), CallerIpAddress = tostring(d.CallerIpAddress), Caller = tostring(d.Caller), Claims = d.Claims, Authorization = d.Authorization, HttpRequest = d.HttpRequest, ResourceId = tostring(d.ResourceId), ResourceGroup = tostring(d.ResourceGroup), ResourceProviderName = tostring(d.ResourceProviderName), ResourceProviderValue = tostring(d.ResourceProviderValue), ResourceType = tostring(d.ResourceType), SubscriptionId = tostring(d.SubscriptionId), TenantId = tostring(d.TenantId), Properties = d.Properties, EventSubmissionTimestamp = todatetime(d.EventSubmissionTimestamp), ActivityStatusValue = tostring(d.ActivityStatusValue), ActivitySubstatus = tostring(d.ActivitySubstatus), ActivitySubstatusValue = tostring(d.ActivitySubstatusValue), SourceSystem = tostring(d.SourceSystem), IngestionTime = IngestionTime", "IsTransactional": true, "PropagateIngestionProperties": true}]'

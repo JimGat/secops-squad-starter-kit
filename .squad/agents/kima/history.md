@@ -53,3 +53,14 @@
   8. `purview-dlp-patterns.md` — DLP policy creation across Exchange/SPO/OD/Teams/Endpoints, sensitivity label taxonomy, custom SITs, endpoint DLP with blocked apps/domains, alert investigation workflow, Sentinel KQL for exfiltration detection; MITRE: T1567, T1048, T1537
 - All skills include: YAML frontmatter, Bicep/ARM snippets, PowerShell/CLI commands, KQL queries, MITRE ATT&CK references, cross-references to related skills across all categories
 - Total library: ~109 KB across 8 production-ready skill files
+
+📌 **Phase 3: Threat Model Template Library Created** (2026-04-28)
+- Built comprehensive threat model template library in `templates/threat-models/` — 10 files, ~155 KB total
+- Covers 8 MITRE ATT&CK tactics: Credential Access (TA0006), Initial Access (TA0001), Lateral Movement (TA0008), Persistence (TA0003), Privilege Escalation (TA0004), Exfiltration (TA0010), Defense Evasion (TA0005), Impact (TA0040)
+- Each tactic template includes: YAML frontmatter, per-technique Mermaid attack flow diagrams, specific Microsoft log table data sources, KQL detection query stubs, false positive scenarios with tuning guidance, Microsoft product coverage mapping, detection gap analysis with compensating controls, cross-references to existing detection and msft-security skills
+- Created README.md with workflow diagram connecting threat models to detection engineering skills
+- Created template-blank.md as reusable starting point for any new tactic
+- Enforces team decision #7 (threat model required before detection rules merge) and #8 (MITRE ATT&CK tagging mandatory)
+- Total techniques covered: ~35 unique techniques/sub-techniques with attack flows and detection guidance
+- Every template links back to relevant skills in `skills/detection/` and `skills/msft-security/`
+- Key insight: Exfiltration tactic has 0 techniques at "Full" coverage — behavioral detection against legitimate data sharing patterns remains the hardest detection challenge in the Microsoft stack

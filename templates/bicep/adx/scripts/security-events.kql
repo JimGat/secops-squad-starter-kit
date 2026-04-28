@@ -1,0 +1,56 @@
+// SecurityEvents table — Windows Security event logs
+// Schema aligned with Microsoft Sentinel SecurityEvent table
+
+.create-merge table SecurityEvents (
+    TimeGenerated: datetime,
+    EventID: int,
+    Activity: string,
+    Computer: string,
+    Account: string,
+    AccountType: string,
+    TargetAccount: string,
+    TargetUserName: string,
+    TargetDomainName: string,
+    SubjectUserName: string,
+    SubjectDomainName: string,
+    SubjectUserSid: string,
+    LogonType: int,
+    LogonTypeName: string,
+    IpAddress: string,
+    IpPort: string,
+    WorkstationName: string,
+    Process: string,
+    ProcessId: string,
+    ProcessName: string,
+    CommandLine: string,
+    ParentProcessName: string,
+    ServiceName: string,
+    Status: string,
+    SubStatus: string,
+    FailureReason: string,
+    PrivilegeList: string,
+    EventSourceName: string,
+    Channel: string,
+    Level: string,
+    Task: int,
+    Keywords: string,
+    SourceSystem: string,
+    MG: string,
+    TenantId: string,
+    IngestionTime: datetime
+) with (docstring = "Windows Security event logs for security monitoring and threat detection. Source: Microsoft Sentinel SecurityEvent table.", folder = "Security")
+
+// Retention policy
+.alter-merge table SecurityEvents policy retention softdelete = 365d
+
+// Ingestion-time partitioning for query performance
+.alter table SecurityEvents policy streamingingestion enable
+
+// JSON ingestion mapping for Event Hub streaming
+.create-or-alter table SecurityEvents ingestion json mapping 'SecurityEvents_JsonMapping' '[{"column":"TimeGenerated","path":"$.TimeGenerated","datatype":"datetime"},{"column":"EventID","path":"$.EventID","datatype":"int"},{"column":"Activity","path":"$.Activity","datatype":"string"},{"column":"Computer","path":"$.Computer","datatype":"string"},{"column":"Account","path":"$.Account","datatype":"string"},{"column":"AccountType","path":"$.AccountType","datatype":"string"},{"column":"TargetAccount","path":"$.TargetAccount","datatype":"string"},{"column":"TargetUserName","path":"$.TargetUserName","datatype":"string"},{"column":"TargetDomainName","path":"$.TargetDomainName","datatype":"string"},{"column":"SubjectUserName","path":"$.SubjectUserName","datatype":"string"},{"column":"SubjectDomainName","path":"$.SubjectDomainName","datatype":"string"},{"column":"SubjectUserSid","path":"$.SubjectUserSid","datatype":"string"},{"column":"LogonType","path":"$.LogonType","datatype":"int"},{"column":"LogonTypeName","path":"$.LogonTypeName","datatype":"string"},{"column":"IpAddress","path":"$.IpAddress","datatype":"string"},{"column":"IpPort","path":"$.IpPort","datatype":"string"},{"column":"WorkstationName","path":"$.WorkstationName","datatype":"string"},{"column":"Process","path":"$.Process","datatype":"string"},{"column":"ProcessId","path":"$.ProcessId","datatype":"string"},{"column":"ProcessName","path":"$.ProcessName","datatype":"string"},{"column":"CommandLine","path":"$.CommandLine","datatype":"string"},{"column":"ParentProcessName","path":"$.ParentProcessName","datatype":"string"},{"column":"ServiceName","path":"$.ServiceName","datatype":"string"},{"column":"Status","path":"$.Status","datatype":"string"},{"column":"SubStatus","path":"$.SubStatus","datatype":"string"},{"column":"FailureReason","path":"$.FailureReason","datatype":"string"},{"column":"PrivilegeList","path":"$.PrivilegeList","datatype":"string"},{"column":"EventSourceName","path":"$.EventSourceName","datatype":"string"},{"column":"Channel","path":"$.Channel","datatype":"string"},{"column":"Level","path":"$.Level","datatype":"string"},{"column":"Task","path":"$.Task","datatype":"int"},{"column":"Keywords","path":"$.Keywords","datatype":"string"},{"column":"SourceSystem","path":"$.SourceSystem","datatype":"string"},{"column":"MG","path":"$.MG","datatype":"string"},{"column":"TenantId","path":"$.TenantId","datatype":"string"},{"column":"IngestionTime","path":"$.IngestionTime","datatype":"datetime"}]'
+
+// Staging table for update policy transformation
+.create-merge table SecurityEvents_Raw (RawData: dynamic, IngestionTime: datetime) with (docstring = "Raw ingestion staging for SecurityEvents update policy", folder = "Staging")
+
+// Update policy to transform raw JSON into structured SecurityEvents
+.alter table SecurityEvents policy update '[{"IsEnabled": true, "Source": "SecurityEvents_Raw", "Query": "SecurityEvents_Raw | extend d = RawData | project TimeGenerated = todatetime(d.TimeGenerated), EventID = toint(d.EventID), Activity = tostring(d.Activity), Computer = tostring(d.Computer), Account = tostring(d.Account), AccountType = tostring(d.AccountType), TargetAccount = tostring(d.TargetAccount), TargetUserName = tostring(d.TargetUserName), TargetDomainName = tostring(d.TargetDomainName), SubjectUserName = tostring(d.SubjectUserName), SubjectDomainName = tostring(d.SubjectDomainName), SubjectUserSid = tostring(d.SubjectUserSid), LogonType = toint(d.LogonType), LogonTypeName = tostring(d.LogonTypeName), IpAddress = tostring(d.IpAddress), IpPort = tostring(d.IpPort), WorkstationName = tostring(d.WorkstationName), Process = tostring(d.Process), ProcessId = tostring(d.ProcessId), ProcessName = tostring(d.ProcessName), CommandLine = tostring(d.CommandLine), ParentProcessName = tostring(d.ParentProcessName), ServiceName = tostring(d.ServiceName), Status = tostring(d.Status), SubStatus = tostring(d.SubStatus), FailureReason = tostring(d.FailureReason), PrivilegeList = tostring(d.PrivilegeList), EventSourceName = tostring(d.EventSourceName), Channel = tostring(d.Channel), Level = tostring(d.Level), Task = toint(d.Task), Keywords = tostring(d.Keywords), SourceSystem = tostring(d.SourceSystem), MG = tostring(d.MG), TenantId = tostring(d.TenantId), IngestionTime = IngestionTime", "IsTransactional": true, "PropagateIngestionProperties": true}]'

@@ -56,3 +56,18 @@
 - API connections use managed identity for Sentinel; OAuth for Teams/O365/EntraID/MDE
 - ~95KB of deployable IaC across all templates
 - Bicep best practices: parameterValueType=Alternative for MI connections, uniqueString for naming, existing keyword for workspace reference
+
+🟥 **Herc Phase 3: ADX Security Data Lake Bicep Templates** (2026-04-28)
+- Created 6 production-ready Bicep templates + 5 KQL scripts in `templates/bicep/adx/`:
+  1. cluster.bicep — ADX cluster with configurable SKU, managed identity, auto-scale, VNet, private endpoints, CMK encryption, diagnostics, trusted tenants
+  2. database.bicep — SecurityLake database with hot cache/soft delete periods, Admin/Viewer/Ingestor role assignments
+  3. tables.bicep — 5 security table schemas via KQL deployment scripts (SecurityEvents, NetworkTraffic, ThreatIntelligence, IdentityEvents, CloudAudit)
+  4. ingestion.bicep — Event Hub, IoT Hub, Event Grid data connections with managed identity role assignment and consumer group creation
+  5. main.bicep — Orchestrator with 3-tier preset system (dev/standard/production) and boolean module toggles
+  6. README.md — Full deployment guide with tier comparison, parameter reference, troubleshooting
+- 5 KQL scripts in `scripts/`: each defines table schema, JSON ingestion mapping, staging table, update policy for raw→structured transformation
+- All 5 Bicep files pass `az bicep build` with zero errors
+- Tier presets: dev (~$200/mo, no VNet), standard (~$2-8K/mo, optional VNet), production (~$6-30K/mo, VNet+PE+CMK required)
+- ~65KB of deployable IaC + ~28KB of KQL table definitions
+- Complements Freamon's ADX skills with deployable infrastructure
+- Consistent patterns with Phase 2b SOAR templates: @description decorators, @allowed validators, camelCase params, tag propagation

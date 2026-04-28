@@ -56,3 +56,14 @@
 - Key patterns: DCR ingestion-time transforms, resource-context vs workspace-context RBAC, commitment tier optimization, archive tier lifecycle, purge API for GDPR compliance
 - MITRE ATT&CK mapped: T1078 (workspace-rbac), General for all others (foundational infrastructure skills)
 - Combined project total: 18 skills (10 KQL + 8 Log Analytics), ~5,775 lines, ~130+ code blocks
+
+🟦 **Freamon Phase 4: ADX Skills Library Complete** (2026-04-28)
+- Authored 8 Azure Data Explorer skills in `skills/adx/`: cluster-architecture, data-ingestion, security-data-modeling, cross-cluster-queries, long-term-retention, adx-dashboards, adx-ml-anomaly, migration-from-sentinel
+- 2,102 lines across 8 files — 47 KQL code blocks (including ADX control commands), 11 Azure CLI/bash snippets
+- Covers full ADX lifecycle: cluster sizing → data ingestion → schema design → cross-cluster federation → long-term retention → dashboards → ML anomaly detection → Sentinel migration
+- Key patterns: hot/warm/cold cache tiering, Event Hub ingestion pipelines, update policies for ingestion-time transformation, materialized views for pre-aggregation, follower databases for read scaling, continuous export to Azure Storage, external tables for archived data, series_decompose_anomalies for behavioral detection, autocluster/basket/diffpatterns for pattern analysis, proxy functions for seamless Sentinel-ADX cross-querying
+- MITRE ATT&CK mapped: T1078, T1059, T1071, T1048, General (infrastructure skills)
+- Multi-tenant patterns for MSSPs: database-per-tenant isolation, extent tagging, follower database sharing
+- Cost comparison framework: Sentinel vs ADX ingestion/retention cost analysis with break-even guidance
+- All skills cross-reference KQL and Log Analytics skills, forming a complete three-tier learning path (KQL → Log Analytics → ADX)
+- Combined project total: 26 skills (10 KQL + 8 Log Analytics + 8 ADX), ~7,877 lines, ~188+ code blocks
