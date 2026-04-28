@@ -1,9 +1,9 @@
 ---
-updated_at: 2026-04-28T09:16:43-05:00
-focus_area: SecOps Squad framework scaffolding
+updated_at: 2026-04-28T15:12:03.7761494Z
+focus_area: Phase 1 complete. Skills and persona scaffold landed. Ready for Phase 1 remaining.
 active_issues: []
 ---
 
 # What We're Focused On
 
-Setting up SecOps Squad framework — scaffolding team, templates, and planning initial skill set. Focus areas include Microsoft Sentinel detection rule templates, KQL query libraries, Logic Apps playbook patterns, and Log Analytics workspace configuration.
+Phase 1 complete. Skills and persona scaffold landed. Ready for Phase 1 remaining: KQL validator, CLI init wizard, docs polish.
