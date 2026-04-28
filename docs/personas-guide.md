@@ -73,11 +73,13 @@ secops-squad init
 
 **Key Skills:** mitre-attack-mapping, detection-lifecycle, scheduled-rule-pattern, nrt-rule-pattern, threat-model-template, fusion-rule-context, watchlist-driven-detection, custom-kql-function
 
+**Phase 3 Enhancement:** Access to [Threat Model Templates](../templates/threat-models/) for Initial Access, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Lateral Movement, Exfiltration, and Impact tactics.
+
 **Typical Workflow:**
-1. Threat model session with Prop Joe — Define adversary objectives, detection opportunities
-2. Lester authors KQL detection query, Daniels reviews design
-3. Landsman validates against known threats, measures false positives
-4. Rule deployed to Sentinel; gaps feed threat hunting backlog
+1. **Threat model session** with Prop Joe — Use MITRE threat model templates to define detection opportunities
+2. **Lester** authors KQL detection query from threat model, Daniels reviews design
+3. **Landsman** validates against threat model coverage, measures false positives
+4. **Rule deployed** to Sentinel; gaps feed threat hunting backlog
 
 **When to Use:**
 - You're building or maintaining Sentinel analytics rules
@@ -94,6 +96,71 @@ secops-squad init
 
 ---
 
+## Phase 3: ADX Integration Across Personas
+
+Azure Data Explorer enables long-term retention, time-series analytics, and federated querying. All personas can access ADX skills, but they're used differently:
+
+### For Threat Hunting Persona
+- Use ADX for **multi-month historical hunts** — Sentinel's 30-day retention isn't enough for APT campaign analysis
+- Load ADX skills: `cluster-architecture`, `security-data-modeling`, `cross-cluster-queries`
+- Example: Correlate suspicious login patterns across 6 months of archival data
+
+### For Detection Engineering Persona
+- Use ADX to **validate detection rules** against long-term patterns before deployment
+- Combine threat model templates with ADX data to measure coverage effectiveness
+- Example: Test a new C2 detection rule against 90 days of historical network traffic
+
+### For Incident Response Persona
+- Use ADX for **forensic analysis** — retrieve complete evidence timelines beyond Sentinel retention
+- Load ADX skills: `migration-from-sentinel`, `long-term-retention-strategies`
+- Example: Full forensic timeline of a compromised account's activities over 12 months
+
+### For Full SOC Persona
+- ADX is the **security data lake** — feeds hunting, detection validation, and forensic analysis
+- All 8 ADX skills are loaded; use as needed for your workflow
+
+**Quick Start:** See [ADX Setup Guide](../docs/adx-setup.md) for deployment and integration patterns.
+
+---
+
+## Phase 3: Threat Model Integration
+
+The [10 Threat Model Templates](../templates/threat-models/) align with MITRE ATT&CK tactics. Use them in Detection Engineering and Incident Response:
+
+### Detection Engineering Workflow
+1. **Select a threat model** — e.g., [Credential Access template](../templates/threat-models/credential-access.md)
+2. **Review MITRE techniques** — T1110 (brute force), T1555 (credentials from browsers), T1187 (credential phishing)
+3. **Author KQL detection** for each technique
+4. **Map KQL to detection rule** in Sentinel
+5. **Document coverage** — what techniques are detected, what are gaps?
+
+### Incident Response Workflow
+1. **Incident occurs** — malware infection on 5 workstations
+2. **Rapid threat model** — use [Impact template](../templates/threat-models/impact.md) to map attacker objectives
+3. **Focused investigation** — correlate findings to specific MITRE techniques
+4. **Evidence chain** — document which detection rules/hunts provided evidence
+
+---
+
+## How to Use Both ADX and Threat Models
+
+A complete detection workflow using Phase 3 features:
+
+```
+1. Detection Engineer reviews Credential Access threat model
+   ↓
+2. Identifies T1110 (Brute Force) technique gap
+   ↓
+3. Authors KQL query for brute force detection
+   ↓
+4. Tests against ADX historical data (90-day lookback)
+   ↓
+5. Deploys rule to Sentinel with confidence
+   ↓
+6. If incident occurs, Incident Response team uses threat model
+   to correlate findings and build forensic timeline in ADX
+```
+
 #### 3. Threat Hunting ✅ LIVE (Phase 2)
 
 **Status:** Available now | **Best for:** Proactive, hypothesis-driven threat hunts across large data sets
@@ -104,7 +171,7 @@ secops-squad init
 - **Bubbles** (OSINT Researcher) — Threat intelligence, adversary profiling, IOC collection, TTP tracking
 - **Rhonda** (Reporting Analyst) — Hunt reports, evidence documentation, executive briefings
 
-**Key Skills:** threat-hunting-foundations, cross-workspace-queries, ueba-patterns, defender-xdr-hunting, detection-tuning, entra-signin-analysis, cloud-security-posture, adx-integration
+**Key Skills:** threat-hunting-foundations, cross-workspace-queries, ueba-patterns, defender-xdr-hunting, detection-tuning, entra-signin-analysis, cloud-security-posture, adx-integration, cluster-architecture, security-data-modeling
 
 **Typical Workflow:**
 1. Omar defines hunt hypothesis (e.g., "Look for persistence via scheduled tasks in critical systems")
@@ -209,7 +276,7 @@ secops-squad init
 - **Prop Joe** (Threat Intel) — Intelligence gathering, adversary profiling, IOC collection
 - **Lester** (SOAR Orchestrator) — Playbook automation, response workflows, orchestration
 
-**Key Skills:** All 28 Phase 2 skills (10 KQL + 10 SOAR + 8 Detection)
+**Key Skills:** All 36 Phase 3 skills (10 KQL + 10 SOAR + 8 Detection + 8 ADX)
 
 **Typical Workflow:**
 1. Incident fires → Bodie performs L1 triage

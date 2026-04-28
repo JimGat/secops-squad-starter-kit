@@ -1,6 +1,6 @@
 # secops-squad
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Phase 2 Release](https://img.shields.io/badge/Phase-2%20Active-brightgreen)](docs/getting-started.md)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Phase 3 Release](https://img.shields.io/badge/Phase-3%20Active-brightgreen)](docs/getting-started.md)
 
 **AI-powered SecOps team framework for the Microsoft Security stack.**
 
@@ -18,46 +18,49 @@ This walks you through persona selection, Azure workspace configuration, and dep
 
 ## What's in the Box
 
-### 📦 Current Phase 2 Inventory
+### 📦 Current Phase 3 Inventory
 
 ```
 secops-squad/
-├── personas/
-│   ├── soc-analyst/              — Live (Phase 1)
-│   ├── detection-engineering/    — Live (Phase 2)
-│   ├── threat-hunting/           — Live (Phase 2)
-│   ├── cloud-security/           — Live (Phase 2)
-│   ├── incident-response/        — Live (Phase 2)
-│   └── full-soc/                 — Live (Phase 2)
-├── skills/
-│   ├── kql/                      — 10 hunting & detection skills
-│   ├── soar/                     — 10 automation & playbook skills
-│   ├── detection/                — 8 detection engineering skills
-│   ├── log-analytics/            — Coming Phase 3
-│   ├── adx/                      — Coming Phase 3
-│   └── msft-security/            — Coming Phase 3
+├── personas/                     — 6 live personas
+│   ├── soc-analyst/              ✅ Phase 1
+│   ├── detection-engineering/    ✅ Phase 2
+│   ├── threat-hunting/           ✅ Phase 2
+│   ├── cloud-security/           ✅ Phase 2
+│   ├── incident-response/        ✅ Phase 2
+│   └── full-soc/                 ✅ Phase 2
+├── skills/                       — 36 total skills
+│   ├── kql/                      ✅ 10 hunting & detection
+│   ├── soar/                     ✅ 10 automation & playbook
+│   ├── detection/                ✅ 8 detection engineering
+│   └── adx/                      ✅ 8 Azure Data Explorer (Phase 3)
 ├── templates/
-│   ├── kql/                      — Hunting and detection query library
-│   └── bicep/                    — Sentinel workspace scaffolds
+│   ├── threat-models/            ✅ 10 MITRE tactic templates (Phase 3)
+│   ├── bicep/
+│   │   ├── sentinel/             ✅ Workspace scaffolds
+│   │   └── adx/                  ✅ Security data lake (Phase 3)
+│   └── kql/                      ✅ Query library
+├── lib/
+│   └── graph-security/           ✅ Graph Security API (zero-dependency) (Phase 3)
 └── cli/                          — Command-line tools
 ```
 
-### 🎯 Personas
+### 🎯 Personas (6 Live)
 
 | Persona | Status | Focus | Load With |
 |---------|--------|-------|-----------|
-| **SOC Analyst** | ✅ Live | Triage, investigation, incident response | `secops-squad init` → Select SOC Analyst |
-| **Detection Engineering** | ✅ Live | Rule authoring, KQL, MITRE ATT&CK mapping | `secops-squad init` → Select Detection Engineering |
-| **Threat Hunting** | ✅ Live | Proactive hunting, hypothesis-driven investigations | `secops-squad init` → Select Threat Hunting |
-| **Cloud Security** | ✅ Live | Cloud posture, Defender for Cloud, identity | `secops-squad init` → Select Cloud Security |
-| **Incident Response** | ✅ Live | IR procedures, forensics, containment | `secops-squad init` → Select Incident Response |
-| **Full SOC** | ✅ Live | All skills (for teams wearing every hat) | `secops-squad init` → Select Full SOC |
+| **SOC Analyst** | ✅ Live | Triage, investigation, incident response | `secops-squad init` → SOC Analyst |
+| **Detection Engineering** | ✅ Live | Rule authoring, KQL, MITRE ATT&CK mapping | `secops-squad init` → Detection Engineering |
+| **Threat Hunting** | ✅ Live | Proactive hunting, hypothesis-driven investigations | `secops-squad init` → Threat Hunting |
+| **Cloud Security** | ✅ Live | Cloud posture, Defender for Cloud, identity | `secops-squad init` → Cloud Security |
+| **Incident Response** | ✅ Live | IR procedures, forensics, containment | `secops-squad init` → Incident Response |
+| **Full SOC** | ✅ Live | All skills (complete, mature SOC) | `secops-squad init` → Full SOC |
 
-See [Personas Guide](docs/personas-guide.md) for details on switching personas and building custom ones.
+See [Personas Guide](docs/personas-guide.md) for details on personas, ADX integration, and threat modeling.
 
 ### 🛠 Skills Library
 
-Currently shipped with **28 core skills** across **3 categories**:
+**Phase 3 Active: 36 core skills** across **4 categories**:
 
 #### KQL Hunting & Detection (10 skills)
 - [**Threat Hunting Foundations**](skills/kql/threat-hunting-foundations.md) — Hypothesis-driven hunting, baseline building, entity pivoting
@@ -93,13 +96,47 @@ Currently shipped with **28 core skills** across **3 categories**:
 - [**Watchlist-Driven Detection**](skills/detection/watchlist-driven-detection.md) — Reference data integration and automation
 - [**Custom KQL Function Authoring**](skills/detection/custom-kql-function.md) — Reusable function libraries and patterns
 
+#### Azure Data Explorer (8 skills, Phase 3)
+- [**ADX Cluster Architecture**](skills/adx/cluster-architecture.md) — SKU selection, scaling, failover, and topology
+- [**Security Data Modeling**](skills/adx/security-data-modeling.md) — Schema design for logs, events, and time-series data
+- [**Data Ingestion Patterns**](skills/adx/data-ingestion.md) — Event Hub, IoT Hub, Event Grid, and batch ingestion
+- [**Long-Term Retention Strategies**](skills/adx/long-term-retention.md) — Archival, purge policies, cost optimization
+- [**Cross-Cluster Queries**](skills/adx/cross-cluster-queries.md) — Federated querying across ADX clusters
+- [**Migration from Sentinel**](skills/adx/migration-from-sentinel.md) — Archival and log transition workflows
+- [**ML & Anomaly Detection**](skills/adx/adx-ml-anomaly.md) — Time-series anomalies, forecasting, baselines
+- [**ADX Dashboards**](skills/adx/adx-dashboards.md) — Real-time visualization and KPI tracking
+
 See [Skills Catalog](docs/skills-catalog.md) for full inventory with difficulty levels and MITRE ATT&CK mappings.
 
 ### 📐 Templates
-Ready-to-deploy infrastructure and query templates:
 
+Ready-to-deploy infrastructure and security templates:
+
+#### Threat Model Templates (10, Phase 3)
+- [**Initial Access**](templates/threat-models/initial-access.md) — T1189, T1199, T1200, T1566, T1091, T1195
+- [**Persistence**](templates/threat-models/persistence.md) — T1098, T1197, T1547, T1098, T1547, T1547
+- [**Privilege Escalation**](templates/threat-models/privilege-escalation.md) — T1548, T1134, T1547, T1548
+- [**Defense Evasion**](templates/threat-models/defense-evasion.md) — T1548, T1197, T1134, T1562
+- [**Credential Access**](templates/threat-models/credential-access.md) — T1110, T1555, T1187, T1040
+- [**Lateral Movement**](templates/threat-models/lateral-movement.md) — T1210, T1570, T1570, T1021
+- [**Exfiltration**](templates/threat-models/exfiltration.md) — T1020, T1030, T1048, T1041
+- [**Impact**](templates/threat-models/impact.md) — T1531, T1485, T1561, T1491
+
+See [Threat Models Guide](templates/threat-models/README.md) for detailed MITRE ATT&CK alignment and usage.
+
+#### Infrastructure Templates
 - **KQL Templates** — Hunting queries, detection rules, investigation notebooks organized by MITRE tactic (in `templates/kql/`)
-- **Bicep Templates** — ARM templates for Sentinel workspace provisioning (in `templates/bicep/`)
+- **Sentinel Bicep** — Sentinel workspace scaffolds and configuration-as-code (in `templates/bicep/sentinel/`)
+- **ADX Bicep** — Security data lake deployment with cluster, database, tables, and ingestion (in `templates/bicep/adx/`). See [ADX Bicep README](templates/bicep/adx/README.md).
+
+### 📚 Libraries
+
+#### Graph Security API Library (Phase 3)
+Zero-dependency Node.js library for Microsoft Graph Security v1.0 — alert management, incident correlation, threat intelligence, and security posture tracking. Includes 4 modules with 3 authentication flows.
+
+**File:** [`lib/graph-security/`](lib/graph-security/README.md)
+
+See [Graph Security API Guide](docs/graph-security-api.md) for detailed usage examples, auth patterns, and error handling.
 
 ### 🔍 KQL Validation
 Built-in KQL syntax validation runs on every PR that touches query files:
@@ -145,7 +182,7 @@ secops-squad playbook      SOAR playbook tools (scaffold, deploy) — Phase 2
 - [x] Getting Started guide with real workflows
 - [x] Skills Catalog and Personas Guide
 
-### Phase 2 — Expansion ✅ ACTIVE
+### Phase 2 — Expansion ✅ SHIPPED
 - [x] Additional personas (Detection Engineering, Threat Hunting, Cloud Security, Incident Response, Full SOC)
 - [x] Extended KQL skills (10 total, +7 new)
 - [x] Extended SOAR skills (10 total, +7 new)
@@ -153,24 +190,60 @@ secops-squad playbook      SOAR playbook tools (scaffold, deploy) — Phase 2
 - [x] Updated Skills Catalog (28 shipped skills)
 - [x] Updated Personas Guide (6 active personas)
 - [x] Updated README (Phase 2 inventory)
-- [ ] KQL validator library
-- [ ] SOAR playbook deployment engine
-- [ ] Graph Security API integration
-- [ ] Azure auth helper and workspace auto-discovery
-- [ ] Template engine for Bicep deployments
-- [ ] CLI interactive mode
+- [x] KQL validator library
+- [x] SOAR playbook deployment engine
+- [x] Graph Security API integration (zero-dependency)
+- [x] Azure auth helper and workspace auto-discovery
+- [x] Template engine for Bicep deployments
+- [x] CLI interactive mode
 
-### Phase 3 — Advanced (Planned)
-- [ ] Log Analytics skills (8 planned)
-- [ ] Microsoft Security Products skills (8 planned)
-- [ ] Azure Data Explorer skills (8 planned)
+### Phase 3 — Data & Security (🚀 ACTIVE)
+- [x] **8 ADX skills** (cluster architecture, security data modeling, ingestion, long-term retention, cross-cluster queries, migration, ML/anomaly, dashboards)
+- [x] **10 Threat Model templates** (Initial Access, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Lateral Movement, Exfiltration, Impact)
+- [x] **Graph Security API library** (alerts, incidents, threat-intelligence, secure-score modules with 3 auth flows)
+- [x] **ADX Bicep templates** (cluster, database, tables, ingestion with dev/standard/production tiers)
+- [x] **ADX Setup Guide** (quick-start, ADX vs Log Analytics, integration patterns)
+- [x] **Graph Security API documentation** (usage examples, auth flows, error handling)
+- [ ] Threat Hunting automation workflows
+- [ ] Detection rule tuning recommendations
+- [ ] ADX SIEM connector for Sentinel
+
+### Phase 4 — Optimization (Planned)
 - [ ] Advanced automation workflows
 - [ ] Cross-workspace federation patterns
 - [ ] Compliance and audit reporting
+- [ ] Performance optimization guidance
 
-## Getting Started
+## Installation
 
-See the full [Getting Started Guide](docs/getting-started.md) for prerequisites, installation, and your first run.
+### Quick Setup (Recommended)
+
+```bash
+# macOS / Linux
+./install.sh
+
+# Windows PowerShell
+.\install.ps1
+```
+
+This downloads and installs `secops-squad` CLI and initializes a new project in your current directory. See [install.sh](install.sh) and [install.ps1](install.ps1) for advanced options.
+
+### Via npm
+
+```bash
+npm install -g secops-squad
+secops-squad init
+```
+
+See [Getting Started](docs/getting-started.md) for post-install configuration and your first hunt.
+
+## Documentation
+
+- [**Getting Started**](docs/getting-started.md) — Installation, init wizard, your first hunt
+- [**Skills Catalog**](docs/skills-catalog.md) — All 36 skills with difficulty, MITRE ATT&CK, and coverage
+- [**Personas Guide**](docs/personas-guide.md) — All 6 personas, team composition, ADX integration notes
+- [**ADX Setup Guide**](docs/adx-setup.md) — Azure Data Explorer quick-start, when to use ADX vs Log Analytics
+- [**Graph Security API**](docs/graph-security-api.md) — Library usage, examples, auth flows, error handling
 
 ## Contributing
 

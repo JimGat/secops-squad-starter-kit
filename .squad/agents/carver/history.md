@@ -30,3 +30,14 @@
 - Fixture sanity tests pass independently; validator tests awaiting Freamon's implementation
 - Temp files written to `__test_tmp__` inside the test dir and cleaned up in `after` hooks
 - Package.json already has `"test": "node --test lib/**/*.test.js"` — test file is auto-discovered
+
+📌 **Graph Security API Test Suite Written** (2026-04-28)
+- Created `lib/graph-security/graph-security.test.js` — 169 tests across 28 describe blocks
+- Modules covered: auth (4 blocks), alerts (4 blocks), incidents (6 blocks), threat-intelligence (5 blocks), secure-score (4 blocks), utils (2 blocks), index/factory (2 blocks + exports)
+- Mocking approach: `mock.fn()` from `node:test` to replace `globalThis.fetch` — no external mock libraries needed
+- Helper pattern: `mockClient()` returns `{tenantId, getToken}`, `mockFetch(status, body)` installs a fake fetch
+- URL-encoding gotcha: `URLSearchParams` encodes `$` as `%24` in URLs — test assertions must use `decodeURIComponent()` before regex matching
+- All API modules follow `{ok, data?, error?, status?}` return contract — tests validate both success and error shapes
+- Edge cases tested: empty results, malformed JSON, null tokens, missing required fields, URL-encoding of path params, frozen constants, OData nextLink pagination, bulk operations with stopOnError
+- Auth tests cover: client credentials (validation, token acquisition, caching, cache clear), managed identity (App Service path, IMDS fallback, network errors), device code (validation, request failures)
+- CommonJS modules loaded via `createRequire(import.meta.url)` since test file uses ESM (consistent with kql-validator tests)

@@ -48,3 +48,23 @@
 - Personas documented: SOC Analyst, Detection Engineering, Threat Hunting, Cloud Security, Incident Response, Full SOC
 - All documentation: accurate (only reference things that exist), professional tone, GFM markdown, no broken references
 - Critical: All persona agents use actual Wire character names (Bunk, Kima, Freamon, Daniels, Omar, etc.); no duplicates across personas
+
+📌 **Phase 3 Round 1: ADX Skills, Threat Models, Graph Security API, ADX Bicep Templates** (2026-04-28)
+- Added 8 ADX skills: cluster-architecture, security-data-modeling, data-ingestion, long-term-retention, cross-cluster-queries, migration-from-sentinel, adx-ml-anomaly, adx-dashboards
+- Added 10 threat model templates aligned with MITRE ATT&CK tactics: Initial Access, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Lateral Movement, Exfiltration, Impact, blank template, README
+- Graph Security API library deployed: 7 zero-dependency modules (index.js, auth.js, alerts.js, incidents.js, threat-intelligence.js, secure-score.js, constants) with 3 auth flows (client credentials, managed identity, device code)
+- ADX Bicep templates: main.bicep + cluster.bicep, database.bicep, tables.bicep, ingestion.bicep; 5 KQL scripts (security-events, network-traffic, threat-intelligence, identity-events, cloud-audit); dev/standard/production tier support with auto-scale, VNet, PE, CMK, diagnostic logging
+
+📌 **Phase 3 Round 1: Documentation Updated** (2026-04-28)
+- README.md: Phase badge updated to "Phase 3 Active", repo URL references prepared for x3nc0n/secops-squad, skills count updated to 36 (28 Phase 2 + 8 ADX), added ADX skills section with descriptions, added threat model templates section (10 templates, 8 MITRE tactics), added Graph Security API library section, added ADX Bicep templates section with reference to README, added Installation section with install.sh/install.ps1 pointer, updated Project Status to Phase 3 ACTIVE with all Phase 3 deliverables checked
+- Skills Catalog: Total updated to 36 skills, ADX skills section added (8 skills with full descriptions, difficulty, products, authors), summary table updated showing ADX as Phase 3 Active
+- Personas Guide: Full SOC persona updated to load all 36 Phase 3 skills, Threat Hunting persona updated with ADX skills (cluster-architecture, security-data-modeling), Detection Engineering persona updated with threat model template integration notes + links to threat model templates
+- Created docs/adx-setup.md: Quick comparison table (ADX vs Log Analytics), deployment guide for 3 tiers (dev/standard/production) with Bicep commands, post-deployment verification, data ingestion options (Sentinel export, batch, diagnostic settings), cross-resource querying from Sentinel, ADX skill loading in personas, use cases (multi-month hunts, forensics, anomaly detection), troubleshooting
+- Created docs/graph-security-api.md: Setup guide (app registration, permissions, credentials), 4 auth methods (client credentials, managed identity, device code, token), 4 modules (alerts, incidents, threat-intelligence, secure-score) with examples, error handling (structured results, status codes, auto-retry), integration examples (Logic Apps auto-triage, bulk IOC import, incident forensics), API reference, troubleshooting
+- All docs: practical, code examples included, linked to repo files (no placeholders), MITRE ATT&CK references accurate, tone actionable for first-time users
+
+Key architectural decisions locked in for Phase 3:
+- **Threat Models as Shared Templates:** All personas can reference threat models; Detection Engineering treats them as ceremony gates; Incident Response uses them for forensic correlation
+- **ADX as Optional Data Lake:** Not required for Phase 1–2 personas; Threat Hunting and Full SOC benefit most; optional load in others via skills.json
+- **Graph Security API as Automation Bridge:** Zero dependencies means deployment in Azure Functions/Logic Apps with minimal overhead; 3 auth flows cover all deployment contexts
+- **Bicep Templates as Infrastructure Code:** Production-grade, tiered approach (dev/standard/prod) allows cost-appropriate deployments; pre-built tables reduce schema definition burden

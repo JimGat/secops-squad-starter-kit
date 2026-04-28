@@ -4,7 +4,7 @@
 
 ---
 
-## Phase 2: Active Skills (28 Total)
+## Phase 3: Active Skills (36 Total)
 
 ### KQL Hunting & Detection (10 skills)
 
@@ -404,6 +404,120 @@ Reusable KQL functions for detection libraries: function syntax, parameter passi
 
 ---
 
+### Azure Data Explorer (8 skills, Phase 3)
+
+#### 29. ADX Cluster Architecture
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1526, T1087 |
+| **Products** | Azure Data Explorer, Azure |
+| **Author** | Freamon |
+
+Design and configure ADX clusters for security workloads: SKU selection, scaling, failover strategies, and topology optimization.
+
+**File:** [`skills/adx/cluster-architecture.md`](../skills/adx/cluster-architecture.md)
+
+---
+
+#### 30. Security Data Modeling
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1526 |
+| **Products** | Azure Data Explorer, Azure |
+| **Author** | Freamon |
+
+Schema design for security logs, events, and time-series data. Optimize for ingestion performance, query efficiency, and retention policies.
+
+**File:** [`skills/adx/security-data-modeling.md`](../skills/adx/security-data-modeling.md)
+
+---
+
+#### 31. Data Ingestion Patterns
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | — |
+| **Products** | Azure Data Explorer, Azure Event Hubs, Azure IoT Hub, Azure Event Grid |
+| **Author** | Freamon |
+
+Stream security data into ADX: Event Hub, IoT Hub, and Event Grid integrations. Batch upload patterns, update policies, and error handling.
+
+**File:** [`skills/adx/data-ingestion.md`](../skills/adx/data-ingestion.md)
+
+---
+
+#### 32. Long-Term Retention Strategies
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | — |
+| **Products** | Azure Data Explorer, Azure Storage |
+| **Author** | Freamon |
+
+Archive security data cost-effectively: hot/cold storage strategies, purge policies, compliance retention, and transition workflows.
+
+**File:** [`skills/adx/long-term-retention.md`](../skills/adx/long-term-retention.md)
+
+---
+
+#### 33. Cross-Cluster Queries
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1526, T1087 |
+| **Products** | Azure Data Explorer |
+| **Author** | Freamon |
+
+Federated querying across multiple ADX clusters for global threat hunting and multi-region security investigations.
+
+**File:** [`skills/adx/cross-cluster-queries.md`](../skills/adx/cross-cluster-queries.md)
+
+---
+
+#### 34. Migration from Sentinel to ADX
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | — |
+| **Products** | Sentinel, Azure Data Explorer, Log Analytics |
+| **Author** | Freamon |
+
+Archive Sentinel/Log Analytics data to ADX for long-term retention and compliance. Ingestion patterns, query migration, cost analysis.
+
+**File:** [`skills/adx/migration-from-sentinel.md`](../skills/adx/migration-from-sentinel.md)
+
+---
+
+#### 35. ML & Anomaly Detection in ADX
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | — |
+| **Products** | Azure Data Explorer |
+| **Author** | Freamon |
+
+Detect security anomalies: time-series forecasting, baseline learning, spike detection, and behavioral analytics.
+
+**File:** [`skills/adx/adx-ml-anomaly.md`](../skills/adx/adx-ml-anomaly.md)
+
+---
+
+#### 36. ADX Dashboards & Real-Time KPIs
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Beginner |
+| **MITRE ATT&CK** | — |
+| **Products** | Azure Data Explorer |
+| **Author** | Freamon |
+
+Create interactive dashboards for security KPI tracking: incident rates, threat detections, compliance status, and hunting progress.
+
+**File:** [`skills/adx/adx-dashboards.md`](../skills/adx/adx-dashboards.md)
+
+---
+
 ## Summary by Category
 
 | Category | Count | Phase | Status |
@@ -411,10 +525,10 @@ Reusable KQL functions for detection libraries: function syntax, parameter passi
 | **KQL Hunting & Detection** | 10 | 2 | ✅ Active |
 | **SOAR Automation** | 10 | 2 | ✅ Active |
 | **Detection Engineering** | 8 | 2 | ✅ Active |
-| **Log Analytics** | 8 | 3 | 📋 Coming Soon |
-| **Microsoft Security Products** | 8 | 3 | 📋 Coming Soon |
-| **Azure Data Explorer** | 8 | 3 | 📋 Phase 3 |
-| **TOTAL** | **52** | — | — |
+| **Azure Data Explorer** | 8 | 3 | ✅ Active |
+| **Log Analytics** | 8 | 4 | 📋 Planned |
+| **Microsoft Security Products** | 8 | 4 | 📋 Planned |
+| **TOTAL** | **36** | — | — |
 
 ---
 
