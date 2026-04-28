@@ -2,14 +2,19 @@
 
 "use strict";
 
+const path = require("path");
+const fs = require("fs");
+
 const COMMANDS = {
   init: {
     description: "Set up a new secops-squad project",
     usage: "secops-squad init [--persona <name>] [--no-interactive]",
+    module: "./commands/init.js",
   },
   doctor: {
     description: "Check environment prerequisites and configuration health",
     usage: "secops-squad doctor",
+    module: "./commands/doctor.js",
   },
   status: {
     description: "Show current config, loaded persona, and active skills",
@@ -37,13 +42,24 @@ const COMMANDS = {
   },
 };
 
+function getVersion() {
+  try {
+    const pkgPath = path.join(__dirname, "..", "package.json");
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+    return pkg.version || "0.1.0";
+  } catch {
+    return "0.1.0";
+  }
+}
+
 function printBanner() {
+  const version = getVersion();
   console.log(`
-  ┌─────────────────────────────────────┐
-  │         secops-squad v0.1.0         │
+  \x1b[36m\x1b[1m┌─────────────────────────────────────┐
+  │         secops-squad v${version.padEnd(13)}│
   │  AI SecOps team for Microsoft       │
   │  Security stack                     │
-  └─────────────────────────────────────┘
+  └─────────────────────────────────────┘\x1b[0m
   `);
 }
 
@@ -60,7 +76,7 @@ function printHelp() {
   console.log("\nRun secops-squad <command> --help for command-specific usage.\n");
 }
 
-function handleCommand(command, args) {
+async function handleCommand(command, args) {
   const cmd = COMMANDS[command];
   if (!cmd) {
     console.error(`Unknown command: ${command}`);
@@ -68,13 +84,20 @@ function handleCommand(command, args) {
     process.exit(1);
   }
 
-  // Stub: each command will be implemented in cli/commands/<name>.js
+  // Dispatch to real module if available
+  if (cmd.module) {
+    const mod = require(cmd.module);
+    await mod.run(args);
+    return;
+  }
+
+  // Stub for commands not yet implemented
   console.log(`[secops-squad] ${cmd.description}`);
   console.log(`Usage: ${cmd.usage}`);
-  console.log(`\nThis command is not yet implemented. Phase 2 will add full functionality.`);
+  console.log(`\nThis command is not yet implemented.`);
 }
 
-function main() {
+async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
@@ -83,13 +106,16 @@ function main() {
   }
 
   if (args.includes("--version") || args.includes("-v")) {
-    console.log("0.1.0");
+    console.log(getVersion());
     process.exit(0);
   }
 
   const command = args[0];
   const commandArgs = args.slice(1);
-  handleCommand(command, commandArgs);
+  await handleCommand(command, commandArgs);
 }
 
-main();
+main().catch((err) => {
+  console.error(`\x1b[31mError: ${err.message}\x1b[0m`);
+  process.exit(1);
+});
