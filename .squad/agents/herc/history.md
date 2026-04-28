@@ -26,3 +26,18 @@
 - Established SOAR response playbook templates with rollback safety patterns
 - Built incident-response skill set for automated threat containment
 - Created foundation for cross-team notification and orchestration
+
+🟥 **Herc Phase 2a: SOAR Skills Library Complete** (2026-04-28)
+- Authored 7 additional SOAR skills completing the 10-skill library:
+  1. malware-containment.md — MDE device isolation + forensic evidence collection
+  2. data-exfiltration-response.md — DLP alert enrichment, manager notification, sharing block
+  3. sentinel-enrichment-ip.md — Multi-source IP threat intel (VT, MDTI, GeoIP, watchlists)
+  4. sentinel-enrichment-user.md — Entra ID user context (profile, risk, MFA, privileged roles)
+  5. ticket-create.md — ServiceNow/JIRA bi-directional ticket sync
+  6. auto-triage.md — L1 evidence-based auto-close/assign/escalate
+  7. threat-intel-ingest.md — TAXII/STIX scheduled feed ingestion to Sentinel TI
+- ~155,000 characters of SOAR playbook patterns across all 10 skills
+- Every skill has: YAML frontmatter, architecture diagram, Logic Apps workflow, Bicep template, rollback/destroy, testing checklist
+- All rollback sections include both automation teardown AND remediation reversal procedures
+- Cross-references between skills establish a cohesive playbook library
+- Covered all trigger types: sentinel-incident, sentinel-entity, scheduled recurrence
