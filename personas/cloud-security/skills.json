@@ -1,0 +1,45 @@
+{
+  "persona": "cloud-security",
+  "version": "1.0.0",
+  "description": "Skills for cloud security posture management, policy enforcement, and Defender for Cloud operations",
+  "skills": {
+    "shared": [
+      {
+        "name": "cloud-security-posture",
+        "description": "Cloud Security Posture Management — Microsoft Defender for Cloud CSPM, Secure Score analysis, security recommendations, misconfiguration detection and remediation tracking."
+      },
+      {
+        "name": "defender-for-cloud-policies",
+        "description": "Defender for Cloud policy management — Azure Policy integration, regulatory compliance dashboards, initiative assignment, compliance assessment, exemption handling."
+      }
+    ],
+    "per_agent": {
+      "avon": [
+        {
+          "name": "defender-xdr-configuration",
+          "description": "Microsoft Defender XDR configuration — Defender for Cloud plan enablement, alert integration, unified incident queue setup, cross-product detection tuning."
+        },
+        {
+          "name": "workspace-rbac",
+          "description": "Workspace RBAC management — Log Analytics workspace access control, resource-context vs workspace-context RBAC, custom roles, least-privilege enforcement."
+        },
+        {
+          "name": "diagnostic-settings",
+          "description": "Azure diagnostic settings — configure log and metric collection, route to Log Analytics workspace, verify data ingestion, troubleshoot collection gaps."
+        }
+      ],
+      "stringer": [
+        {
+          "name": "defender-for-cloud-policies",
+          "description": "Advanced policy management — custom policy definitions, initiative design, policy-as-code workflows, compliance framework mapping (CIS, NIST, PCI-DSS)."
+        }
+      ],
+      "dangelo": [
+        {
+          "name": "cloud-security-posture",
+          "description": "CSPM assessment execution — Secure Score deep-dive, recommendation prioritization, posture trend analysis, subscription baseline comparison."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "persona": "threat-hunting",
+  "version": "1.0.0",
+  "description": "Skills for hypothesis-driven threat hunting, OSINT research, and hunt reporting",
+  "skills": {
+    "shared": [
+      {
+        "name": "threat-hunting-foundations",
+        "description": "Hypothesis-driven threat hunting — formulate hypotheses from threat intelligence, map to MITRE ATT&CK, design hunt queries, document findings and detection gaps."
+      },
+      {
+        "name": "cross-workspace-queries",
+        "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions, ADX proxy queries, multi-tenant hunting, performance optimization."
+      }
+    ],
+    "per_agent": {
+      "omar": [
+        {
+          "name": "ueba-patterns",
+          "description": "User and Entity Behavior Analytics patterns — anomaly detection baselines, peer group analysis, impossible travel, unusual resource access, privilege escalation sequences."
+        },
+        {
+          "name": "detection-tuning",
+          "description": "Hunt-to-detection pipeline — translate hunt findings into detection recommendations, assess detection feasibility, prioritize by adversary relevance."
+        }
+      ],
+      "slim-charles": [
+        {
+          "name": "defender-xdr-hunting",
+          "description": "Microsoft Defender XDR advanced hunting — DeviceEvents, EmailEvents, IdentityLogonEvents, CloudAppEvents, cross-domain correlation, custom detection rules."
+        },
+        {
+          "name": "ueba-patterns",
+          "description": "UEBA hunting queries — behavioral anomaly detection, peer group deviation, temporal pattern analysis, entity risk scoring."
+        },
+        {
+          "name": "entra-signin-analysis",
+          "description": "Entra ID sign-in log analysis — sign-in pattern hunting, impossible travel detection, conditional access bypass identification, risky sign-in correlation."
+        }
+      ],
+      "bubbles": [
+        {
+          "name": "entra-signin-analysis",
+          "description": "Identity-focused OSINT enrichment — correlate external threat intel with Entra sign-in patterns, risky user context, compromised credential feeds."
+        }
+      ],
+      "rhonda": [
+        {
+          "name": "detection-tuning",
+          "description": "Hunt findings reporting — document detection gaps, quantify risk from hunt findings, track recommendation implementation status."
+        }
+      ]
+    }
+  }
+}

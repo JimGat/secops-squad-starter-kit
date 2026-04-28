@@ -1,0 +1,55 @@
+{
+  "persona": "incident-response",
+  "version": "1.0.0",
+  "description": "Skills for structured incident response — triage, forensics, communications, and threat intelligence",
+  "skills": {
+    "shared": [
+      {
+        "name": "incident-investigation",
+        "description": "Core incident investigation methodology — triage, scoping, evidence collection, timeline reconstruction, and documentation. Used by all IR team members."
+      },
+      {
+        "name": "cross-workspace-queries",
+        "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions for multi-workspace evidence collection during incidents."
+      }
+    ],
+    "per_agent": {
+      "rawls": [
+        {
+          "name": "malware-containment",
+          "description": "Malware containment procedures — endpoint isolation, network quarantine, process termination, persistence removal, clean-state verification."
+        },
+        {
+          "name": "microsoft-graph-security",
+          "description": "Microsoft Graph Security API — unified alert management, incident correlation, automated response actions, cross-product security orchestration."
+        }
+      ],
+      "sydnor": [
+        {
+          "name": "malware-containment",
+          "description": "Forensic malware analysis — artifact extraction, payload analysis, persistence mechanism identification, IOC extraction from samples."
+        },
+        {
+          "name": "data-exfiltration-response",
+          "description": "Data exfiltration investigation — identify accessed data, determine exfiltration method and volume, assess regulatory impact, preserve evidence for legal proceedings."
+        }
+      ],
+      "beadie": [
+        {
+          "name": "microsoft-graph-security",
+          "description": "Security incident reporting via Graph API — incident status tracking, automated stakeholder notification, compliance reporting data extraction."
+        }
+      ],
+      "prez": [
+        {
+          "name": "data-exfiltration-response",
+          "description": "Threat intelligence for data exfiltration — adversary exfiltration TTPs, known C2 infrastructure, dark web monitoring for stolen data, attribution support."
+        },
+        {
+          "name": "microsoft-graph-security",
+          "description": "Graph Security API for threat intelligence — IOC submission, alert correlation, threat indicator management, campaign tracking across Microsoft products."
+        }
+      ]
+    }
+  }
+}

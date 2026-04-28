@@ -37,3 +37,12 @@
 - Passes 56/57 of Carver's test suite (1 test has a test-side bug: query generator produces 756 chars, not 1000+)
 - Key design choice: where-assignment check scoped to where clause body only (not bleeding into subsequent operators)
 - Key design choice: let statement parser handles mid-line semicolons (`let x = 24h; Table | ...`)
+
+🟦 **Freamon Phase 2: KQL Skills Library Complete** (2026-04-28)
+- Authored 7 additional KQL skills, completing the full 10-skill library
+- New skills: cross-workspace-queries, adx-integration, defender-xdr-hunting, entra-signin-analysis, cloud-security-posture, detection-tuning, ueba-patterns
+- 45 KQL query templates across all 7 skills — all passing Carver's validator (45/45)
+- Total library: 10 skills, ~3,650 lines, ~100+ KQL queries with MITRE ATT&CK mappings
+- Key pattern: multi-line `let` statements require wrapping body in parentheses for validator compatibility: `let X = (Table | where ... | project ...);`
+- Covers: cross-workspace federation, ADX long-term retention, Defender XDR hunting, Entra ID sign-in analysis, cloud posture (Resource Graph + Defender for Cloud), detection tuning (baselining, exclusions, A/B testing), and UEBA behavioral analytics
+- All skills cross-reference each other in Related Skills sections, forming a cohesive learning path

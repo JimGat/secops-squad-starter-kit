@@ -1,0 +1,139 @@
+{
+  "persona": "full-soc",
+  "version": "1.0.0",
+  "description": "Complete SOC skill set — all skills across triage, investigation, detection, hunting, automation, and threat intelligence",
+  "skills": {
+    "shared": [
+      {
+        "name": "incident-investigation",
+        "description": "Core incident investigation methodology — triage, scoping, evidence collection, timeline reconstruction, and documentation."
+      },
+      {
+        "name": "teams-notification",
+        "description": "Send notifications to Microsoft Teams channels for incident updates, escalations, and shift communications."
+      },
+      {
+        "name": "mitre-attack-mapping",
+        "description": "Map detections and incidents to MITRE ATT&CK techniques — technique ID assignment, tactic coverage, sub-technique mapping."
+      },
+      {
+        "name": "cross-workspace-queries",
+        "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions, ADX proxy queries, multi-tenant operations."
+      }
+    ],
+    "per_agent": {
+      "bunny-colvin": [
+        {
+          "name": "ticket-create",
+          "description": "Incident ticket management — severity classification, assignment, SLA tracking, stakeholder notification, status updates."
+        },
+        {
+          "name": "teams-notification",
+          "description": "SOC-wide notifications — shift communications, incident escalation alerts, stakeholder updates."
+        }
+      ],
+      "bodie": [
+        {
+          "name": "phishing-response",
+          "description": "Automated phishing response playbook — email header analysis, URL/attachment detonation, mailbox search-and-purge, IOC extraction."
+        },
+        {
+          "name": "compromised-account",
+          "description": "Automated compromised account playbook — force password reset, revoke sessions, review sign-in logs, check MFA status."
+        }
+      ],
+      "poot": [
+        {
+          "name": "sentinel-enrichment-ip",
+          "description": "IP address enrichment — threat intelligence lookups, geo-location, ASN/ISP identification, reputation scoring."
+        },
+        {
+          "name": "sentinel-enrichment-user",
+          "description": "User entity enrichment — Entra ID profile, group membership, recent sign-in activity, risk score."
+        },
+        {
+          "name": "entra-signin-analysis",
+          "description": "Entra ID sign-in log analysis — sign-in pattern analysis, impossible travel detection, conditional access review."
+        }
+      ],
+      "carver": [
+        {
+          "name": "threat-hunting-foundations",
+          "description": "Hypothesis-driven threat hunting — formulate hypotheses, design hunt queries, document findings and detection gaps."
+        },
+        {
+          "name": "ueba-patterns",
+          "description": "User and Entity Behavior Analytics — anomaly detection baselines, peer group analysis, impossible travel, privilege escalation sequences."
+        },
+        {
+          "name": "defender-xdr-hunting",
+          "description": "Microsoft Defender XDR advanced hunting — DeviceEvents, EmailEvents, IdentityLogonEvents, cross-domain correlation."
+        }
+      ],
+      "herc": [
+        {
+          "name": "sentinel-analytics-rules",
+          "description": "Create, tune, and validate Microsoft Sentinel analytics rules — scheduled queries, NRT rules, entity mapping, false positive reduction."
+        },
+        {
+          "name": "scheduled-rule-pattern",
+          "description": "Sentinel scheduled analytics rule pattern — query interval, lookback window, alert grouping, severity classification."
+        },
+        {
+          "name": "nrt-rule-pattern",
+          "description": "Sentinel NRT analytics rule pattern — ingestion-time detection, event grouping, NRT-specific best practices."
+        },
+        {
+          "name": "detection-lifecycle",
+          "description": "Detection rule lifecycle management — draft, review, test, deploy, tune, retire."
+        },
+        {
+          "name": "detection-tuning",
+          "description": "Detection tuning — threshold adjustment, false positive reduction, allowlist management, query performance improvement."
+        }
+      ],
+      "cutty": [
+        {
+          "name": "phishing-response",
+          "description": "SOAR automation for phishing — automated email analysis, IOC extraction, mailbox remediation playbooks."
+        },
+        {
+          "name": "compromised-account",
+          "description": "SOAR automation for compromised accounts — automated session revocation, password reset, blast radius assessment."
+        },
+        {
+          "name": "microsoft-graph-security",
+          "description": "Microsoft Graph Security API automation — unified alert management, automated response actions, cross-product orchestration."
+        }
+      ],
+      "mcnulty": [
+        {
+          "name": "threat-hunting-foundations",
+          "description": "Hunt campaign planning — hypothesis development, scope definition, hunt execution coordination, findings-to-detection pipeline."
+        },
+        {
+          "name": "ueba-patterns",
+          "description": "UEBA hunting patterns — behavioral anomaly detection, peer group deviation, temporal pattern analysis."
+        },
+        {
+          "name": "defender-xdr-hunting",
+          "description": "Defender XDR hunt queries — cross-domain advanced hunting, custom detection rules, behavioral pattern searches."
+        }
+      ],
+      "lester": [
+        {
+          "name": "entra-signin-analysis",
+          "description": "Identity-focused threat intelligence — correlate external intel with Entra sign-in patterns, compromised credential feeds."
+        },
+        {
+          "name": "data-exfiltration-response",
+          "description": "Data exfiltration intelligence — adversary exfiltration TTPs, C2 infrastructure tracking, dark web monitoring context."
+        },
+        {
+          "name": "malware-containment",
+          "description": "Malware intelligence — sample analysis context, campaign attribution, IOC extraction from malware analysis."
+        }
+      ]
+    }
+  }
+}

@@ -26,3 +26,11 @@
 - Personas Guide created: explains persona model, SOC Analyst config, custom persona creation, and Phase 2 roadmap
 - All docs link to actual skill files in repo, no placeholders or broken references
 - Tone: professional, accurate, action-oriented — designed for first impression with real value in ≤ 15 minutes
+📌 **Phase 2: All 5 Persona Templates Built** (2026-04-28)
+- Created detection-engineering, threat-hunting, cloud-security, incident-response, and full-soc personas (25 files total)
+- Each persona has 5 files: team.md, routing.md, skills.json, ceremonies.md, README.md — matching soc-analyst format exactly
+- Wire character assignments: no overlap between personas or with the core project team (McNulty, Kima, Freamon, Herc, Sydnor, Carver, Scribe, Ralph)
+- Skill references aligned with Phase 2 skill names: mitre-attack-mapping, detection-lifecycle, scheduled-rule-pattern, nrt-rule-pattern, detection-tuning, entra-signin-analysis, cloud-security-posture, defender-for-cloud-policies, defender-xdr-configuration, workspace-rbac, diagnostic-settings, malware-containment, data-exfiltration-response, microsoft-graph-security
+- Full-SOC persona (8 agents) demonstrates cross-functional flow: intel → hunting → detection → triage → automation → lessons learned
+- Ceremonies are domain-specific and practical: detection review, threat model session, hunt kickoff/debrief, posture review, policy review, IR kickoff, containment review, lessons learned, daily standup, shift handoff, weekly retro
+- Architecture decision: personas are self-contained and installable — no cross-persona dependencies required

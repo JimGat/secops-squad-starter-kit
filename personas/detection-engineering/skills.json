@@ -1,0 +1,67 @@
+{
+  "persona": "detection-engineering",
+  "version": "1.0.0",
+  "description": "Skills for detection content development, KQL authoring, threat modeling, and QA validation",
+  "skills": {
+    "shared": [
+      {
+        "name": "mitre-attack-mapping",
+        "description": "Map detections to MITRE ATT&CK techniques — technique ID assignment, tactic coverage, sub-technique mapping, coverage gap visualization."
+      },
+      {
+        "name": "detection-lifecycle",
+        "description": "Detection rule lifecycle management — draft, review, test, deploy, tune, retire. Stage gates, ownership transitions, and documentation standards."
+      }
+    ],
+    "per_agent": {
+      "daniels": [
+        {
+          "name": "scheduled-rule-pattern",
+          "description": "Microsoft Sentinel scheduled analytics rule pattern — query interval, lookback window, alert grouping, entity mapping, severity classification, trigger thresholds."
+        },
+        {
+          "name": "nrt-rule-pattern",
+          "description": "Microsoft Sentinel near-real-time (NRT) analytics rule pattern — ingestion-time detection, event grouping, NRT-specific limitations and best practices."
+        },
+        {
+          "name": "sentinel-analytics-rules",
+          "description": "Create, tune, and validate Microsoft Sentinel analytics rules — scheduled queries, NRT rules, fusion rules, threshold calibration, entity mapping, false positive reduction."
+        }
+      ],
+      "lester": [
+        {
+          "name": "threat-hunting-foundations",
+          "description": "Hypothesis-driven detection development — formulate hypotheses from threat intel, design hunt-to-detection queries, validate detection logic against known-bad patterns."
+        },
+        {
+          "name": "cross-workspace-queries",
+          "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions, ADX proxy queries, performance optimization for detection rules spanning multiple sources."
+        },
+        {
+          "name": "detection-tuning",
+          "description": "Detection rule tuning and optimization — threshold adjustment, false positive reduction, allowlist management, query performance improvement, noise reduction."
+        }
+      ],
+      "prop-joe": [
+        {
+          "name": "mitre-attack-mapping",
+          "description": "Deep MITRE ATT&CK mapping — technique coverage analysis, detection gap identification, adversary emulation planning, sub-technique granularity assessment."
+        },
+        {
+          "name": "detection-lifecycle",
+          "description": "Threat-informed detection prioritization — map threat landscape to detection backlog, prioritize based on adversary relevance and organizational risk."
+        }
+      ],
+      "landsman": [
+        {
+          "name": "detection-tuning",
+          "description": "Detection QA validation — false positive rate measurement, regression testing against historical data, entity mapping verification, production readiness scoring."
+        },
+        {
+          "name": "sentinel-analytics-rules",
+          "description": "Analytics rule validation — syntax checking, logic verification, threshold testing, entity mapping confirmation, alert grouping validation."
+        }
+      ]
+    }
+  }
+}
