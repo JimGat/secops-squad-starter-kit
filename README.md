@@ -1,6 +1,6 @@
 # secops-squad
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Phase 1 Release](https://img.shields.io/badge/Phase-1%20GA-blueviolet)](docs/getting-started.md)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Phase 2 Release](https://img.shields.io/badge/Phase-2%20Active-brightgreen)](docs/getting-started.md)
 
 **AI-powered SecOps team framework for the Microsoft Security stack.**
 
@@ -18,25 +18,28 @@ This walks you through persona selection, Azure workspace configuration, and dep
 
 ## What's in the Box
 
-### 📦 Current Phase 1 Inventory
+### 📦 Current Phase 2 Inventory
 
 ```
 secops-squad/
 ├── personas/
-│   └── soc-analyst/          — Live, pre-built team configuration
+│   ├── soc-analyst/              — Live (Phase 1)
+│   ├── detection-engineering/    — Live (Phase 2)
+│   ├── threat-hunting/           — Live (Phase 2)
+│   ├── cloud-security/           — Live (Phase 2)
+│   ├── incident-response/        — Live (Phase 2)
+│   └── full-soc/                 — Live (Phase 2)
 ├── skills/
-│   ├── kql/
-│   │   ├── threat-hunting-foundations.md
-│   │   ├── sentinel-analytics-rules.md
-│   │   └── incident-investigation.md
-│   └── soar/
-│       ├── phishing-response.md
-│       ├── compromised-account.md
-│       └── teams-notification.md
+│   ├── kql/                      — 10 hunting & detection skills
+│   ├── soar/                     — 10 automation & playbook skills
+│   ├── detection/                — 8 detection engineering skills
+│   ├── log-analytics/            — Coming Phase 3
+│   ├── adx/                      — Coming Phase 3
+│   └── msft-security/            — Coming Phase 3
 ├── templates/
-│   ├── kql/                  — Hunting and detection query library
-│   └── bicep/                — Sentinel workspace scaffolds
-└── cli/                      — Command-line tools
+│   ├── kql/                      — Hunting and detection query library
+│   └── bicep/                    — Sentinel workspace scaffolds
+└── cli/                          — Command-line tools
 ```
 
 ### 🎯 Personas
@@ -44,27 +47,51 @@ secops-squad/
 | Persona | Status | Focus | Load With |
 |---------|--------|-------|-----------|
 | **SOC Analyst** | ✅ Live | Triage, investigation, incident response | `secops-squad init` → Select SOC Analyst |
-| **Detection Engineering** | 📋 Coming | Rule authoring, KQL, MITRE ATT&CK mapping | Phase 2 |
-| **Threat Hunting** | 📋 Coming | Proactive hunting, hypothesis-driven investigations | Phase 2 |
-| **Cloud Security** | 📋 Coming | Cloud posture, Defender for Cloud, identity | Phase 2 |
-| **Incident Response** | 📋 Coming | IR procedures, forensics, containment | Phase 2 |
-| **Full SOC** | 📋 Coming | All skills (for teams wearing every hat) | Phase 2 |
+| **Detection Engineering** | ✅ Live | Rule authoring, KQL, MITRE ATT&CK mapping | `secops-squad init` → Select Detection Engineering |
+| **Threat Hunting** | ✅ Live | Proactive hunting, hypothesis-driven investigations | `secops-squad init` → Select Threat Hunting |
+| **Cloud Security** | ✅ Live | Cloud posture, Defender for Cloud, identity | `secops-squad init` → Select Cloud Security |
+| **Incident Response** | ✅ Live | IR procedures, forensics, containment | `secops-squad init` → Select Incident Response |
+| **Full SOC** | ✅ Live | All skills (for teams wearing every hat) | `secops-squad init` → Select Full SOC |
 
 See [Personas Guide](docs/personas-guide.md) for details on switching personas and building custom ones.
 
 ### 🛠 Skills Library
 
-Currently shipped with **6 core skills** across **2 categories**:
+Currently shipped with **28 core skills** across **3 categories**:
 
-#### KQL Hunting & Detection (3 skills)
-- [**Threat Hunting Foundations**](skills/kql/threat-hunting-foundations.md) — Hypothesis-driven hunting methodology, baseline building, entity pivoting
+#### KQL Hunting & Detection (10 skills)
+- [**Threat Hunting Foundations**](skills/kql/threat-hunting-foundations.md) — Hypothesis-driven hunting, baseline building, entity pivoting
 - [**Sentinel Analytics Rules**](skills/kql/sentinel-analytics-rules.md) — Scheduled/NRT rule patterns, entity mapping, multi-stage detection
-- [**Incident Investigation**](skills/kql/incident-investigation.md) — Reactive triage, pivot chains, lateral movement tracing, impact assessment
+- [**Entra Sign-In Analysis**](skills/kql/entra-signin-analysis.md) — Authentication anomalies, risk detection, account compromise
+- [**Incident Investigation**](skills/kql/incident-investigation.md) — Reactive triage, pivot chains, lateral movement tracing
+- [**Cloud Security Posture**](skills/kql/cloud-security-posture.md) — Cloud config audit, compliance, identity risk
+- [**Detection Tuning**](skills/kql/detection-tuning.md) — Threshold optimization, false positive reduction
+- [**Defender XDR Advanced Hunting**](skills/kql/defender-xdr-hunting.md) — Cross-product hunting across Defender suite
+- [**Cross-Workspace Queries**](skills/kql/cross-workspace-queries.md) — Multi-workspace, multi-tenant investigations
+- [**ADX Integration**](skills/kql/adx-integration.md) — Long-term retention and time-series analytics
+- [**UEBA Patterns**](skills/kql/ueba-patterns.md) — User behavior analytics, anomaly detection, insider threats
 
-#### SOAR Automation (3 skills)
-- [**Phishing Incident Auto-Triage & Remediation**](skills/soar/phishing-response.md) — MDO enrichment, verdict, message removal, user education
-- [**Compromised Account Auto-Response**](skills/soar/compromised-account.md) — Entra ID containment, session revocation, MFA enforcement, risk sign-offs
-- [**Sentinel Incident Teams Notification**](skills/soar/teams-notification.md) — Rich Adaptive Cards to Teams, severity routing, quick actions
+#### SOAR Automation (10 skills)
+- [**Sentinel Incident Teams Notification**](skills/soar/teams-notification.md) — Adaptive Card alerts, severity routing, quick actions
+- [**Sentinel Enrichment — User**](skills/soar/sentinel-enrichment-user.md) — Auto-enrich with Entra ID context
+- [**Sentinel Enrichment — IP**](skills/soar/sentinel-enrichment-ip.md) — Threat intelligence enrichment
+- [**Phishing Incident Auto-Response**](skills/soar/phishing-response.md) — MDO triage, verdict, message removal
+- [**Compromised Account Response**](skills/soar/compromised-account.md) — Entra ID containment, session revocation, MFA enforcement
+- [**L1 Auto-Triage**](skills/soar/auto-triage.md) — Evidence-based incident routing
+- [**Malware Containment**](skills/soar/malware-containment.md) — Endpoint isolation, evidence collection
+- [**Data Exfiltration Response**](skills/soar/data-exfiltration-response.md) — DLP enrichment, content blocking, user notification
+- [**Threat Intelligence Ingest**](skills/soar/threat-intel-ingest.md) — TAXII/STIX to Sentinel TI ingestion
+- [**ITSM Ticket Creation**](skills/soar/ticket-create.md) — ServiceNow/JIRA bidirectional sync
+
+#### Detection Engineering (8 skills)
+- [**MITRE ATT&CK Mapping**](skills/detection/mitre-attack-mapping.md) — Technique alignment, coverage analysis
+- [**Detection Lifecycle**](skills/detection/detection-lifecycle.md) — Design, test, deploy, tune workflow
+- [**Scheduled Analytics Rule Pattern**](skills/detection/scheduled-rule-pattern.md) — Core pattern with production examples
+- [**NRT Rule Pattern**](skills/detection/nrt-rule-pattern.md) — Minute-level real-time detection
+- [**Threat Model Template**](skills/detection/threat-model-template.md) — Adversary-centric detection design
+- [**Fusion Rule Context**](skills/detection/fusion-rule-context.md) — ML-based multi-stage attack detection
+- [**Watchlist-Driven Detection**](skills/detection/watchlist-driven-detection.md) — Reference data integration and automation
+- [**Custom KQL Function Authoring**](skills/detection/custom-kql-function.md) — Reusable function libraries and patterns
 
 See [Skills Catalog](docs/skills-catalog.md) for full inventory with difficulty levels and MITRE ATT&CK mappings.
 
@@ -118,14 +145,28 @@ secops-squad playbook      SOAR playbook tools (scaffold, deploy) — Phase 2
 - [x] Getting Started guide with real workflows
 - [x] Skills Catalog and Personas Guide
 
-### Phase 2 — Expansion (Coming Next)
-- [ ] Additional personas (Detection Engineering, Threat Hunting, Cloud Security, Incident Response, Full SOC)
+### Phase 2 — Expansion ✅ ACTIVE
+- [x] Additional personas (Detection Engineering, Threat Hunting, Cloud Security, Incident Response, Full SOC)
+- [x] Extended KQL skills (10 total, +7 new)
+- [x] Extended SOAR skills (10 total, +7 new)
+- [x] Detection Engineering skills (8 new)
+- [x] Updated Skills Catalog (28 shipped skills)
+- [x] Updated Personas Guide (6 active personas)
+- [x] Updated README (Phase 2 inventory)
 - [ ] KQL validator library
 - [ ] SOAR playbook deployment engine
 - [ ] Graph Security API integration
 - [ ] Azure auth helper and workspace auto-discovery
 - [ ] Template engine for Bicep deployments
 - [ ] CLI interactive mode
+
+### Phase 3 — Advanced (Planned)
+- [ ] Log Analytics skills (8 planned)
+- [ ] Microsoft Security Products skills (8 planned)
+- [ ] Azure Data Explorer skills (8 planned)
+- [ ] Advanced automation workflows
+- [ ] Cross-workspace federation patterns
+- [ ] Compliance and audit reporting
 
 ## Getting Started
 

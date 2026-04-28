@@ -34,3 +34,17 @@
 - Full-SOC persona (8 agents) demonstrates cross-functional flow: intel → hunting → detection → triage → automation → lessons learned
 - Ceremonies are domain-specific and practical: detection review, threat model session, hunt kickoff/debrief, posture review, policy review, IR kickoff, containment review, lessons learned, daily standup, shift handoff, weekly retro
 - Architecture decision: personas are self-contained and installable — no cross-persona dependencies required
+
+📌 **Phase 2: Documentation Updated — Skills Catalog, README, Personas Guide** (2026-04-28)
+- Skills Catalog (docs/skills-catalog.md) updated with all 28 Phase 2 skills: 10 KQL, 10 SOAR, 8 Detection Engineering
+- Each skill documented with: Name, Difficulty, MITRE ATT&CK tags, Products, Brief Description, File Link
+- Organized by category with summary table showing Phase status (Active, Coming Soon, Phase 3)
+- Learning paths added: New to Threat Hunting, New to SOAR, Building a Detection Rule, New to Detection Engineering
+- README.md updated: Phase badge changed to "Phase 2 Active", skills count (6→28), personas count (1→6)
+- "What's in the Box" section rewritten with full inventory reflecting all 6 personas and skill counts
+- Project Status section updated: Phase 1 ✅ SHIPPED, Phase 2 ✅ ACTIVE (with completed items checked), Phase 3 planned
+- Personas Guide (docs/personas-guide.md) completely rewritten with all 6 personas documented
+- Each persona includes: Status, Best For, Team Composition (with agent names, roles, focus), Key Skills, Typical Workflow, When to Use, How to Load
+- Personas documented: SOC Analyst, Detection Engineering, Threat Hunting, Cloud Security, Incident Response, Full SOC
+- All documentation: accurate (only reference things that exist), professional tone, GFM markdown, no broken references
+- Critical: All persona agents use actual Wire character names (Bunk, Kima, Freamon, Daniels, Omar, etc.); no duplicates across personas

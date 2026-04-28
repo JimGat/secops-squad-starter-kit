@@ -17,33 +17,39 @@ When you run `secops-squad init` and select a persona, the framework loads all o
 
 ---
 
-## Available Personas
+## All 6 Personas (Phase 2 Active)
 
-### Phase 1: Live
+### Phase 2: Live
 
-#### SOC Analyst ✅ LIVE
-| Property | Value |
-|----------|-------|
-| **Status** | Available now |
-| **Best for** | Alert triage, incident response, day-to-day SOC operations |
-| **Loaded Skills** | All 6 Phase 1 skills (3 KQL, 3 SOAR) |
-| **Loaded Templates** | KQL hunting queries, SOAR playbook scaffolds |
-| **Team Size** | 1+ analysts (works solo or in a team) |
-| **Time to Productive** | ~10 minutes |
+#### 1. SOC Analyst ✅ LIVE (Phase 1)
 
-**What you get:**
-- **Threat Hunting Foundations** (KQL) — Proactive hypothesis-driven hunts
-- **Sentinel Analytics Rules** (KQL) — Deploy automated detections
-- **Incident Investigation** (KQL) — Reactive triage and forensics
-- **Phishing Response** (SOAR) — Auto-remediate phishing incidents
-- **Compromised Account Response** (SOAR) — Contain compromised identities
-- **Teams Notification** (SOAR) — Rich incident alerts to Teams
+**Status:** Available now | **Best for:** Alert triage, incident response, day-to-day SOC operations
 
-**Typical workflow:**
+**Team (4 agents):**
+- **Bunk** (L1 Triage Analyst) — Alert triage, known-good/known-bad, playbook-driven response
+- **Kima** (L2 Escalation Analyst) — Medium-severity investigation, entity enrichment, correlation
+- **Freamon** (L3 Senior Analyst) — Advanced hunting, KQL engineering, cross-domain correlation
+- **Daniels** (Shift Lead) — Incident assignment, workload balancing, stakeholder comms
+
+**Key Skills:** All 6 Phase 1 skills + incident-investigation, teams-notification
+
+**Loaded Skills:**
+- Bunk: phishing-response, compromised-account
+- Kima: sentinel-analytics-rules, sentinel-enrichment-ip, sentinel-enrichment-user
+- Freamon: threat-hunting-foundations, cross-workspace-queries, ueba-patterns, defender-xdr-hunting
+- Daniels: teams-notification, ticket-create
+
+**Typical Workflow:**
 1. Incident fires → Teams notification lands
-2. Analyst opens incident, runs investigation queries
-3. SOAR playbook auto-remediates (phishing removal, account lockdown)
-4. Analyst approves containment or manually intervenes
+2. Bunk performs L1 triage, runs phishing/compromised account playbooks
+3. Kima enriches entities with IP/user context, decides escalation
+4. Freamon runs advanced hunts if escalated, builds investigation chains
+5. Daniels coordinates with stakeholders and shifts
+
+**When to Use:**
+- You're running a SOC with tiered analyst operations (L1/L2/L3)
+- You need alert-driven incident response with clear escalation paths
+- You want playbook-driven automation for common incident types
 
 **Load this persona:**
 ```bash
@@ -51,73 +57,470 @@ secops-squad init
 # Choose: SOC Analyst
 ```
 
----
-
-### Phase 2: Planned
-
-#### Detection Engineering (Coming Phase 2)
-**Best for:** Writing, tuning, and maintaining detection rules.
-
-**Will include:**
-- Advanced Sentinel Analytics Rules patterns
-- KQL optimization for performance
-- Detection rule tuning and false positive reduction
-- MITRE ATT&CK mapping governance
-- Analytics rule versioning and lifecycle management
-- Threat model ceremony for new detections
-- Carver's QA validation patterns
+**File:** [`personas/soc-analyst/`](../personas/soc-analyst/)
 
 ---
 
-#### Threat Hunting (Coming Phase 2)
-**Best for:** Proactive, hypothesis-driven threat hunts across large data sets.
+#### 2. Detection Engineering ✅ LIVE (Phase 2)
 
-**Will include:**
-- Extended threat hunting methodology
-- Hypothesis library (campaigns, persistence, lateral movement patterns)
-- Azure Data Explorer (ADX) for long-term analytics
-- Behavioral baselining at scale
-- Hunt documentation and reporting
-- Campaign tracking and retro-hunting
+**Status:** Available now | **Best for:** Writing, tuning, and maintaining detection rules
 
----
+**Team (4 agents):**
+- **Daniels** (Detection Engineer) — Rule design, detection logic, MITRE mapping
+- **Lester** (KQL Author) — Query authoring, performance optimization, correlations
+- **Prop Joe** (Threat Modeler) — Technique mapping, coverage gaps, evasion assessment
+- **Landsman** (QA Validator) — Rule validation, false positive testing, production sign-off
 
-#### Cloud Security (Coming Phase 2)
-**Best for:** Cloud posture management, Defender for Cloud, identity protection.
+**Key Skills:** mitre-attack-mapping, detection-lifecycle, scheduled-rule-pattern, nrt-rule-pattern, threat-model-template, fusion-rule-context, watchlist-driven-detection, custom-kql-function
 
-**Will include:**
-- Defender for Cloud governance patterns
-- Cloud identity and compliance queries
-- CSPM rule tuning
-- Entra ID risk investigation
-- Azure resource configuration audit
-- Compliance mapping (CIS, PCI, SOC2)
+**Typical Workflow:**
+1. Threat model session with Prop Joe — Define adversary objectives, detection opportunities
+2. Lester authors KQL detection query, Daniels reviews design
+3. Landsman validates against known threats, measures false positives
+4. Rule deployed to Sentinel; gaps feed threat hunting backlog
 
----
+**When to Use:**
+- You're building or maintaining Sentinel analytics rules
+- You want structured threat modeling before writing detection logic
+- You need KQL code review and quality gates before production
 
-#### Incident Response (Coming Phase 2)
-**Best for:** Formal IR procedures, forensic analysis, containment, recovery.
+**Load this persona:**
+```bash
+secops-squad init
+# Choose: Detection Engineering
+```
 
-**Will include:**
-- IR procedures and checklists
-- Evidence collection workflows
-- Forensic analysis patterns
-- Containment playbooks
-- Eradication and recovery checklists
-- Post-incident reporting
+**File:** [`personas/detection-engineering/`](../personas/detection-engineering/)
 
 ---
 
-#### Full SOC (Coming Phase 2)
-**Best for:** Small teams that wear every hat.
+#### 3. Threat Hunting ✅ LIVE (Phase 2)
 
-**Will include:**
-- All skills from all personas
-- Cross-functional routing (alerts to right specialists)
-- Unified reporting and metrics
-- Shared ceremonies (all-hands threat models, SOC standups)
+**Status:** Available now | **Best for:** Proactive, hypothesis-driven threat hunts across large data sets
+
+**Team (4 agents):**
+- **Omar** (Hunt Lead) — Hypothesis development, hunt planning, findings triage, recommendations
+- **Slim Charles** (KQL Hunter) — Hunt query authoring, cross-domain correlation, anomaly detection
+- **Bubbles** (OSINT Researcher) — Threat intelligence, adversary profiling, IOC collection, TTP tracking
+- **Rhonda** (Reporting Analyst) — Hunt reports, evidence documentation, executive briefings
+
+**Key Skills:** threat-hunting-foundations, cross-workspace-queries, ueba-patterns, defender-xdr-hunting, detection-tuning, entra-signin-analysis, cloud-security-posture, adx-integration
+
+**Typical Workflow:**
+1. Omar defines hunt hypothesis (e.g., "Look for persistence via scheduled tasks in critical systems")
+2. Bubbles researches known adversary tactics, collects IOCs
+3. Slim Charles authors hunt queries, finds suspicious events
+4. Rhonda documents findings, recommends new detections to Engineering team
+
+**When to Use:**
+- You're building a proactive threat hunting program
+- You need structured hypothesis-driven hunts with documented outcomes
+- You want hunt findings to feed your detection engineering pipeline
+
+**Load this persona:**
+```bash
+secops-squad init
+# Choose: Threat Hunting
+```
+
+**File:** [`personas/threat-hunting/`](../personas/threat-hunting/)
 
 ---
+
+#### 4. Cloud Security ✅ LIVE (Phase 2)
+
+**Status:** Available now | **Best for:** Cloud posture, Defender for Cloud, identity and policy
+
+**Team (3 agents):**
+- **Avon** (Cloud Security Engineer) — Remediation, Defender for Cloud config, RBAC hardening
+- **Stringer** (Policy Analyst) — Azure Policy, compliance frameworks, exemption management
+- **D'Angelo** (Posture Reviewer) — CSPM assessments, Secure Score, trend analysis
+
+**Key Skills:** cloud-security-posture, defender-for-cloud-policies, workspace-rbac, diagnostic-settings, entra-signin-analysis
+
+**Typical Workflow:**
+1. D'Angelo runs monthly CSPM assessment with Defender for Cloud
+2. Identifies misconfigurations (unencrypted storage, open NSGs, weak RBAC)
+3. Stringer creates/updates Azure Policy rules for enforcement
+4. Avon remediates high-priority findings (applies patches, hardens RBAC)
+5. Tracks remediation and Secure Score trends over time
+
+**When to Use:**
+- You're managing cloud security posture across Azure subscriptions
+- You need structured policy management with compliance alignment
+- You want regular posture assessments with tracked remediation
+
+**Load this persona:**
+```bash
+secops-squad init
+# Choose: Cloud Security
+```
+
+**File:** [`personas/cloud-security/`](../personas/cloud-security/)
+
+---
+
+#### 5. Incident Response ✅ LIVE (Phase 2)
+
+**Status:** Available now | **Best for:** Formal IR procedures, forensic analysis, containment, recovery
+
+**Team (4 agents):**
+- **Rawls** (IR Lead) — Incident command, containment decisions, escalation, post-incident review
+- **Sydnor** (Forensic Analyst) — Evidence collection, timeline reconstruction, impact assessment
+- **Beadie** (Comms Coordinator) — Stakeholder updates, executive briefings, regulatory notification
+- **Prez** (Threat Intel) — IOC research, adversary attribution, campaign analysis
+
+**Key Skills:** incident-investigation, cross-workspace-queries, malware-containment, data-exfiltration-response, threat-intel-ingest, detection-tuning
+
+**Typical Workflow:**
+1. Major incident declared — Rawls convenes IR team
+2. Sydnor begins evidence collection (memory dumps, disk images, logs)
+3. Beadie notifies stakeholders, tracks regulatory/legal requirements
+4. Prez researches adversary TTPs, collects related IOCs
+5. Rawls coordinates containment decisions, tracks remediation
+6. Post-incident: Lessons learned feed detection and process improvements
+
+**When to Use:**
+- You're building or formalizing an IR capability
+- You need structured IR with clear command authority and role separation
+- You want forensics, threat intel, and stakeholder comms coordinated during incidents
+
+**Load this persona:**
+```bash
+secops-squad init
+# Choose: Incident Response
+```
+
+**File:** [`personas/incident-response/`](../personas/incident-response/)
+
+---
+
+#### 6. Full SOC ✅ LIVE (Phase 2)
+
+**Status:** Available now | **Best for:** Complete, mature SOC with all functions (triage, detection, hunting, automation, IR)
+
+**Team (8 agents):**
+- **Bunny Colvin** (SOC Manager) — Strategy, shift management, metrics, stakeholder relations
+- **Bodie** (L1 Analyst) — Alert triage, playbook-driven response, queue hygiene
+- **Poot** (L2 Analyst) — Medium-severity investigation, entity enrichment, escalation
+- **Carver** (L3 Analyst) — Advanced investigation, cross-domain correlation, APT hunting
+- **Ellis** (Detection Engineer) — Rule authoring, MITRE mapping, detection lifecycle
+- **Snoop** (Hunt Lead) — Hypothesis development, proactive threat hunting, findings triage
+- **Prop Joe** (Threat Intel) — Intelligence gathering, adversary profiling, IOC collection
+- **Lester** (SOAR Orchestrator) — Playbook automation, response workflows, orchestration
+
+**Key Skills:** All 28 Phase 2 skills (10 KQL + 10 SOAR + 8 Detection)
+
+**Typical Workflow:**
+1. Incident fires → Bodie performs L1 triage
+2. If playbook-driven (phishing, compromised account) → Lester runs automation
+3. If escalated to L2 → Poot enriches entities, correlates signals
+4. If complex → Carver runs advanced hunt or Snoop's team investigates
+5. Ellis ensures new detections close gaps; Prop Joe tracks adversary changes
+6. Bunny Colvin coordinates daily standups, shift handoffs, metrics reviews
+
+**When to Use:**
+- You're building a mature SOC covering all functions
+- You want a single team configuration for triage + detection + hunting + IR
+- You need cross-functional coordination (hunt findings → rules → automation)
+
+**Load this persona:**
+```bash
+secops-squad init
+# Choose: Full SOC
+```
+
+**File:** [`personas/full-soc/`](../personas/full-soc/)
+
+---
+
+## How to Switch Personas
+
+### Check Current Persona
+```bash
+secops-squad status
+```
+
+Output shows:
+```
+secops-squad Configuration
+─────────────────────────────
+Team Name:    my-security-team
+Persona:      soc-analyst
+```
+
+### Switch Personas (Phase 2)
+```bash
+secops-squad persona
+```
+
+Interactive prompt:
+```
+? Select a new persona:
+  ❯ SOC Analyst (Phase 1)
+    Detection Engineering (Phase 2)
+    Threat Hunting (Phase 2)
+    Cloud Security (Phase 2)
+    Incident Response (Phase 2)
+    Full SOC (Phase 2)
+    Custom Persona...
+```
+
+### Manual Persona Switch (Now)
+Edit `secops-squad.config.json`:
+
+```json
+{
+  "persona": "detection-engineering"
+}
+```
+
+Then run:
+```bash
+secops-squad status  # Reload and verify
+```
+
+---
+
+## Persona File Structure
+
+Each persona lives in `personas/<name>/`:
+
+```
+personas/detection-engineering/
+├── README.md                — Persona overview
+├── team.md                  — Team composition and AI roles
+├── routing.md               — Issue routing rules
+├── ceremonies.md            — Team rituals
+├── skills.json              — List of loaded skills
+└── .gitkeep
+```
+
+### What's in Each File?
+
+#### `team.md`
+Lists the AI agents assigned to this persona and their responsibilities:
+
+```markdown
+# Detection Engineering Team
+
+## Agents
+
+- **Daniels** (Detection Engineer) — Rule design, detection logic
+- **Lester** (KQL Author) — Query authoring, performance optimization
+```
+
+#### `routing.md`
+Defines which issues/alerts go to which agent:
+
+```markdown
+# Routing Rules
+
+- `detection-request` issues → Daniels + Lester
+- `threat-model` issues → Prop Joe
+- `kql-review` issues → Lester
+- `qa-review` issues → Landsman
+```
+
+#### `ceremonies.md`
+Team rituals and governance:
+
+```markdown
+# Ceremonies
+
+## Threat Model Session
+When: Before each new detection rule
+Who: Prop Joe + Daniels
+Duration: 30 min
+```
+
+#### `skills.json`
+Loaded skills for this persona:
+
+```json
+{
+  "loaded": [
+    "mitre-attack-mapping",
+    "detection-lifecycle",
+    "scheduled-rule-pattern",
+    "nrt-rule-pattern"
+  ]
+}
+```
+
+---
+
+## Creating a Custom Persona
+
+### Step 1: Create the Persona Directory
+
+```bash
+mkdir -p personas/my-custom-persona
+```
+
+### Step 2: Create Persona Files
+
+Create `personas/my-custom-persona/team.md`:
+
+```markdown
+# My Custom Persona
+
+A specialized team for [your use case].
+
+## Team Composition
+
+- **Freamon** (KQL Engineer)
+- **Herc** (Automation)
+```
+
+Create `personas/my-custom-persona/routing.md`:
+
+```markdown
+# Routing Rules
+
+- Custom issues → Team leads
+```
+
+Create `personas/my-custom-persona/ceremonies.md`:
+
+```markdown
+# Ceremonies
+
+## Weekly Sync
+- When: Monday 9am
+- Duration: 1 hour
+```
+
+Create `personas/my-custom-persona/skills.json`:
+
+```json
+{
+  "loaded": [
+    "threat-hunting-foundations",
+    "sentinel-analytics-rules",
+    "phishing-response"
+  ]
+}
+```
+
+### Step 3: Point to Your Persona
+
+Edit `secops-squad.config.json`:
+
+```json
+{
+  "persona": "my-custom-persona"
+}
+```
+
+### Step 4: Verify
+
+```bash
+secops-squad status
+```
+
+Should show:
+```
+Persona:      my-custom-persona
+```
+
+---
+
+## Persona Governance
+
+### Adding a New Skill to Your Persona
+
+Edit `personas/<name>/skills.json`:
+
+```json
+{
+  "loaded": [
+    "threat-hunting-foundations",
+    "sentinel-analytics-rules",
+    "my-new-custom-skill"
+  ]
+}
+```
+
+### Modifying Team Composition
+
+Edit `personas/<name>/team.md` to add/remove agents and change responsibilities.
+
+### Updating Routing Rules
+
+Edit `personas/<name>/routing.md` to change how issues flow to team members.
+
+### Adding Ceremonies
+
+Edit `personas/<name>/ceremonies.md` to define rituals, decision gates, and review processes.
+
+---
+
+## Persona vs Custom Skill
+
+| | Persona | Skill |
+|---|---------|-------|
+| **What is it?** | Full team config (agents, routing, ceremonies, skills) | Individual knowledge pack (KQL hunt, SOAR playbook, detection pattern) |
+| **When to use** | Define a complete SOC role/workflow | Add a single pattern or playbook |
+| **Loaded how?** | `secops-squad init` or manual switch | Auto-included via persona, or `secops-squad skill <name>` |
+| **Where does it live?** | `personas/<name>/` | `skills/<category>/<name>.md` |
+| **Who creates it?** | Org/team admins | Any contributor |
+
+---
+
+## Contributing a Persona
+
+Have a persona that works well for your team? Contribute it:
+
+1. Create the full persona directory structure (team.md, routing.md, ceremonies.md, skills.json)
+2. Test it locally with `secops-squad status`
+3. Open a PR to `personas/` with the label `persona-request`
+4. The squad reviews and merges
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full flow.
+
+---
+
+## Phase 1 vs Phase 2 vs Phase 3
+
+| Capability | Phase 1 | Phase 2 | Phase 3 |
+|-----------|---------|---------|---------|
+| **Personas available** | SOC Analyst only | All 6 (+ custom) | All 6 + specialized |
+| **Persona switching** | Manual (edit config) | Via CLI | Full automation |
+| **Custom personas** | Yes (create by hand) | Yes (create by hand) | Via CLI scaffold |
+| **Ceremony support** | Documented in team.md | Documented in team.md | Automated + tracked |
+| **Dynamic skill loading** | Manual (edit config) | Manual (edit config) | Via CLI |
+
+---
+
+## FAQ
+
+**Q: Can I have multiple personas loaded at once?**
+
+A: Not yet. Phase 2 is single-persona. Phase 3 will support multi-persona teams with cross-functional skill loading.
+
+**Q: I want Detection Engineering + Threat Hunting skills in SOC Analyst.**
+
+A: For now, edit `personas/soc-analyst/skills.json` and add the skills manually. In Phase 3, use `secops-squad skill <name>` to add ad-hoc skills.
+
+**Q: Can I modify a built-in persona?**
+
+A: Yes! Create a copy: `cp -r personas/soc-analyst personas/my-soc-variant`, then edit it and set `persona: my-soc-variant` in your config.
+
+**Q: What's the difference between a persona and a team?**
+
+A: A **persona** is the *configuration* (skills, routing, ceremonies). A **team** is the *execution* (specific people/agents assigned). One persona can run multiple teams.
+
+**Q: Can I use personas from other repositories?**
+
+A: Not yet. Phase 3 will support remote persona templates. For now, copy and customize locally.
+
+---
+
+**Ready to switch personas?** Run `secops-squad init` and pick your team.
+
+**Last Updated:** 2026-04-28  
+**Phase 2:** All 6 personas live and ready to use
 
 ## How to Switch Personas
 

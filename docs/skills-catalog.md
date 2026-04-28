@@ -4,22 +4,19 @@
 
 ---
 
-## Phase 1: Shipped Skills (6 Total)
+## Phase 2: Active Skills (28 Total)
 
-### KQL Hunting & Detection (3 skills)
+### KQL Hunting & Detection (10 skills)
 
 #### 1. Threat Hunting Foundations
 | Property | Value |
 |----------|-------|
-| **Category** | KQL |
 | **Difficulty** | Intermediate |
-| **MITRE ATT&CK** | T1078 (Valid Accounts), T1566 (Phishing), T1059 (Command and Scripting Interpreter) |
+| **MITRE ATT&CK** | T1078, T1566, T1059 |
 | **Products** | Sentinel, Defender for Endpoint, Entra ID |
-| **Use When** | Starting a proactive hunt (no incident), building behavioral baselines, entity pivoting, finding rare events |
 | **Author** | Freamon |
-| **Version** | 1.0.0 |
 
-Core patterns teach hypothesis-driven threat hunting in KQL. Learn entity pivoting, building baselines, and anomaly detection across logs, authentication, and process data.
+Hypothesis-driven threat hunting methodology: entity pivoting, behavioral baselines, anomaly detection across logs, authentication, and process data.
 
 **File:** [`skills/kql/threat-hunting-foundations.md`](../skills/kql/threat-hunting-foundations.md)
 
@@ -28,163 +25,409 @@ Core patterns teach hypothesis-driven threat hunting in KQL. Learn entity pivoti
 #### 2. Sentinel Analytics Rules
 | Property | Value |
 |----------|-------|
-| **Category** | KQL |
 | **Difficulty** | Intermediate |
-| **MITRE ATT&CK** | T1110 (Brute Force), T1078 (Valid Accounts), T1098 (Account Manipulation) |
+| **MITRE ATT&CK** | T1110, T1078, T1098 |
 | **Products** | Sentinel, Entra ID, Defender for Endpoint |
-| **Use When** | Converting a threat hunt into automated detection, writing new scheduled/NRT rules, enriching alerts with entity mappings, building multi-stage detections |
 | **Author** | Freamon |
-| **Version** | 1.0.0 |
 
-Core patterns for building Sentinel analytics rules — both scheduled and NRT. Learn entity mapping, alert enrichment, grouping strategies, and multi-stage correlation across time windows.
+Core patterns for building Sentinel analytics rules — both scheduled and NRT. Entity mapping, alert enrichment, grouping strategies, and multi-stage correlation.
 
 **File:** [`skills/kql/sentinel-analytics-rules.md`](../skills/kql/sentinel-analytics-rules.md)
 
 ---
 
-#### 3. Incident Investigation
+#### 3. Entra Sign-In Analysis
 | Property | Value |
 |----------|-------|
-| **Category** | KQL |
-| **Difficulty** | Advanced |
-| **MITRE ATT&CK** | T1021 (Remote Services), T1071 (Application Layer Protocol), T1048 (Exfiltration Over Alternative Protocol) |
-| **Products** | Sentinel, Defender for Endpoint, Entra ID, Defender for Cloud Apps |
-| **Use When** | Triaging a Sentinel incident, pivoting from IOCs, tracing lateral movement, building evidence timelines, assessing exfiltration risk |
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1078, T1110, T1556 |
+| **Products** | Entra ID, Sentinel, Log Analytics |
 | **Author** | Freamon |
-| **Version** | 1.0.0 |
 
-Reactive investigation patterns for when an alert fires. Learn query sequences for scope analysis, pivot chains (IP → user → device), authentication traces, and forensic reporting.
+Analyze authentication events, risk signals, and sign-in patterns to detect account compromise, brute force attacks, and authentication anomalies.
+
+**File:** [`skills/kql/entra-signin-analysis.md`](../skills/kql/entra-signin-analysis.md)
+
+---
+
+#### 4. Incident Investigation
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1021, T1071, T1048 |
+| **Products** | Sentinel, Defender for Endpoint, Entra ID, Defender for Cloud Apps |
+| **Author** | Freamon |
+
+Reactive investigation patterns for incident triage: scope analysis, pivot chains (IP → user → device), authentication traces, forensic reporting.
 
 **File:** [`skills/kql/incident-investigation.md`](../skills/kql/incident-investigation.md)
 
 ---
 
-### SOAR Automation (3 skills)
-
-#### 4. Phishing Incident Auto-Triage & Remediation
+#### 5. Cloud Security Posture
 | Property | Value |
 |----------|-------|
-| **Category** | SOAR |
-| **Difficulty** | Advanced |
-| **Trigger** | Sentinel incident (phishing-related analytics rules) |
-| **MITRE ATT&CK** | T1566.001 (Spearphishing Attachment), T1566.002 (Spearphishing Link) |
-| **Products** | Sentinel, Defender for Office 365, Office 365, Entra ID, Microsoft Defender Threat Intelligence |
-| **Playbook Type** | Logic Apps |
-| **Use When** | Phishing alerts need automated triage, enrichment, and remediation at scale |
-| **Author** | Herc |
-| **Version** | 1.0.0 |
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1078, T1190, T1530, T1562 |
+| **Products** | Defender for Cloud, Sentinel, Azure Resource Graph |
+| **Author** | Freamon |
 
-Automates the full lifecycle of a phishing incident: triage via Defender for Office 365, verdict (malicious/suspicious/clean), IOC enrichment with threat intel, message removal from mailboxes, user notification, and closure.
+Analyze cloud configuration, compliance, and resource security posture. Identify misconfigurations, identity risks, and data exposure in Azure environments.
 
-**What it does:**
-1. Triggered by Sentinel incident from phishing detection rules
-2. Enriches email headers and URLs with Defender for Office 365 and VirusTotal
-3. Determines verdict (malicious → remove all copies; suspicious → flag and monitor; clean → close)
-4. Removes malicious mail and forwards to inbox rule for future blocks
-5. Sends user notifications and trains security awareness
-6. Closes incident or escalates for manual review
-
-**Phase 1 Status:** Skill documented; playbook scaffold in Phase 2.
-
-**File:** [`skills/soar/phishing-response.md`](../skills/soar/phishing-response.md)
+**File:** [`skills/kql/cloud-security-posture.md`](../skills/kql/cloud-security-posture.md)
 
 ---
 
-#### 5. Compromised Account Auto-Response
+#### 6. Detection Tuning
 | Property | Value |
 |----------|-------|
-| **Category** | SOAR |
 | **Difficulty** | Advanced |
-| **Trigger** | Sentinel incident (identity-based alerts or Entra ID Protection risk events) |
-| **MITRE ATT&CK** | T1078 (Valid Accounts), T1078.004 (Cloud Accounts), T1110 (Brute Force), T1110.003 (Password Spraying) |
-| **Products** | Sentinel, Entra ID, Entra ID Protection, Microsoft Graph, Teams |
-| **Playbook Type** | Logic Apps |
-| **Use When** | A user account is compromised (high-risk sign-in, password spray, brute force), containment is urgent |
-| **Author** | Herc |
-| **Version** | 1.0.0 |
+| **MITRE ATT&CK** | T1078, T1059, T1110 |
+| **Products** | Sentinel, Defender for Endpoint, Log Analytics |
+| **Author** | Freamon |
 
-Automates containment and remediation of compromised user accounts: revokes active sessions, enforces MFA re-registration, resets risky passwords, blocks sign-in risk, and escalates to incident commander.
+Threshold optimization, false positive reduction, alert fatigue analysis, and detection rule tuning for production environments.
 
-**What it does:**
-1. Triggered by Sentinel incident from identity analytics or Entra ID Protection
-2. Extracts affected user(s) and risk level
-3. Revokes all active sessions (forces re-auth)
-4. Requires MFA re-registration on next sign-in
-5. Resets password (if password spray/brute force) or marks for manual reset (if compromise suspected)
-6. Blocks risky sign-ins for the user
-7. Notifies incident commander via Teams with escalation buttons
-8. Waits for approval before dismissing risk signals
-
-**Phase 1 Status:** Skill documented; playbook scaffold in Phase 2.
-
-**File:** [`skills/soar/compromised-account.md`](../skills/soar/compromised-account.md)
+**File:** [`skills/kql/detection-tuning.md`](../skills/kql/detection-tuning.md)
 
 ---
 
-#### 6. Sentinel Incident Teams Notification (Adaptive Card)
+#### 7. Defender XDR Advanced Hunting
 | Property | Value |
 |----------|-------|
-| **Category** | SOAR |
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1059, T1071, T1078, T1566, T1053 |
+| **Products** | Defender for Endpoint, Defender for Office 365, Defender for Identity, Defender for Cloud Apps |
+| **Author** | Freamon |
+
+Cross-product hunting in the Defender XDR platform: DeviceProcessEvents, EmailEvents, IdentityLogonEvents correlation and investigation patterns.
+
+**File:** [`skills/kql/defender-xdr-hunting.md`](../skills/kql/defender-xdr-hunting.md)
+
+---
+
+#### 8. Cross-Workspace Queries
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1078, T1059, T1071, T1021 |
+| **Products** | Sentinel, Log Analytics, Azure Lighthouse |
+| **Author** | Freamon |
+
+Multi-workspace and multi-tenant queries for large-scale investigations, federated security operations, and cross-boundary threat hunting.
+
+**File:** [`skills/kql/cross-workspace-queries.md`](../skills/kql/cross-workspace-queries.md)
+
+---
+
+#### 9. ADX Integration
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1078, T1059, T1027 |
+| **Products** | Azure Data Explorer, Sentinel, Log Analytics |
+| **Author** | Freamon |
+
+Integrate Azure Data Explorer for long-term retention, time-series analysis, and large-scale data analytics alongside Sentinel and Log Analytics.
+
+**File:** [`skills/kql/adx-integration.md`](../skills/kql/adx-integration.md)
+
+---
+
+#### 10. UEBA Patterns
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1078, T1098, T1087, T1071 |
+| **Products** | Sentinel, Sentinel UEBA, Entra ID, Defender for Endpoint |
+| **Author** | Freamon |
+
+User and Entity Behavior Analytics patterns: anomaly detection, privilege escalation, impossible travel, and insider threat indicators.
+
+**File:** [`skills/kql/ueba-patterns.md`](../skills/kql/ueba-patterns.md)
+
+---
+
+### SOAR Automation (10 skills)
+
+#### 11. Sentinel Incident Teams Notification
+| Property | Value |
+|----------|-------|
 | **Difficulty** | Beginner |
-| **Trigger** | Any new Sentinel incident |
+| **MITRE ATT&CK** | — |
 | **Products** | Sentinel, Teams |
-| **Playbook Type** | Logic Apps |
-| **Use When** | Incidents should notify the team immediately (don't wait for portal checks), quick triage actions needed |
 | **Author** | Herc |
-| **Version** | 1.0.0 |
 
-Sends a rich Teams notification (Adaptive Card) for every new Sentinel incident. Includes severity colors, entity summaries, direct Sentinel links, and one-click triage actions (Assign to Me, Escalate, Close as FP).
-
-**What it does:**
-1. Triggered on any new Sentinel incident
-2. Extracts incident metadata: title, description, severity, status, entities, tactics
-3. Formats a severity-color-coded Adaptive Card
-4. Routes to Teams channels by severity (critical → #security-critical, high → #security-incidents, etc.)
-5. Includes entity summary with hyperlinks to data
-6. Adds action buttons for quick triage: Assign to Me, Escalate, Close as False Positive
-7. Posts follow-up thread with detailed entity information
-8. Falls back to email if Teams delivery fails
-
-**Business justification:** Analysts discover incidents faster, respond sooner, and spend less time in the portal.
-
-**Phase 1 Status:** Skill documented; playbook scaffold in Phase 2.
+Rich Adaptive Card notifications to Teams for all new Sentinel incidents. Severity routing, entity summaries, and one-click triage actions.
 
 **File:** [`skills/soar/teams-notification.md`](../skills/soar/teams-notification.md)
 
 ---
 
-## Phase 2: Coming Next
+#### 12. Sentinel Enrichment — User Account Context
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1078, T1110, T1136, T1098 |
+| **Products** | Sentinel, Entra ID |
+| **Author** | Herc |
 
-### KQL & Detection (Planned)
-- **Log Analytics Data Ingestion** — Connectors, table schemas, ingestion optimization, cost control
-- **Azure Data Explorer (ADX) Hunting** — Long-term retention, cross-workspace analytics, time-series patterns
-- **Detection Rule Tuning** — Threshold optimization, false positive reduction, alert fatigue analysis
-- **MITRE ATT&CK Mapping for KQL** — Tactics/techniques for every detection pattern
+Auto-enrich Sentinel incidents with user account context: risk levels, group memberships, recent sign-in activity, and compliance status from Entra ID.
 
-### SOAR & Automation (Planned)
-- **Sentinel Playbook Scaffolding** — Template engine for Logic Apps and Functions
-- **Advanced Response Workflows** — Multi-stage containment, orchestrated across teams
-- **Custom Connector Patterns** — Integration with third-party SIEM, ticketing, and communication tools
+**File:** [`skills/soar/sentinel-enrichment-user.md`](../skills/soar/sentinel-enrichment-user.md)
 
-### Personas (Planned)
-- **Detection Engineering** persona skills — Rule authoring workflows, tuning practices
-- **Threat Hunting** persona skills — Hypothesis library, campaign tracking, persistence check patterns
-- **Cloud Security** persona skills — Defender for Cloud, CSPM, cloud forensics
-- **Incident Response** persona skills — IR procedures, forensic analysis workflows, containment playbooks
-- **Full SOC** persona — All skills combined for multi-disciplinary teams
+---
+
+#### 13. Sentinel Enrichment — IP Address Threat Intelligence
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1071, T1090, T1573, T1105 |
+| **Products** | Sentinel, Defender Threat Intelligence, VirusTotal |
+| **Author** | Herc |
+
+Auto-enrich IP entities with threat intelligence: geolocation, ASN, threat feeds, VirusTotal reputation, and malware associations.
+
+**File:** [`skills/soar/sentinel-enrichment-ip.md`](../skills/soar/sentinel-enrichment-ip.md)
+
+---
+
+#### 14. Phishing Incident Auto-Triage & Remediation
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1566, T1566.001, T1566.002 |
+| **Products** | Sentinel, Defender for Office 365, Office 365, Entra ID, Threat Intelligence |
+| **Author** | Herc |
+
+Automate phishing lifecycle: Defender for Office 365 triage, verdict determination, IOC enrichment, malicious message removal, user notification, and closure.
+
+**File:** [`skills/soar/phishing-response.md`](../skills/soar/phishing-response.md)
+
+---
+
+#### 15. Compromised Account Auto-Response
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1078, T1078.004 |
+| **Products** | Sentinel, Entra ID, Entra ID Protection, Microsoft Graph, Teams |
+| **Author** | Herc |
+
+Automate account containment: revoke sessions, enforce MFA re-registration, reset passwords, block risky sign-ins, escalate to incident commander.
+
+**File:** [`skills/soar/compromised-account.md`](../skills/soar/compromised-account.md)
+
+---
+
+#### 16. L1 Auto-Triage — Evidence-Based Incident Routing
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | — |
+| **Products** | Sentinel, Entra ID |
+| **Author** | Herc |
+
+Evidence-based incident classification and routing: severity assessment, alert aggregation, triage queue management, and team assignment.
+
+**File:** [`skills/soar/auto-triage.md`](../skills/soar/auto-triage.md)
+
+---
+
+#### 17. Malware Containment & Evidence Collection
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1486, T1059 |
+| **Products** | Sentinel, Defender for Endpoint, Teams |
+| **Author** | Herc |
+
+Automate device containment for malware incidents: isolate endpoints, collect forensic evidence, quarantine files, and coordinate with SOC team.
+
+**File:** [`skills/soar/malware-containment.md`](../skills/soar/malware-containment.md)
+
+---
+
+#### 18. Data Exfiltration Response — DLP Alert Enrichment & Blocking
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1567, T1048 |
+| **Products** | Sentinel, Purview DLP, Entra ID, Teams |
+| **Author** | Herc |
+
+Automate DLP incident response: data flow tracing, user risk assessment, content blocking, user notification, and escalation.
+
+**File:** [`skills/soar/data-exfiltration-response.md`](../skills/soar/data-exfiltration-response.md)
+
+---
+
+#### 19. Threat Intelligence Ingest — TAXII/STIX to Sentinel TI
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | — |
+| **Products** | Sentinel |
+| **Author** | Herc |
+
+Automate IOC ingestion from external TAXII 2.1 servers into Sentinel's Threat Intelligence platform with deduplication and expiration management.
+
+**File:** [`skills/soar/threat-intel-ingest.md`](../skills/soar/threat-intel-ingest.md)
+
+---
+
+#### 20. ITSM Ticket Creation — ServiceNow / JIRA Bi-Directional Sync
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | — |
+| **Products** | Sentinel, ServiceNow, JIRA |
+| **Author** | Herc |
+
+Bidirectional sync between Sentinel incidents and external ITSM ticketing systems. Automate ticket creation, status updates, and ticket closure.
+
+**File:** [`skills/soar/ticket-create.md`](../skills/soar/ticket-create.md)
+
+---
+
+### Detection Engineering (8 skills)
+
+#### 21. MITRE ATT&CK Mapping for Detections
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1110, T1078, T1566 |
+| **Products** | Sentinel, Defender for Endpoint, Defender for Identity |
+| **Author** | Kima |
+
+Align detections with MITRE ATT&CK framework: technique mapping, sub-technique classification, tactic alignment, and coverage analysis.
+
+**File:** [`skills/detection/mitre-attack-mapping.md`](../skills/detection/mitre-attack-mapping.md)
+
+---
+
+#### 22. Detection Lifecycle — Design → Test → Deploy → Tune
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1110, T1566, T1078 |
+| **Products** | Sentinel, Defender for Endpoint, Defender for Identity |
+| **Author** | Kima |
+
+Complete detection engineering lifecycle: threat model, KQL authoring, testing against known threats, production deployment, and ongoing tuning.
+
+**File:** [`skills/detection/detection-lifecycle.md`](../skills/detection/detection-lifecycle.md)
+
+---
+
+#### 23. Scheduled Analytics Rule Pattern
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1110, T1078 |
+| **Products** | Sentinel |
+| **Author** | Kima |
+
+The workhorse detection pattern: KQL query, fixed cadence execution, threshold evaluation, alert creation. Includes production-ready brute force example.
+
+**File:** [`skills/detection/scheduled-rule-pattern.md`](../skills/detection/scheduled-rule-pattern.md)
+
+---
+
+#### 24. Near-Real-Time (NRT) Rule Pattern
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1190, T1078, T1133 |
+| **Products** | Sentinel |
+| **Author** | Kima |
+
+Fastest detection mechanism in Sentinel: minute-level execution, no lookback window, real-time alerting. Learn constraints and optimization patterns.
+
+**File:** [`skills/detection/nrt-rule-pattern.md`](../skills/detection/nrt-rule-pattern.md)
+
+---
+
+#### 25. Threat Model Template for Detection Engineering
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1566, T1566.001, T1566.002, T1078, T1539 |
+| **Products** | Sentinel, Defender for Office 365, Entra ID Protection |
+| **Author** | Kima |
+
+Structured threat modeling for detection design: adversary objectives, detection opportunities, evasion tactics, and coverage verification.
+
+**File:** [`skills/detection/threat-model-template.md`](../skills/detection/threat-model-template.md)
+
+---
+
+#### 26. Fusion Rule Context — Understanding ML-Based Multi-Stage Attack Detection
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1078, T1566, T1027, T1486, T1071 |
+| **Products** | Sentinel, Defender for Cloud Apps, Defender for Identity, Entra ID Protection |
+| **Author** | Kima |
+
+ML-based multi-stage attack detection: Fusion rules, correlation across data sources, investigation context, and tuning guidance.
+
+**File:** [`skills/detection/fusion-rule-context.md`](../skills/detection/fusion-rule-context.md)
+
+---
+
+#### 27. Watchlist-Driven Detection
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Intermediate |
+| **MITRE ATT&CK** | T1078, T1078.004, T1566 |
+| **Products** | Sentinel |
+| **Author** | Kima |
+
+Bring external reference data into detections: IP allowlists, VIP user lists, critical assets. Automation patterns for keeping watchlists current.
+
+**File:** [`skills/detection/watchlist-driven-detection.md`](../skills/detection/watchlist-driven-detection.md)
+
+---
+
+#### 28. Custom KQL Function Authoring
+| Property | Value |
+|----------|-------|
+| **Difficulty** | Advanced |
+| **MITRE ATT&CK** | T1071, T1078 |
+| **Products** | Sentinel, Azure Monitor, Log Analytics |
+| **Author** | Kima |
+
+Reusable KQL functions for detection libraries: function syntax, parameter passing, performance optimization, and testing patterns.
+
+**File:** [`skills/detection/custom-kql-function.md`](../skills/detection/custom-kql-function.md)
+
+---
+
+## Summary by Category
+
+| Category | Count | Phase | Status |
+|----------|-------|-------|--------|
+| **KQL Hunting & Detection** | 10 | 2 | ✅ Active |
+| **SOAR Automation** | 10 | 2 | ✅ Active |
+| **Detection Engineering** | 8 | 2 | ✅ Active |
+| **Log Analytics** | 8 | 3 | 📋 Coming Soon |
+| **Microsoft Security Products** | 8 | 3 | 📋 Coming Soon |
+| **Azure Data Explorer** | 8 | 3 | 📋 Phase 3 |
+| **TOTAL** | **52** | — | — |
 
 ---
 
 ## How to Load a Skill
 
 ### By Persona (Recommended)
-Personas come pre-loaded with relevant skills. Select SOC Analyst at init:
+Personas come pre-loaded with relevant skills. Select a persona at init:
 
 ```bash
 secops-squad init
 ```
 
-Then all 6 Phase 1 skills load automatically.
+Choose from: SOC Analyst, Detection Engineering, Threat Hunting, Cloud Security, Incident Response, Full SOC. All skills for that persona load automatically.
 
 ### Individual Skill (Ad-hoc)
 Load a specific skill on demand:
@@ -224,8 +467,15 @@ See [Personas Guide](personas-guide.md) for details on building custom skills an
 
 ### Building a Detection Rule?
 1. Start with **Threat Hunting Foundations** — Find the signal (hunt)
-2. Use **Sentinel Analytics Rules** — Formalize as an automated detection
-3. Test against your workspace with `secops-squad kql validate`
+2. Use **Detection Lifecycle** — Understand the full engineering process
+3. Use **Scheduled Analytics Rule Pattern** — Formalize as an automated detection
+4. Test against your workspace with `secops-squad kql validate`
+
+### New to Detection Engineering?
+1. Start with **Detection Lifecycle** — Understand the complete process
+2. Use **Threat Model Template** — Learn adversary-centric design
+3. Implement with **Scheduled Analytics Rule Pattern** or **NRT Rule Pattern**
+4. Map to **MITRE ATT&CK Mapping for Detections**
 
 ---
 
@@ -244,4 +494,5 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for details.
 ---
 
 **Last Updated:** 2026-04-28  
-**Phase 1 Release:** 6 skills across KQL and SOAR
+**Phase 2 Release:** 28 shipped skills across KQL, SOAR, and Detection Engineering  
+**Coming Next:** Log Analytics, Microsoft Security Products, Azure Data Explorer skills

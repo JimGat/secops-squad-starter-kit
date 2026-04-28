@@ -41,3 +41,18 @@
 - All rollback sections include both automation teardown AND remediation reversal procedures
 - Cross-references between skills establish a cohesive playbook library
 - Covered all trigger types: sentinel-incident, sentinel-entity, scheduled recurrence
+
+🟥 **Herc Phase 2b: SOAR Bicep Templates Complete** (2026-04-28)
+- Created 5 production-ready Bicep templates in `templates/bicep/soar/`:
+  1. phishing-response.bicep — Sentinel trigger → email purge → mailbox rules → Teams → incident update
+  2. compromised-account.bicep — Session revoke → MFA reset → conditional disable → Teams notify
+  3. malware-containment.bicep — MDE device isolation → investigation package → timeline → Teams
+  4. ip-enrichment.bicep — GeoIP + watchlist + optional VirusTotal → enrichment comment → TI indicator
+  5. teams-notification.bicep — Severity-mapped channel routing with rich Adaptive Cards
+- Created main.bicep orchestrator: deploys all 5 as modules with conditional toggles
+- Created README.md deployment guide: prerequisites, commands, post-deploy steps, parameter reference, troubleshooting
+- All 6 Bicep files pass `az bicep build` with zero errors
+- Every template: managed identity, role assignments (Sentinel Responder/Reader), @description decorators, tags, secure strings
+- API connections use managed identity for Sentinel; OAuth for Teams/O365/EntraID/MDE
+- ~95KB of deployable IaC across all templates
+- Bicep best practices: parameterValueType=Alternative for MI connections, uniqueString for naming, existing keyword for workspace reference

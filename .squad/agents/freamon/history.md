@@ -46,3 +46,13 @@
 - Key pattern: multi-line `let` statements require wrapping body in parentheses for validator compatibility: `let X = (Table | where ... | project ...);`
 - Covers: cross-workspace federation, ADX long-term retention, Defender XDR hunting, Entra ID sign-in analysis, cloud posture (Resource Graph + Defender for Cloud), detection tuning (baselining, exclusions, A/B testing), and UEBA behavioral analytics
 - All skills cross-reference each other in Related Skills sections, forming a cohesive learning path
+
+🟦 **Freamon Phase 3: Log Analytics Skills Library Complete** (2026-04-28)
+- Authored 8 Log Analytics skills in `skills/log-analytics/`: workspace-architecture, data-connectors-setup, retention-archive, diagnostic-settings, custom-tables-dcr, cost-optimization, workspace-rbac, purge-and-export
+- 2,125 lines across 8 files — 30 KQL queries, 35 Azure CLI snippets, 14 Bicep templates, 1 JSON DCR definition
+- All KQL queries pass Carver's validator (30/30)
+- Format matches existing KQL skill conventions: YAML frontmatter, Overview, Prerequisites, Core Patterns, Best Practices, Cost Implications, Related Skills
+- Every skill cross-references related Log Analytics and KQL skills, forming a cohesive operations + engineering learning path
+- Key patterns: DCR ingestion-time transforms, resource-context vs workspace-context RBAC, commitment tier optimization, archive tier lifecycle, purge API for GDPR compliance
+- MITRE ATT&CK mapped: T1078 (workspace-rbac), General for all others (foundational infrastructure skills)
+- Combined project total: 18 skills (10 KQL + 8 Log Analytics), ~5,775 lines, ~130+ code blocks
