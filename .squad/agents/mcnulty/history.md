@@ -19,3 +19,10 @@
 - CLI strategy: secops-squad wraps @bradygaster/squad-cli, additive security commands
 - Phase 1 exit: init wizard, soc-analyst persona, 3 KQL skills, 3 SOAR skills, KQL CI, getting-started docs
 - Target: new user → working SecOps team with KQL hunting + phishing response in ≤ 15 minutes
+📌 **Phase 1 Documentation Polished** (2026-04-28)
+- README.md updated with badges, "What's in the Box" inventory, Phase 1 vs Phase 2 clarity, skill summaries, and correct persona status (SOC Analyst live; others Phase 2)
+- Getting-started.md rewritten as a 15-minute walkthrough with real workflows: init → doctor → skill browse → first hunt → first automation
+- Skills Catalog created: 6 shipped skills with difficulty, MITRE tags, products, use cases, and contributor info
+- Personas Guide created: explains persona model, SOC Analyst config, custom persona creation, and Phase 2 roadmap
+- All docs link to actual skill files in repo, no placeholders or broken references
+- Tone: professional, accurate, action-oriented — designed for first impression with real value in ≤ 15 minutes

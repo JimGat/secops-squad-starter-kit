@@ -1,0 +1,29 @@
+// Threat Hunting: Suspicious PowerShell execution with encoded commands
+// MITRE ATT&CK: T1059.001 — Command and Scripting Interpreter: PowerShell
+let lookback = 24h;
+let suspiciousFlags = dynamic(["-enc", "-EncodedCommand", "-e ", "-ec "]);
+DeviceProcessEvents
+| where TimeGenerated > ago(lookback)
+| where FileName in~ ("powershell.exe", "pwsh.exe")
+| where ProcessCommandLine has_any (suspiciousFlags)
+| extend DecodedCommand = base64_decode_tostring(
+    extract(@"-[eE][nN]?[cC]?\s+([A-Za-z0-9+/=]+)", 1, ProcessCommandLine)
+  )
+| where isnotempty(DecodedCommand)
+| project
+    TimeGenerated,
+    DeviceName,
+    AccountName,
+    FileName,
+    ProcessCommandLine,
+    DecodedCommand,
+    InitiatingProcessFileName,
+    InitiatingProcessCommandLine
+| summarize
+    Count = count(),
+    FirstSeen = min(TimeGenerated),
+    LastSeen = max(TimeGenerated),
+    Commands = make_set(DecodedCommand, 10)
+  by DeviceName, AccountName
+| where Count > 3
+| sort by Count desc

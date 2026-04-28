@@ -1,0 +1,38 @@
+// Sentinel Analytics Rule: Brute Force Sign-In Detection
+// Severity: High
+// MITRE ATT&CK: T1110.001 — Brute Force: Password Guessing
+let failureThreshold = 10;
+let timeWindow = 1h;
+let successWindow = 1h;
+SignInLogs
+| where TimeGenerated > ago(timeWindow)
+| where ResultType != "0"
+| where ResultType !in ("50125", "50140")
+| summarize
+    FailedAttempts = count(),
+    DistinctIPs = dcount(IPAddress),
+    IPAddresses = make_set(IPAddress, 20),
+    FailureCodes = make_set(ResultType, 10),
+    FirstFailure = min(TimeGenerated),
+    LastFailure = max(TimeGenerated)
+  by UserPrincipalName, AppDisplayName
+| where FailedAttempts >= failureThreshold
+| join kind=leftouter (
+    SignInLogs
+    | where TimeGenerated > ago(successWindow)
+    | where ResultType == "0"
+    | summarize SuccessfulLogins = count() by UserPrincipalName
+  ) on UserPrincipalName
+| extend CompromiseIndicator = iff(isnotempty(SuccessfulLogins), "Possible Compromise", "Ongoing Attack")
+| project
+    UserPrincipalName,
+    AppDisplayName,
+    FailedAttempts,
+    DistinctIPs,
+    IPAddresses,
+    FailureCodes,
+    FirstFailure,
+    LastFailure,
+    CompromiseIndicator,
+    SuccessfulLogins
+| sort by FailedAttempts desc

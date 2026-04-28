@@ -1,0 +1,8 @@
+// Deliberately malformed KQL for testing — multiple syntax errors
+| where TimeGenerated > ago(1h)
+SecurityEvent | | where EventID == 4625
+SecurityEvent | where (Status == "Failure"
+SecurityEvent | where x = 5
+"unclosed string literal
+let y = 10
+SecurityEvent | where contains("test"
