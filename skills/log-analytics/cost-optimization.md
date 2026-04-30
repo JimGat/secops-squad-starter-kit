@@ -322,3 +322,16 @@ This entire skill is about cost. Key numbers to remember:
 - **[Workspace Architecture](workspace-architecture.md)** — Multi-workspace impacts on commitment tier pooling.
 - **[Data Connectors Setup](data-connectors-setup.md)** — Connector volume drives cost; monitor connector health.
 - **[Detection Tuning](../kql/detection-tuning.md)** — Tuning noisy detections reduces alert volume and investigation cost.
+
+## Environment Context
+
+Before executing this skill, check the customer's `.secops/` knowledge framework:
+
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
+3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
+4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints
+
+If `.secops/` doesn't exist, proceed with defaults but suggest `secops-squad init --secops`.
+
+See `.copilot/skills/secops-environment-context.md` for the full discovery flow.

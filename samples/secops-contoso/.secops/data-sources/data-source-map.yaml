@@ -1,0 +1,254 @@
+# =============================================================================
+# .secops/data-sources/data-source-map.yaml — Contoso Data Source Location Map
+# =============================================================================
+# THE KEY FILE agents consult before writing queries. Maps every known data
+# table to its physical location, tier, and ingestion method.
+#
+# Contoso has 20+ sources across Sentinel (Analytics/Basic/Auxiliary), ADX,
+# and external blob storage. Cross-cloud sources include AWS and GCP.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# =============================================================================
+# Sources — Keyed by table name
+# =============================================================================
+sources:
+
+  # ===========================================================================
+  # Sentinel Analytics Tier — Full KQL, highest cost
+  # ===========================================================================
+
+  SecurityEvent:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 65
+    ingestion_method: "ama-agent"
+    notes: "Windows Security Events — 4,200 servers, AMA on all DCs and member servers"
+
+  SigninLogs:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 8
+    ingestion_method: "connector"
+    notes: "Entra ID interactive sign-ins — 12,000 users"
+
+  AADNonInteractiveUserSignInLogs:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 12
+    ingestion_method: "connector"
+    notes: "Non-interactive sign-ins — high volume from service accounts + SSO"
+
+  DeviceProcessEvents:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 35
+    ingestion_method: "connector"
+    notes: "MDE process events — 14,000 endpoints. Primary detection source."
+
+  DeviceNetworkEvents:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 28
+    ingestion_method: "connector"
+    notes: "MDE network events — C2 beacon detection, lateral movement"
+
+  DeviceFileEvents:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 22
+    ingestion_method: "connector"
+    notes: "MDE file events — ransomware canary + mass encryption detection"
+
+  CommonSecurityLog:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 30
+    ingestion_method: "ama-agent"
+    notes: "Palo Alto PA-5260 + Fortinet FG-600E — CEF format via syslog forwarder"
+
+  OfficeActivity:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 25
+    ingestion_method: "connector"
+    notes: "Exchange, SharePoint, Teams — BEC detection + insider threat"
+
+  IdentityLogonEvents:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 4
+    ingestion_method: "connector"
+    notes: "MDI — on-prem AD logon events from 6 domain controllers"
+
+  SecurityAlert:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 0.5
+    ingestion_method: "connector"
+    notes: "Defender for Cloud alerts — CSPM + server/container/storage plans"
+
+  CustomThreatIntel_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 0.8
+    ingestion_method: "dcr"
+    notes: "Custom TI feed — STIX/TAXII from Contoso Threat Intel team"
+
+  HoneypotAlerts_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    daily_gb: 0.2
+    ingestion_method: "dcr"
+    notes: "Any activity = suspicious — 15 honeypot systems across 3 VLANs"
+
+  # ===========================================================================
+  # Sentinel Basic Tier — Search-only, no join/summarize
+  # ===========================================================================
+
+  AWSCloudTrail_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Basic"
+    daily_gb: 18
+    ingestion_method: "s3-to-eventhub"
+    source_cloud: "aws"
+    aws_account: "123456789012"
+    notes: "Project Helios AWS account — S3 → Event Hub → DCR. IOC sweep + privilege escalation."
+
+  GCPAuditLogs_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Basic"
+    daily_gb: 5
+    ingestion_method: "pub-sub-to-eventhub"
+    source_cloud: "gcp"
+    gcp_project: "contoso-acq-meridian-prod"
+    notes: "Meridian acquisition GCP audit logs — Pub/Sub → Event Hub → DCR"
+
+  ProxyLogs_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Basic"
+    daily_gb: 85
+    ingestion_method: "api"
+    notes: "Zscaler ZIA web proxy logs — highest volume table. IOC sweeps + DLP alerts."
+
+  DNSQueryLogs_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Basic"
+    daily_gb: 40
+    ingestion_method: "dcr"
+    notes: "Infoblox DNS query logs — DGA detection, DNS tunneling, IOC lookups"
+
+  Syslog:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Basic"
+    daily_gb: 15
+    ingestion_method: "ama-agent"
+    notes: "Linux servers — auth.log, syslog. 1,200 servers via AMA."
+
+  # ===========================================================================
+  # Sentinel Auxiliary Tier — Lowest cost, search-only
+  # ===========================================================================
+
+  NetFlowLogs_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Auxiliary"
+    daily_gb: 120
+    ingestion_method: "dcr"
+    # MIGRATION: This table is being migrated from ADX (mig-001).
+    # Data currently exists in BOTH Sentinel Auxiliary and ADX SecurityLake.
+    # Prefer this location for new queries. ADX still has historical data.
+    migration_status: "in-progress"
+    migration_ref: "mig-001"
+    notes: "Network flow data — migrating from ADX. Query both locations during migration."
+
+  VPNConnectionLogs_CL:
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Auxiliary"
+    daily_gb: 8
+    ingestion_method: "dcr"
+    notes: "GlobalProtect VPN sessions — remote access auditing"
+
+  # ===========================================================================
+  # ADX — Long-term retention and high-volume historical data
+  # ===========================================================================
+
+  NetFlowLogs:
+    location: "adx"
+    cluster: "soc-adx-contoso"
+    database: "SecurityLake"
+    tier: "Analytics"           # ADX tables support full KQL
+    daily_gb: 200
+    ingestion_method: "streaming-ingestion"
+    # MIGRATION: Being migrated to Sentinel Auxiliary (mig-001)
+    migration_status: "in-progress"
+    migration_ref: "mig-001"
+    notes: "Historical netflow in ADX — will be decommissioned after mig-001 completes"
+
+  FirewallSessionLogs:
+    location: "adx"
+    cluster: "soc-adx-contoso"
+    database: "SecurityLake"
+    tier: "Analytics"
+    daily_gb: 45
+    ingestion_method: "queued-ingestion"
+    notes: "Full Palo Alto session logs — 1yr retention. Use for deep network forensics."
+
+  ThreatIntelHistory:
+    location: "adx"
+    cluster: "soc-adx-contoso"
+    database: "SecurityLake"
+    tier: "Analytics"
+    daily_gb: 2
+    ingestion_method: "queued-ingestion"
+    notes: "Historical TI indicator matches — 3yr lookback for APT campaign tracking"
+
+  HistoricalFirewallLogs:
+    location: "adx"
+    cluster: "soc-adx-contoso"
+    database: "Archive"
+    tier: "Archive"
+    daily_gb: 0
+    ingestion_method: "external-table"
+    notes: "Pre-2025 firewall logs — Parquet over blob, 3TB. Use for historical IOC sweeps."
+
+  HistoricalDNSLogs:
+    location: "adx"
+    cluster: "soc-adx-contoso"
+    database: "Archive"
+    tier: "Archive"
+    daily_gb: 0
+    ingestion_method: "external-table"
+    notes: "Pre-2025 DNS logs — Parquet over blob, 1.2TB. Historical DGA/C2 analysis."
+
+# =============================================================================
+# Cross-Cloud Identity Mapping
+# =============================================================================
+cross_cloud_identity_mapping:
+  method: "custom-table"
+  mapping_table: "CrossCloudIdentityMap_CL"
+  notes: >
+    Maps AWS IAM ARNs → Entra ID UPNs, and GCP Google IDs → Entra ID UPNs.
+    Maintained by Contoso Identity team. Updated weekly via Logic App.
+    Use for cross-cloud correlation in hunting queries.

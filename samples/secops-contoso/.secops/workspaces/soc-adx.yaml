@@ -1,0 +1,101 @@
+# =============================================================================
+# .secops/workspaces/soc-adx.yaml — ADX Long-Term Retention Cluster
+# =============================================================================
+# Contoso's Azure Data Explorer cluster for high-volume, long-retention data
+# that doesn't justify Sentinel Analytics tier pricing. Used for historical
+# investigations, threat hunting across years of data, and compliance archives.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Cluster Identity
+# -----------------------------------------------------------------------------
+# ADX workspaces use cluster/database instead of workspace_id
+name: "soc-adx-contoso"
+cluster_uri: "https://soc-adx-contoso.eastus2.kusto.windows.net"
+resource_group: "rg-soc-adx"
+subscription: "2b3c4d5e-6f7a-8901-bcde-222222222222"
+region: "eastus2"
+
+# ADX is not a Sentinel workspace
+sentinel_enabled: false
+
+# Cluster SKU and capacity
+cluster_sku: "Standard_E8as_v5+1TB"
+instance_count: 3
+auto_scale:
+  enabled: true
+  min_instances: 3
+  max_instances: 6
+
+# -----------------------------------------------------------------------------
+# Databases
+# -----------------------------------------------------------------------------
+databases:
+
+  - name: "SecurityLake"
+    # Primary operational database — current data, full query capability
+    purpose: "Active security telemetry for hunting and long-term retention"
+    retention_days: 365
+    cache_days: 90             # Hot cache — fast queries for recent data
+    tables:
+      - name: "NetFlowLogs"
+        daily_gb: 200
+        ingestion: "streaming-ingestion"
+        notes: >
+          Network flow data from Palo Alto. Being migrated to Sentinel Auxiliary
+          (mig-001) — during migration, data exists in BOTH locations.
+
+      - name: "FirewallSessionLogs"
+        daily_gb: 45
+        ingestion: "queued-ingestion"
+        notes: "Palo Alto session logs — full session metadata, 1yr retention"
+
+      - name: "ThreatIntelHistory"
+        daily_gb: 2
+        ingestion: "queued-ingestion"
+        notes: "Historical TI indicator matches — 3yr lookback for APT campaigns"
+
+  - name: "Archive"
+    # Cold storage — historical data, external tables over blob storage
+    purpose: "Pre-2025 compliance archive and historical investigation support"
+    retention_days: 2555       # 7 years — PCI-DSS requirement
+    cache_days: 0              # No hot cache — all queries hit cold storage
+    tables:
+      - name: "HistoricalFirewallLogs"
+        daily_gb: 0            # No new ingestion — archive only
+        ingestion: "external-table"
+        external_table_config:
+          storage_account: "stcontosoarchive001"
+          container: "firewall-archive"
+          format: "parquet"
+          # Partitioned by year/month for efficient time-range queries
+          partition_scheme: "year={yyyy}/month={MM}"
+        notes: "Pre-2025 firewall logs in Parquet over blob — 3TB total"
+
+      - name: "HistoricalDNSLogs"
+        daily_gb: 0
+        ingestion: "external-table"
+        external_table_config:
+          storage_account: "stcontosoarchive001"
+          container: "dns-archive"
+          format: "parquet"
+          partition_scheme: "year={yyyy}/month={MM}"
+        notes: "Pre-2025 DNS query logs — 1.2TB total, used for historical IOC sweeps"
+
+# -----------------------------------------------------------------------------
+# Cross-Cluster Query — Sentinel ↔ ADX proxy
+# -----------------------------------------------------------------------------
+# Sentinel can query ADX via the adx() proxy function.
+# ADX can query Sentinel via workspace() function with AAD auth.
+cross_cluster:
+  sentinel_proxy_enabled: true
+  proxy_workspace: "prod-sentinel"
+  notes: >
+    Agents can use adx('soc-adx-contoso.eastus2.kusto.windows.net').SecurityLake.NetFlowLogs
+    in Sentinel KQL queries. Performance is slower than native Sentinel queries —
+    prefer native tables when available. Cross-cluster queries count against
+    ADX cluster compute, not Sentinel.

@@ -1,0 +1,116 @@
+# =============================================================================
+# .secops/data-sources/migrations.yaml — Active & Historical Migrations
+# =============================================================================
+# Tracks data movements between Sentinel, ADX, and external storage.
+# Agents MUST check this before assuming table locations are stable.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Migrations
+# -----------------------------------------------------------------------------
+migrations:
+
+  # ---------------------------------------------------------------------------
+  # mig-001: NetFlowLogs ADX → Sentinel Auxiliary (IN PROGRESS)
+  # ---------------------------------------------------------------------------
+  # Sentinel Auxiliary tier became cost-competitive with ADX for this volume
+  # in early 2026. Migration enables unified Sentinel experience without
+  # needing cross-cluster queries for network flow analysis.
+  - id: "mig-001"
+    status: "in-progress"
+    description: "Moving NetFlowLogs from ADX SecurityLake to Sentinel Auxiliary tier"
+
+    source:
+      location: "adx"
+      cluster: "soc-adx-contoso"
+      database: "SecurityLake"
+      table: "NetFlowLogs"
+
+    target:
+      location: "sentinel"
+      workspace: "prod-sentinel"
+      table: "NetFlowLogs_CL"
+      tier: "Auxiliary"
+
+    started: "2026-03-15"
+    estimated_completion: "2026-06-01"
+    owner: "soc-platform-team"
+
+    # Migration details for agents
+    parallel_ingestion: true     # Data currently flowing to BOTH locations
+    cutover_criteria:
+      - "30 days of parallel ingestion with zero data loss verified"
+      - "All hunting queries updated to use NetFlowLogs_CL"
+      - "Cross-cluster query usage for NetFlowLogs drops to zero"
+      - "Stakeholder sign-off from SOC Lead and Detection Engineering"
+
+    notes: >
+      AGENT GUIDANCE: During this migration, query NetFlowLogs_CL (Sentinel)
+      for data after 2026-03-15. Query NetFlowLogs (ADX) for historical data
+      before 2026-03-15. For queries spanning the cutover date, query both
+      and union results. After migration completes, ADX table will be
+      retained read-only for 90 days, then decommissioned.
+
+  # ---------------------------------------------------------------------------
+  # mig-002: Dev workspace consolidation (PLANNED)
+  # ---------------------------------------------------------------------------
+  # Planned consolidation of dev-sentinel into prod-sentinel using workspace-
+  # level RBAC to isolate dev/test activities. Waiting for Sentinel feature
+  # improvements (table-level RBAC GA).
+  - id: "mig-002"
+    status: "planned"
+    description: "Consolidate soc-sentinel-dev into soc-sentinel-prod with table-level RBAC"
+
+    source:
+      location: "sentinel"
+      workspace: "dev-sentinel"
+
+    target:
+      location: "sentinel"
+      workspace: "prod-sentinel"
+
+    planned_start: "2026-Q3"
+    estimated_completion: "2026-Q4"
+    owner: "soc-platform-team"
+
+    dependencies:
+      - "Sentinel table-level RBAC GA (currently in preview)"
+      - "Detection test harness compatible with single-workspace model"
+      - "Budget approval for increased prod workspace ingestion"
+
+    notes: >
+      AGENT GUIDANCE: No action required until status changes to in-progress.
+      Dev workspace remains fully operational. Do not reference prod workspace
+      for dev/test activities until this migration is complete.
+
+  # ---------------------------------------------------------------------------
+  # mig-003: Legacy MMA → AMA agent migration (COMPLETED)
+  # ---------------------------------------------------------------------------
+  # Historical migration record — kept for audit trail and agent context.
+  - id: "mig-003"
+    status: "completed"
+    description: "Migrated all Windows servers from MMA (Log Analytics agent) to AMA"
+
+    source:
+      location: "sentinel"
+      workspace: "prod-sentinel"
+      ingestion_method: "mma-agent"
+
+    target:
+      location: "sentinel"
+      workspace: "prod-sentinel"
+      ingestion_method: "ama-agent"
+
+    started: "2025-09-01"
+    completed: "2026-01-15"
+    owner: "soc-platform-team"
+
+    notes: >
+      All 4,200 Windows servers migrated from MMA to AMA. MMA workspace
+      solution was removed 2026-02-01. All DCRs are now centrally managed
+      via Azure Policy. Legacy MMA data still available in archive tier
+      for queries before 2026-01-15.

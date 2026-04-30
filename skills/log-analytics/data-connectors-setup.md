@@ -374,3 +374,16 @@ Heartbeat
 - **[Diagnostic Settings](diagnostic-settings.md)** — Azure resource diagnostic log routing patterns.
 - **[Workspace Architecture](workspace-architecture.md)** — Where connectors route data depends on your workspace topology.
 - **[Threat Hunting Foundations](../kql/threat-hunting-foundations.md)** — Once data flows, use these KQL patterns to hunt through it.
+
+## Environment Context
+
+Before executing this skill, check the customer's `.secops/` knowledge framework:
+
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
+3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
+4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints
+
+If `.secops/` doesn't exist, proceed with defaults but suggest `secops-squad init --secops`.
+
+See `.copilot/skills/secops-environment-context.md` for the full discovery flow.

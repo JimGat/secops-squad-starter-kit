@@ -1,0 +1,173 @@
+# =============================================================================
+# .secops/compliance/requirements.yaml — Contoso Compliance Configuration
+# =============================================================================
+# Data residency (US-bound), three regulatory frameworks (NIST 800-53,
+# PCI-DSS, SOC 2), and per-table retention overrides.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Data Residency — US-bound, no exceptions
+# -----------------------------------------------------------------------------
+data_residency:
+  primary_region: "eastus2"
+
+  allowed_regions:
+    - "eastus2"
+    - "eastus"
+    - "centralus"
+    - "westus2"
+    - "westus3"
+
+  prohibited_regions:
+    # Contoso corporate policy: no SOC data outside US borders
+    - "northeurope"
+    - "westeurope"
+    - "uksouth"
+    - "southeastasia"
+    - "australiaeast"
+    - "canadacentral"
+    - "brazilsouth"
+    - "japaneast"
+
+  reason: "Contoso Corporate Policy CP-DATA-001 — all SOC telemetry and PII must remain in US regions"
+
+  constraints:
+    - "No data replication to non-US regions (including Azure paired regions)"
+    - "ADX cluster must be in US region (currently eastus2)"
+    - "SOAR playbook execution must be in US regions"
+    - "No cross-border data export for enrichment — use US-based threat intel APIs only"
+    - "Archive storage (blob) must use US-only GRS replication"
+
+# -----------------------------------------------------------------------------
+# Regulatory Frameworks
+# -----------------------------------------------------------------------------
+regulatory_frameworks:
+
+  - name: "NIST 800-53 Rev 5"
+    description: "NIST Special Publication 800-53 — Security and Privacy Controls"
+    standard_version: "Rev 5"
+    # Contoso uses NIST as their primary control framework
+    primary_framework: true
+    impact:
+      - "audit-logging"             # AU-2, AU-3 — audit event logging
+      - "continuous-monitoring"     # CA-7 — continuous security monitoring
+      - "incident-response"         # IR-1 through IR-8 — IR policy and procedures
+      - "access-control"            # AC-2, AC-6 — account management, least privilege
+      - "data-retention"            # AU-11 — audit record retention
+    control_mappings:
+      # Key controls that directly impact SOC operations
+      AU-2: "Audit events defined — all security-relevant events logged"
+      AU-6: "Audit review and analysis — Sentinel analytics rules + hunting"
+      AU-11: "Audit record retention — 1yr interactive, 7yr archive"
+      IR-4: "Incident handling — SOAR playbooks + escalation procedures"
+      IR-5: "Incident monitoring — Sentinel alert routing"
+      SI-4: "System monitoring — MDE, MDI, MDCA, Defender for Cloud"
+    notes: "Annual NIST assessment by Deloitte. Last assessment: 2025-11. Next: 2026-11."
+
+  - name: "PCI-DSS"
+    description: "Payment Card Industry Data Security Standard"
+    standard_version: "4.0"
+    impact:
+      - "data-retention"            # Req 10.7 — 1yr online, 7yr total
+      - "access-logging"            # Req 10.1 — log all access to cardholder data
+      - "quarterly-scanning"        # Req 11.2 — quarterly vulnerability scans
+      - "file-integrity"            # Req 11.5 — file integrity monitoring
+      - "network-segmentation"      # Req 1.2 — network segmentation testing
+    control_mappings:
+      "10.1": "Audit trails — SecurityEvent + SigninLogs capture all access"
+      "10.7": "Retention — 1yr interactive, 7yr archive for security logs"
+      "10.6": "Log review — automated via Sentinel analytics rules"
+      "11.5": "FIM — Microsoft Defender for Endpoint file integrity monitoring"
+    # PCI scope: payment processing systems in contoso-payments VLAN
+    scope: "Cardholder Data Environment (CDE) — contoso-payments network segment"
+    notes: "QSA: Coalfire. Last assessment: 2025-09. Next: 2026-09. ROC on file."
+
+  - name: "SOC 2 Type II"
+    description: "Service Organization Control 2 — Trust Services Criteria"
+    standard_version: "2024"
+    impact:
+      - "continuous-monitoring"     # CC7.1 — monitoring activities
+      - "incident-response"         # CC7.3, CC7.4 — incident management
+      - "change-management"         # CC8.1 — change management
+      - "access-control"            # CC6.1 — logical access controls
+    control_mappings:
+      "CC7.1": "Monitoring — Sentinel + MDE continuous monitoring"
+      "CC7.3": "Incident identification — alert routing + escalation"
+      "CC7.4": "Incident response — SOAR playbooks + IR procedures"
+      "CC6.1": "Access controls — PIM + RBAC conventions"
+    notes: "Auditor: Ernst & Young. Report period: 2025-07 to 2026-06. Annual."
+
+# -----------------------------------------------------------------------------
+# Retention Requirements — Per-table overrides
+# -----------------------------------------------------------------------------
+retention_requirements:
+
+  default:
+    interactive_days: 90
+    archive_days: 2555          # 7 years total (PCI-DSS Req 10.7)
+    total_days: 2645
+
+  overrides:
+    # --- PCI-DSS mandated retention ---
+    - table: "SecurityEvent"
+      interactive_days: 365
+      archive_days: 2190        # 7 years total
+      reason: "PCI-DSS Req 10.7 — 1yr immediate access, 7yr total retention"
+
+    - table: "SigninLogs"
+      interactive_days: 180
+      archive_days: 2375        # 7 years total
+      reason: "Identity forensics need 6-month interactive window. NIST AU-11."
+
+    - table: "AADNonInteractiveUserSignInLogs"
+      interactive_days: 180
+      archive_days: 2375
+      reason: "Same retention as SigninLogs — service account abuse detection"
+
+    - table: "CommonSecurityLog"
+      interactive_days: 365
+      archive_days: 2190
+      reason: "PCI-DSS Req 10.7 — firewall logs are CDE-scoped"
+
+    - table: "OfficeActivity"
+      interactive_days: 90
+      archive_days: 2555
+      reason: "SOC 2 CC7.1 — M365 audit trail. 90d interactive sufficient."
+
+    # --- High-volume tables with shorter retention ---
+    - table: "ProxyLogs_CL"
+      interactive_days: 30
+      archive_days: 60
+      tier: "Basic"
+      reason: "High volume (85 GB/day). 30d interactive for IOC sweeps. No regulatory minimum."
+
+    - table: "DNSQueryLogs_CL"
+      interactive_days: 30
+      archive_days: 90
+      tier: "Basic"
+      reason: "High volume (40 GB/day). 30d interactive for DNS-based detection."
+
+    - table: "NetFlowLogs_CL"
+      interactive_days: 30
+      archive_days: 90
+      tier: "Auxiliary"
+      reason: "Highest volume (120 GB/day). Historical netflow in ADX covers long lookback."
+
+    - table: "VPNConnectionLogs_CL"
+      interactive_days: 90
+      archive_days: 365
+      tier: "Auxiliary"
+      reason: "VPN session data — 90d interactive for access auditing"
+
+  agent_guidance:
+    - "Check retention before writing queries with timespan > 90 days"
+    - "Archive restore takes 1-5 minutes — factor into investigation timelines"
+    - "Basic tier tables: use search operator, no join/summarize"
+    - "Auxiliary tier tables: search-only, plan queries accordingly"
+    - "For data older than workspace retention, check ADX Archive database"
+    - "PCI-scoped tables (SecurityEvent, CommonSecurityLog) — do NOT reduce retention"
+    - "Cross-reference migration status before assuming table availability"

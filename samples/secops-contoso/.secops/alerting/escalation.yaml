@@ -1,0 +1,153 @@
+# =============================================================================
+# .secops/alerting/escalation.yaml — Contoso 4-Tier Escalation
+# =============================================================================
+# Progressive escalation from L1 triage through CISO crisis response.
+# Includes after-hours policy, severity overrides, and contact details.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Escalation Tiers
+# -----------------------------------------------------------------------------
+tiers:
+
+  # Tier 1 — SOC L1 Analyst (24/7 on rotation)
+  - tier: 1
+    name: "SOC L1 — Initial Triage"
+    timeout_minutes: 15
+    contacts:
+      - type: "team"
+        name: "Contoso SOC L1 On-Call"
+        channel: "teams://contoso-soc-alerts"
+      - type: "individual"
+        name: "L1 Shift Lead"
+        method: "teams"
+        handle: "@contoso-l1-shift-lead"
+    actions:
+      - "Acknowledge alert within SLA"
+      - "Initial triage — true positive / false positive / benign positive"
+      - "If TP: assign severity, create incident, tag MITRE ATT&CK"
+      - "If FP: close with reason, flag rule for tuning"
+      - "Escalate to L2 if investigation needed or scope unclear"
+
+  # Tier 2 — SOC L2 Analyst (investigation)
+  - tier: 2
+    name: "SOC L2 — Investigation & Containment"
+    timeout_minutes: 30
+    contacts:
+      - type: "team"
+        name: "Contoso SOC L2 Investigation"
+        channel: "teams://contoso-soc-investigations"
+      - type: "individual"
+        name: "SOC Shift Lead"
+        method: "teams"
+        handle: "@contoso-soc-shift-lead"
+      - type: "individual"
+        name: "SOC Shift Lead (phone)"
+        method: "phone"
+        handle: "+1-555-CONT-S0C2"
+    actions:
+      - "Deep investigation — timeline reconstruction, scope analysis"
+      - "Execute containment playbooks if active threat"
+      - "Isolate endpoints via MDE if lateral movement confirmed"
+      - "Notify SOC Lead if high-impact or multi-system"
+      - "Document findings in incident timeline"
+
+  # Tier 3 — SOC Lead / Manager
+  - tier: 3
+    name: "SOC Lead — Management Response"
+    timeout_minutes: 60
+    contacts:
+      - type: "individual"
+        name: "SOC Manager — Alex Chen"
+        method: "pagerduty"
+        handle: "PALEXCHEN"
+      - type: "individual"
+        name: "SOC Manager — Alex Chen (phone)"
+        method: "phone"
+        handle: "+1-555-CONT-LEAD"
+      - type: "team"
+        name: "SOC Leadership"
+        channel: "teams://contoso-soc-leadership"
+    actions:
+      - "Assume incident commander role"
+      - "Assess business impact and notify stakeholders"
+      - "Activate IR plan if needed (IRP-CONTOSO-001)"
+      - "Engage external IR retainer if scope exceeds team capacity"
+      - "Coordinate with IT Ops for infrastructure-level containment"
+
+  # Tier 4 — CISO + Executive Crisis Response
+  - tier: 4
+    name: "Executive — Crisis Response"
+    timeout_minutes: 120
+    contacts:
+      - type: "individual"
+        name: "CISO — Jordan Rivera"
+        method: "phone"
+        handle: "+1-555-CONT-CISO"
+      - type: "individual"
+        name: "CISO — Jordan Rivera (PagerDuty)"
+        method: "pagerduty"
+        handle: "PJRIVERA1"
+      - type: "individual"
+        name: "VP Legal — Pat Thompson"
+        method: "email"
+        handle: "pat.thompson@contoso.com"
+      - type: "team"
+        name: "Crisis Management Team"
+        channel: "teams://contoso-crisis-management"
+    actions:
+      - "Activate Business Continuity Plan (BCP-CONTOSO-001)"
+      - "Legal hold assessment — preservation obligations"
+      - "Regulatory notification assessment (72h GDPR, state breach laws)"
+      - "External communications — PR team, customer notification"
+      - "Board notification if material impact"
+      - "Engage forensics firm (retainer: CrowdStrike IR)"
+
+# -----------------------------------------------------------------------------
+# Severity Overrides
+# -----------------------------------------------------------------------------
+severity_overrides:
+  Critical:
+    start_tier: 2              # Skip L1 triage — go straight to investigation
+    timeout_multiplier: 0.5    # Half normal timeouts — escalate faster
+    auto_page: true            # Automatically page L2 on-call via PagerDuty
+    notes: "Critical alerts skip triage. Assume real until proven otherwise."
+
+  High:
+    start_tier: 1
+    timeout_multiplier: 0.75   # 25% faster escalation than normal
+    notes: "High alerts follow standard path but with tighter SLAs"
+
+# -----------------------------------------------------------------------------
+# After-Hours Policy
+# -----------------------------------------------------------------------------
+after_hours:
+  timezone: "America/Chicago"  # Contoso HQ is in Chicago
+  business_hours:
+    start: "07:00"
+    end: "19:00"
+    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+  adjustments:
+    # After-hours: extend timeouts since fewer staff available
+    timeout_multiplier: 1.5
+
+    # After-hours on-call rotation
+    on_call_primary:
+      name: "After-Hours On-Call (rotating)"
+      method: "pagerduty"
+      handle: "PONCALL01"
+      schedule: "contoso-soc-afterhours-rotation"
+
+    on_call_secondary:
+      name: "After-Hours Backup"
+      method: "phone"
+      handle: "+1-555-CONT-BKUP"
+      notes: "Secondary on-call — engaged if primary doesn't respond in 10 min"
+
+  # Holidays follow company calendar — treated as after-hours
+  holiday_calendar: "contoso-corporate-holidays-2026"

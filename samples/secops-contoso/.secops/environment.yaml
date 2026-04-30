@@ -1,0 +1,115 @@
+# =============================================================================
+# .secops/environment.yaml — Contoso Corp Production Environment
+# =============================================================================
+# This is a SAMPLE configuration demonstrating the full secops-squad framework.
+# Contoso Corp operates a mature SOC with multi-tenant, cross-cloud monitoring,
+# data tiering across Sentinel and ADX, and active data migrations.
+#
+# Schema Version: 1.0
+# See: samples/secops-contoso/README.md for walkthrough
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Organization — Contoso Corp global identity and cloud posture
+# -----------------------------------------------------------------------------
+organization:
+  name: "Contoso Corp"
+  cloud: "azure-commercial"
+  primary_region: "eastus2"
+  data_residency: "us"
+  org_type: "enterprise"    # enterprise | mssp
+
+  # Contoso has hybrid-cloud presence: Azure (primary), AWS (acquired SaaS),
+  # and a small GCP footprint from a 2025 acquisition.
+  additional_clouds:
+    - provider: "aws"
+      account_id: "123456789012"
+      purpose: "Acquired SaaS product (Project Helios) — CloudTrail + GuardDuty logs"
+    - provider: "gcp"
+      project_id: "contoso-acq-meridian-prod"
+      purpose: "Meridian acquisition (2025) — GCP Audit Logs only, integration ongoing"
+
+# -----------------------------------------------------------------------------
+# Tenants — Dual-tenant Entra ID topology
+# -----------------------------------------------------------------------------
+tenants:
+  - id: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    name: "Contoso Production"
+    type: "primary"
+    # 12,000 users, all corporate workloads, production SOC infrastructure
+    notes: "Primary tenant — all SOC personnel, Sentinel, SOAR, MDE, MDI, MDCA"
+
+  - id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"
+    name: "Contoso Dev/Test"
+    type: "secondary"
+    # 800 users (engineering), mirrors prod Sentinel for detection testing
+    notes: "Dev/test tenant — detection rule staging, red team exercises"
+
+# -----------------------------------------------------------------------------
+# Subscriptions — Three SOC subscriptions across both tenants
+# -----------------------------------------------------------------------------
+subscriptions:
+  - id: "1a2b3c4d-5e6f-7890-abcd-111111111111"
+    name: "SOC-Production"
+    tenant: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    purpose: "sentinel, soar-playbooks, data-collection-endpoints"
+    # ~500 GB/day ingestion, PerGB2018 with 500GB commitment tier
+    monthly_estimate_usd: 45000
+
+  - id: "2b3c4d5e-6f7a-8901-bcde-222222222222"
+    name: "SOC-ADX"
+    tenant: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    purpose: "adx-cluster, long-term-retention, blob-archive"
+    monthly_estimate_usd: 12000
+
+  - id: "3c4d5e6f-7a8b-9012-cdef-333333333333"
+    name: "SOC-Dev"
+    tenant: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"
+    purpose: "dev-sentinel, detection-testing, red-team-lab"
+    monthly_estimate_usd: 3500
+
+# -----------------------------------------------------------------------------
+# Default Workspace
+# -----------------------------------------------------------------------------
+# Agents use this as the default target when no workspace is specified.
+default_workspace: "prod-sentinel"
+
+# -----------------------------------------------------------------------------
+# Lighthouse — Azure Lighthouse delegations
+# -----------------------------------------------------------------------------
+# Contoso is preparing Lighthouse for a subsidiary acquisition (Fabrikam).
+# Configuration is ready but not yet activated.
+lighthouse:
+  delegations: []
+  # PLANNED: Fabrikam integration Q3 2026
+  # - customer_tenant: "44556677-aabb-ccdd-eeff-001122334455"
+  #   customer_name: "Fabrikam Industries"
+  #   delegated_roles:
+  #     - "Microsoft Sentinel Contributor"
+  #     - "Microsoft Sentinel Responder"
+  #     - "Log Analytics Reader"
+  #   delegated_scopes:
+  #     - "/subscriptions/fab-sub-001/resourceGroups/rg-fabrikam-soc"
+  #   limitations:
+  #     - "No Entra ID access in Fabrikam tenant"
+  #     - "No Key Vault access — secrets managed by Fabrikam IT"
+  #     - "Playbooks require Fabrikam-side managed identity"
+  #     - "Cannot modify Fabrikam Conditional Access policies"
+
+# -----------------------------------------------------------------------------
+# MSSP — Not applicable (enterprise deployment)
+# -----------------------------------------------------------------------------
+# Contoso is NOT an MSSP. This section is commented out but preserved
+# as reference if Contoso decides to offer managed services to subsidiaries.
+managed_customers: []
+# Example MSSP structure:
+# - name: "Subsidiary Alpha"
+#   tenant_id: "aaa-bbb-ccc"
+#   access_type: "lighthouse"
+#   delegated_subscriptions:
+#     - id: "sub-alpha-001"
+#       delegated_rg: ["rg-soc-*"]
+#   sentinel_workspace: "alpha-sentinel"
+#   notes: "Lighthouse delegated, Sentinel Contributor + LA Reader"

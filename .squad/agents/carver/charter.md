@@ -20,6 +20,7 @@
 
 ## How I Work
 
+- Before any task touching Azure resources or data sources, read `.copilot/skills/secops-environment-context.md` and check `.secops/` for customer context
 - Write tests before approving any detection rule or template
 - Validate KQL queries against known-good and known-bad datasets
 - Test automation playbooks with simulated incident data

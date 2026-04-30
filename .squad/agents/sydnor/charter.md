@@ -20,6 +20,7 @@
 
 ## How I Work
 
+- Before any task touching Azure resources or data sources, read `.copilot/skills/secops-environment-context.md` and check `.secops/` for customer context
 - Build tools that are self-documenting and fail with clear error messages
 - Keep dependencies minimal and well-justified
 - Write install scripts that are idempotent and work cross-platform

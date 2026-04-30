@@ -89,3 +89,14 @@
 - Why: Unattended automation (Logic Apps, Functions, scheduled jobs) needs explicit error handling; structured results available immediately for callers
 - Herc implication: Future API wrappers for Defender, Sentinel workspace management, Entra ID follow this pattern
 - Carver validation: Graph Security API test suite (169 tests, all passing) validates this pattern
+
+🟥 **Herc Phase 4: Compliance Framework Mappings + Workbook Automation** (2026-04-30)
+- Authored 2 new SOAR skills completing the compliance and workbook automation domain:
+  1. compliance-framework-mappings.md — 6 frameworks (NIST 800-53 R5, CIS v8, PCI-DSS v4, HIPAA, SOC 2, ISO 27001:2022) mapped to Microsoft controls
+  2. workbook-automation.md — Full workbook lifecycle: ARM/Bicep templates, CRUD REST API, CI/CD pipeline, multi-workspace deployment
+- Compliance skill covers: Defender for Cloud regulatory compliance API, Secure Score mapping, gap analysis automation, evidence collection, audit report generation
+- Workbook skill covers: resource model, item types (query/param/text/grid), template engine with KQL injection, cross-workspace patterns, GitHub Actions CI/CD
+- Both skills integrate with `.secops/compliance/requirements.yaml` and `.secops/workspaces/*.yaml`
+- All PowerShell functions follow Sydnor's structured result pattern (ok/error)
+- SOAR skill library now at 12 skills covering incident response, enrichment, ticketing, compliance, and visualization
+- Cross-references established: compliance data → workbook dashboards, workbook alerts → Teams notifications

@@ -1,0 +1,138 @@
+# =============================================================================
+# .secops/alerting/routing.yaml — Contoso Alert Routing Rules
+# =============================================================================
+# 7 routing rules covering endpoints, identity, exfiltration, compliance,
+# cloud security, cross-cloud, and low-severity alerts. Routes to Teams,
+# PagerDuty, and ServiceNow with SLA timers.
+#
+# Rules are evaluated in order — first match wins.
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Defaults
+# -----------------------------------------------------------------------------
+default_channel: "teams://contoso-soc-general"
+default_severity_threshold: "Medium"
+
+# ServiceNow integration (used by ticket-type destinations)
+ticketing_system:
+  type: "servicenow"
+  instance: "contoso.service-now.com"
+  assignment_group_default: "SOC-L1-Triage"
+  auto_create_incident: true
+
+# PagerDuty integration (used by pagerduty-type destinations)
+pagerduty:
+  subdomain: "contoso-soc"
+  default_service_id: "PCONTOSO1"
+
+# -----------------------------------------------------------------------------
+# Routes — Ordered routing rules (first match wins)
+# -----------------------------------------------------------------------------
+routes:
+
+  # --- Rule 1: Critical/High Endpoint Alerts → Dedicated channel + PagerDuty ---
+  - name: "endpoint-critical"
+    match:
+      severity: ["High", "Critical"]
+      product: ["Microsoft Defender for Endpoint"]
+    destination:
+      type: "teams"
+      channel: "contoso-soc-endpoint-alerts"
+      mention: "@contoso-oncall-endpoint"
+    # Also page on-call for Critical endpoint alerts
+    secondary_destination:
+      type: "pagerduty"
+      service_id: "PENDPOINT1"
+      severity_filter: ["Critical"]      # Only page for Critical, not High
+    sla_minutes: 15
+    notes: "Ransomware, credential dumping, C2 beacons — fastest response"
+
+  # --- Rule 2: Identity Alerts → Identity specialists ---
+  - name: "identity-alerts"
+    match:
+      severity: ["High", "Critical"]
+      product:
+        - "Microsoft Entra ID Protection"
+        - "Microsoft Defender for Identity"
+      # Also match specific MITRE tactics related to identity
+      mitre_tactic: ["Credential Access", "Privilege Escalation"]
+    destination:
+      type: "teams"
+      channel: "contoso-soc-identity-alerts"
+      mention: "@contoso-oncall-identity"
+    sla_minutes: 20
+    notes: "Account takeover, lateral movement via creds, Kerberoasting"
+
+  # --- Rule 3: Exfiltration Tactics → PagerDuty (highest urgency) ---
+  - name: "exfiltration-critical"
+    match:
+      mitre_tactic: ["Exfiltration"]
+      severity: ["Medium", "High", "Critical"]
+    destination:
+      type: "pagerduty"
+      service_id: "PEXFIL001"
+    secondary_destination:
+      type: "teams"
+      channel: "contoso-soc-data-loss"
+      mention: "@contoso-soc-lead"
+    sla_minutes: 5
+    notes: "Data exfiltration — immediate containment required. DLP + insider threat."
+
+  # --- Rule 4: Compliance-Tagged Alerts → Compliance team + ticket ---
+  - name: "compliance-alerts"
+    match:
+      severity: ["Medium", "High", "Critical"]
+      tags: ["PCI-DSS", "SOC2", "NIST-800-53"]
+    destination:
+      type: "teams"
+      channel: "contoso-soc-compliance"
+      mention: "@contoso-compliance-team"
+    secondary_destination:
+      type: "ticket"
+      system: "servicenow"
+      assignment_group: "SOC-Compliance"
+      priority: "P2"
+    sla_minutes: 30
+    notes: "Regulatory-tagged alerts get parallel notification to compliance team"
+
+  # --- Rule 5: Cloud Security → Cloud team ---
+  - name: "cloud-security"
+    match:
+      severity: ["Medium", "High", "Critical"]
+      product:
+        - "Microsoft Defender for Cloud"
+        - "Microsoft Defender for Cloud Apps"
+    destination:
+      type: "teams"
+      channel: "contoso-soc-cloud-security"
+    sla_minutes: 60
+    notes: "CSPM alerts, container threats, storage anomalies"
+
+  # --- Rule 6: Cross-Cloud Alerts → Dedicated cross-cloud channel ---
+  - name: "cross-cloud-alerts"
+    match:
+      severity: ["Medium", "High", "Critical"]
+      source_cloud: ["aws", "gcp"]
+    destination:
+      type: "teams"
+      channel: "contoso-soc-cross-cloud"
+      mention: "@contoso-cloud-engineers"
+    sla_minutes: 45
+    notes: "AWS CloudTrail + GCP Audit Log alerts — need multi-cloud expertise"
+
+  # --- Rule 7: Low/Info Severity → ServiceNow ticket (batch triage) ---
+  - name: "low-severity-ticketing"
+    match:
+      severity: ["Informational", "Low"]
+    destination:
+      type: "ticket"
+      system: "servicenow"
+      assignment_group: "SOC-L1-Triage"
+      priority: "P4"
+      auto_resolve_hours: 72    # Auto-close if no action in 72 hours
+    sla_minutes: 480            # 8 hours
+    notes: "Low-priority alerts triaged in batch during quiet periods"

@@ -291,3 +291,16 @@ union
 - **[Threat Hunting Foundations](threat-hunting-foundations.md)** — Core hunting patterns that these cross-workspace techniques extend.
 - **[ADX Integration](adx-integration.md)** — When cross-workspace queries hit retention or performance limits, offload to Azure Data Explorer.
 - **[Incident Investigation](incident-investigation.md)** — Use cross-workspace queries to scope incidents that span multiple environments.
+
+## Environment Context
+
+Before executing this skill, check the customer's `.secops/` knowledge framework:
+
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
+3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
+4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints
+
+If `.secops/` doesn't exist, proceed with defaults but suggest `secops-squad init --secops`.
+
+See `.copilot/skills/secops-environment-context.md` for the full discovery flow.

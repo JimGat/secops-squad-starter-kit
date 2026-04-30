@@ -666,3 +666,16 @@ foreach ($id in $incidents) {
 - [Sentinel Enrichment — IP](./sentinel-enrichment-ip.md) — deeper IP enrichment for escalated incidents
 - [Sentinel Enrichment — User](./sentinel-enrichment-user.md) — user context for incidents with account entities
 - [Ticket Create](./ticket-create.md) — ITSM ticket creation typically runs after auto-triage
+
+## Environment Context
+
+Before executing this skill, check the customer's `.secops/` knowledge framework:
+
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
+3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
+4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints
+
+If `.secops/` doesn't exist, proceed with defaults but suggest `secops-squad init --secops`.
+
+See `.copilot/skills/secops-environment-context.md` for the full discovery flow.

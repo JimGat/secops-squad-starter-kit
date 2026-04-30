@@ -1,0 +1,90 @@
+# =============================================================================
+# .secops/workspaces/dev-sentinel.yaml — Dev/Test Sentinel Workspace
+# =============================================================================
+# Contoso's detection engineering and red team testing workspace. Receives a
+# subset of production data via diagnostic settings duplication. Used for
+# testing new analytics rules before promotion to prod.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Workspace Identity
+# -----------------------------------------------------------------------------
+name: "soc-sentinel-dev"
+workspace_id: "d3v-t3st-w0rk-sp4c-9f8e7d6c5b4a"
+resource_group: "rg-soc-dev"
+subscription: "3c4d5e6f-7a8b-9012-cdef-333333333333"
+region: "eastus2"
+
+# -----------------------------------------------------------------------------
+# Sentinel Configuration
+# -----------------------------------------------------------------------------
+sentinel_enabled: true
+
+# Pay-as-you-go — dev workspace ingests ~15 GB/day, not worth commitment tier
+tier: "PerGB2018"
+commitment_tier_gb: null
+
+# -----------------------------------------------------------------------------
+# Retention — Short retention, no compliance requirements
+# -----------------------------------------------------------------------------
+retention:
+  default_days: 30
+  interactive_days: 30
+  archive_days: 90           # 120 days total — enough for detection tuning
+
+# -----------------------------------------------------------------------------
+# Custom Tables — Subset of prod for testing
+# -----------------------------------------------------------------------------
+custom_tables:
+
+  - name: "SimulatedAttacks_CL"
+    tier: "Analytics"
+    daily_gb: 2
+    dcr_id: "dcr-contoso-simulated-dev-001"
+    dce_endpoint: "https://dce-soc-dev-contoso.eastus2.ingest.monitor.azure.com"
+    notes: "Atomic Red Team + Caldera output — synthetic attack telemetry"
+
+  - name: "DetectionTestResults_CL"
+    tier: "Analytics"
+    daily_gb: 0.1
+    notes: "Detection rule test harness output — pass/fail/coverage metrics"
+
+# -----------------------------------------------------------------------------
+# Data Connectors — Minimal set for detection testing
+# -----------------------------------------------------------------------------
+data_connectors:
+
+  - name: "Microsoft Defender for Endpoint"
+    status: "connected"
+    tables:
+      - "DeviceProcessEvents"
+      - "DeviceNetworkEvents"
+      - "DeviceFileEvents"
+    notes: "50 lab VMs only — isolated red team environment"
+
+  - name: "Microsoft Entra ID"
+    status: "connected"
+    tables:
+      - "SigninLogs"
+      - "AuditLogs"
+    notes: "Dev/test tenant sign-ins — synthetic users for identity attack simulation"
+
+  - name: "Syslog via AMA"
+    status: "connected"
+    tables:
+      - "Syslog"
+    notes: "10 Linux lab servers — attack range infrastructure"
+
+# -----------------------------------------------------------------------------
+# Naming Conventions — Same prefix with -DEV suffix
+# -----------------------------------------------------------------------------
+naming_conventions:
+  analytics_rules: "CTSOCr-DEV-{severity}-{mitre_tactic}-{description}"
+  watchlists: "wl-contoso-dev-{purpose}-{source}"
+  workbooks: "wb-contoso-dev-{domain}-{description}"
+  automation_rules: "ar-contoso-dev-{action}-{trigger}"
+  # DEV rules are promoted to prod after passing test harness validation

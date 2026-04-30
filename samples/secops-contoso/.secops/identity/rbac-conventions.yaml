@@ -1,0 +1,190 @@
+# =============================================================================
+# .secops/identity/rbac-conventions.yaml — Contoso RBAC Naming & Roles
+# =============================================================================
+# Standardized naming patterns, SOC tier role bundles, PIM policies,
+# and custom role definitions. Agents MUST follow these conventions.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Naming Patterns
+# -----------------------------------------------------------------------------
+naming_patterns:
+
+  security_groups: "sg-contoso-{scope}-{role}-{env}"
+  # Examples:
+  #   sg-contoso-sentinel-contributor-prod
+  #   sg-contoso-sentinel-reader-dev
+  #   sg-contoso-adx-viewer-prod
+
+  role_assignable_groups: "rag-contoso-{role}-{purpose}"
+  # Examples:
+  #   rag-contoso-security-reader-soc-l1
+  #   rag-contoso-security-admin-soc-lead
+
+  pim_groups: "pim-contoso-{role}-{scope}"
+  # Examples:
+  #   pim-contoso-sentinel-responder-prod
+  #   pim-contoso-global-admin-break-glass
+
+  app_registrations: "app-contoso-soc-{purpose}-{env}"
+  # Examples:
+  #   app-contoso-soc-soar-playbooks-prod
+  #   app-contoso-soc-graph-security-prod
+
+  managed_identities: "mi-contoso-{service}-{purpose}-{env}"
+  # Examples:
+  #   mi-contoso-logicapp-soar-prod
+  #   mi-contoso-func-dcr-ingestion-prod
+
+# -----------------------------------------------------------------------------
+# Role Assignment Templates — SOC tiers
+# -----------------------------------------------------------------------------
+role_templates:
+
+  # L1 — Triage Analysts (24/7 shift workers)
+  soc_l1:
+    description: "Triage analysts — read + respond, cannot create rules or modify config"
+    headcount: 8
+    assignments:
+      - role: "Microsoft Sentinel Reader"
+        scope: "sentinel-workspace"
+      - role: "Microsoft Sentinel Responder"
+        scope: "sentinel-workspace"
+      - role: "Security Reader"
+        scope: "tenant"
+    group: "sg-contoso-sentinel-responder-prod"
+    notes: "Permanent assignment — no PIM required for L1 read/respond roles"
+
+  # L2 — Investigation Analysts
+  soc_l2:
+    description: "Investigation analysts — can create hunting queries, run notebooks"
+    headcount: 5
+    assignments:
+      - role: "Microsoft Sentinel Contributor"
+        scope: "sentinel-workspace"
+      - role: "Log Analytics Contributor"
+        scope: "log-analytics-workspace"
+      - role: "Security Reader"
+        scope: "tenant"
+      - role: "Data Explorer Viewer"
+        scope: "adx-cluster"
+        notes: "Read-only ADX access for historical hunting"
+    group: "sg-contoso-sentinel-contributor-prod"
+    notes: "Sentinel Contributor requires PIM activation for rule changes"
+
+  # L3 — Detection Engineers + SOAR Developers
+  soc_l3:
+    description: "Detection engineering, SOAR development, data pipeline management"
+    headcount: 3
+    assignments:
+      - role: "Microsoft Sentinel Contributor"
+        scope: "sentinel-workspace"
+      - role: "Logic App Contributor"
+        scope: "soar-resource-group"
+      - role: "Log Analytics Contributor"
+        scope: "log-analytics-workspace"
+      - role: "Monitoring Contributor"
+        scope: "dcr-resource-group"
+      - role: "Data Explorer Contributor"
+        scope: "adx-cluster"
+      - role: "Storage Blob Data Reader"
+        scope: "archive-storage-account"
+        notes: "Read access to blob-backed external tables in ADX"
+    group: "sg-contoso-sentinel-engineer-prod"
+
+  # SOC Lead
+  soc_lead:
+    description: "SOC leadership — full workspace admin, connector management, reporting"
+    headcount: 2
+    assignments:
+      - role: "Microsoft Sentinel Contributor"
+        scope: "sentinel-workspace"
+      - role: "Log Analytics Contributor"
+        scope: "log-analytics-workspace"
+      - role: "Security Admin"
+        scope: "tenant"
+      - role: "Data Explorer Admin"
+        scope: "adx-cluster"
+    group: "sg-contoso-sentinel-admin-prod"
+
+# -----------------------------------------------------------------------------
+# Custom Role Definitions — Contoso-specific Azure custom roles
+# -----------------------------------------------------------------------------
+custom_roles:
+
+  - name: "Contoso SOC Incident Responder"
+    id: "cr-contoso-incident-responder"
+    description: "Can manage incidents and run containment playbooks, but cannot modify analytics rules"
+    permissions:
+      actions:
+        - "Microsoft.SecurityInsights/incidents/*"
+        - "Microsoft.SecurityInsights/cases/*"
+        - "Microsoft.Logic/workflows/run/action"
+      not_actions:
+        - "Microsoft.SecurityInsights/alertRules/*"
+        - "Microsoft.SecurityInsights/settings/*"
+    assignable_scopes:
+      - "/subscriptions/1a2b3c4d-5e6f-7890-abcd-111111111111/resourceGroups/rg-soc-prod"
+    notes: "Used by L1 analysts who need to run playbooks but shouldn't modify detection logic"
+
+  - name: "Contoso SOC ADX Hunter"
+    id: "cr-contoso-adx-hunter"
+    description: "Read-only ADX access + ability to create temp tables for hunting"
+    permissions:
+      actions:
+        - "Microsoft.Kusto/clusters/databases/read"
+        - "Microsoft.Kusto/clusters/databases/query/action"
+      not_actions:
+        - "Microsoft.Kusto/clusters/databases/write"
+        - "Microsoft.Kusto/clusters/databases/remove/action"
+    assignable_scopes:
+      - "/subscriptions/2b3c4d5e-6f7a-8901-bcde-222222222222/resourceGroups/rg-soc-adx"
+    notes: "Used by L2 analysts during threat hunting — read + query only, no writes"
+
+# -----------------------------------------------------------------------------
+# PIM Configuration
+# -----------------------------------------------------------------------------
+pim:
+  enabled: true
+
+  eligible_roles:
+    - role: "Global Administrator"
+      max_duration_hours: 1
+      require_justification: true
+      require_approval: true
+      require_mfa: true
+      approvers: ["sg-contoso-sentinel-admin-prod"]
+      notes: "Break-glass ONLY — two-person approval required"
+
+    - role: "Security Admin"
+      max_duration_hours: 8
+      require_justification: true
+      require_approval: false
+      require_mfa: true
+      notes: "SOC leads self-activate for connector mgmt and policy changes"
+
+    - role: "Microsoft Sentinel Contributor"
+      max_duration_hours: 8
+      require_justification: true
+      require_approval: false
+      require_mfa: true
+      notes: "L2/L3 activate for detection engineering sessions"
+
+    - role: "Logic App Contributor"
+      max_duration_hours: 4
+      require_justification: true
+      require_approval: false
+      require_mfa: true
+      notes: "L3 activate for SOAR playbook deployments"
+
+  permanent_roles:
+    - role: "Security Reader"
+      notes: "Always-on for all SOC personnel"
+    - role: "Microsoft Sentinel Reader"
+      notes: "Always-on for all SOC personnel"
+    - role: "Microsoft Sentinel Responder"
+      notes: "Always-on for L1+ — incident management doesn't need PIM"

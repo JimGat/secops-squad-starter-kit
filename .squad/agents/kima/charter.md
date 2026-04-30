@@ -19,6 +19,7 @@
 
 ## How I Work
 
+- Before any task touching Azure resources or data sources, read `.copilot/skills/secops-environment-context.md` and check `.secops/` for customer context
 - Map every detection to MITRE ATT&CK techniques — no orphan rules
 - Design detection rules that minimize false positives while maximizing true positive coverage
 - Build incident response workflows that are actionable, not just documented

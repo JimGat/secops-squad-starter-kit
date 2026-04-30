@@ -27,6 +27,10 @@
 - **Rate limiting & API patterns:** Comprehensive reference for exponential backoff, token buckets, quota pooling, circuit breaker, pagination, async operations
 - **Sentinel API wrapper:** 20+ PowerShell functions covering incidents, analytics rules, TI, workbooks, connectors, watchlists with bulk operations and .secops/ integration
 
+📌 **Phase 7 Deliverables (2026-04-30)**
+- **`skills/detection/advanced-hunting-api.md`** (336 lines) — MDE/XDR/Graph API endpoints, unified schema, query packs, custom detections, Live Response session management & forensic collection, hunting patterns by MITRE ATT&CK (TA0001–TA0010), PowerShell integration with GCC-High support
+- **`skills/kql/query-builder.md`** (408 lines) — Template syntax with `{{parameter}}` substitution/conditionals/iteration, pre-built templates (login anomaly, process creation, network monitoring), parameterized queries, 4-tier validation (syntax, schema, performance, injection), optimization patterns (filter-first, materialize, partition, string operator hierarchy), cross-platform differences (Log Analytics vs ADX vs Advanced Hunting), PowerShell query routing via `.secops/` integration
+
 📌 **Cross-Team Impact**
 - **Kima:** Can reference PowerShell/Sentinel/Defender skills for detection automation
 - **Herc:** Azure Monitor skill aligns with SOAR playbook triggers; migration patterns complement ADX orchestration

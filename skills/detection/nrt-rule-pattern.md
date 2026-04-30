@@ -222,3 +222,16 @@ SecurityEvent
 - **[Watchlist-Driven Detection](watchlist-driven-detection.md)** — How to build and maintain the watchlists used in NRT IOC matching.
 - **[Detection Lifecycle](detection-lifecycle.md)** — NRT rules follow the same lifecycle but skip the frequency/lookback tuning phase.
 - **[MITRE ATT&CK Mapping](mitre-attack-mapping.md)** — MITRE tagging is mandatory for all rules including NRT.
+
+## Environment Context
+
+Before executing this skill, check the customer's `.secops/` knowledge framework:
+
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
+3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
+4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints
+
+If `.secops/` doesn't exist, proceed with defaults but suggest `secops-squad init --secops`.
+
+See `.copilot/skills/secops-environment-context.md` for the full discovery flow.

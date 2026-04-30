@@ -297,3 +297,16 @@ CommonSecurityLog
 - **[ADX Integration](../kql/adx-integration.md)** — `adx()` proxy for querying ADX data from Sentinel.
 - **[Cost Optimization](../log-analytics/cost-optimization.md)** — Log Analytics cost reduction strategies that complement migration.
 - **[Retention & Archive](../log-analytics/retention-archive.md)** — Compare Log Analytics archive tier with ADX retention.
+
+## Environment Context
+
+Before executing this skill, check the customer's `.secops/` knowledge framework:
+
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
+3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
+4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints
+
+If `.secops/` doesn't exist, proceed with defaults but suggest `secops-squad init --secops`.
+
+See `.copilot/skills/secops-environment-context.md` for the full discovery flow.

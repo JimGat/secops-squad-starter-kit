@@ -20,6 +20,7 @@
 
 ## How I Work
 
+- Before any task touching Azure resources or data sources, read `.copilot/skills/secops-environment-context.md` and check `.secops/` for customer context
 - Design playbooks that are idempotent and retryable
 - Build automation with proper error handling and rollback capabilities
 - Use managed connectors where possible, custom connectors when necessary

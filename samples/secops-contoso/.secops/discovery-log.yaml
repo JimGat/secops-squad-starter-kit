@@ -1,0 +1,91 @@
+# =============================================================================
+# .secops/discovery-log.yaml — Pre-Populated Agent Discovery Log
+# =============================================================================
+# This log shows what agents discover during real operations. Each entry
+# represents a fact an agent found and recorded for human review.
+#
+# Schema Version: 1.0
+#
+# AGENT INSTRUCTIONS:
+#   1. Append new entries to the `discoveries` list below
+#   2. Always include: timestamp, agent, confidence, fact, source
+#   3. Never modify or delete existing entries — append-only log
+#   4. Use ISO 8601 timestamps with timezone offset
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Discoveries — Real findings from agent operations
+# -----------------------------------------------------------------------------
+discoveries:
+
+  # --- Discovery 1: Table location confirmed during threat hunt ---
+  - timestamp: "2026-04-15T09:23:41-05:00"
+    agent: "freamon"
+    confidence: "high"
+    fact: "SecurityEvent table confirmed in soc-sentinel-prod with Analytics tier"
+    source: "KQL query: SecurityEvent | take 1 | project TimeGenerated — returned 2026-04-15T09:23:38Z"
+    data_source: "SecurityEvent"
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    notes: "Confirmed during initial workspace discovery sweep"
+
+  # --- Discovery 2: Basic tier limitation encountered ---
+  - timestamp: "2026-04-17T14:05:22-05:00"
+    agent: "freamon"
+    confidence: "high"
+    fact: "ProxyLogs_CL is Basic tier — join operator not supported"
+    source: "KQL error: 'The request was denied because table ProxyLogs_CL is configured with Basic logs plan and the query includes operators that are not supported'"
+    data_source: "ProxyLogs_CL"
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Basic"
+    notes: "Attempted join with SigninLogs for proxy-to-identity correlation. Must use search operator and materialize results first."
+    promoted_to: "data-sources/data-source-map.yaml"
+
+  # --- Discovery 3: Cross-cloud identity mapping found ---
+  - timestamp: "2026-04-20T11:15:03-05:00"
+    agent: "kima"
+    confidence: "medium"
+    fact: "CrossCloudIdentityMap_CL exists with 847 AWS-to-Entra mappings"
+    source: "KQL query: CrossCloudIdentityMap_CL | summarize count() by SourceCloud — returned aws:847, gcp:112"
+    data_source: "CrossCloudIdentityMap_CL"
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    notes: "Mapping table is updated weekly. GCP mappings are sparse — Meridian acquisition identity sync still in progress."
+
+  # --- Discovery 4: Permission issue during SOAR playbook deployment ---
+  - timestamp: "2026-04-22T16:42:18-05:00"
+    agent: "herc"
+    confidence: "high"
+    fact: "Logic App managed identity mi-contoso-logicapp-soar-prod lacks Microsoft Sentinel Responder role on dev workspace"
+    source: "Deployment error: 'AuthorizationFailed: The client mi-contoso-logicapp-soar-prod does not have authorization to perform action Microsoft.SecurityInsights/incidents/write over scope /subscriptions/3c4d5e6f.../rg-soc-dev'"
+    tenant_id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"
+    notes: "Managed identity has Sentinel Responder in prod but not dev. Need role assignment in SOC-Dev subscription. Filed as work item SOC-PLAT-2026-0089."
+
+  # --- Discovery 5: Migration status verification ---
+  - timestamp: "2026-04-25T08:30:55-05:00"
+    agent: "freamon"
+    confidence: "high"
+    fact: "NetFlowLogs_CL in Sentinel receiving data — 120 GB/day observed over last 7 days"
+    source: "KQL query: Usage | where DataType == 'NetFlowLogs_CL' | summarize sum(Quantity) by bin(TimeGenerated, 1d) | top 7 by TimeGenerated"
+    data_source: "NetFlowLogs_CL"
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Auxiliary"
+    notes: "Migration mig-001 parallel ingestion confirmed working. Volume matches ADX source. No data loss observed over 7-day window."
+
+  # --- Discovery 6: Unexpected table found during investigation ---
+  - timestamp: "2026-04-28T13:17:44-05:00"
+    agent: "kima"
+    confidence: "low"
+    fact: "LegacyAVLogs_CL table exists in prod workspace — appears to be deprecated AV telemetry"
+    source: "KQL query: search 'malware' | summarize count() by $table — LegacyAVLogs_CL returned 23 results"
+    data_source: "LegacyAVLogs_CL"
+    location: "sentinel"
+    workspace: "prod-sentinel"
+    tier: "Analytics"
+    notes: "Table appears stale — last record is 2025-08-14. Likely from pre-MDE antivirus connector. Recommend reviewing for decommission."

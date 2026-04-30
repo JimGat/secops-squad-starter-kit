@@ -20,6 +20,7 @@
 
 ## How I Work
 
+- Before any task touching Azure resources or data sources, read `.copilot/skills/secops-environment-context.md` and check `.secops/` for customer context
 - Write KQL that is readable, performant, and well-commented
 - Optimize queries for cost — `summarize` early, filter early, avoid full scans
 - Design data models that support both real-time detection and historical hunting

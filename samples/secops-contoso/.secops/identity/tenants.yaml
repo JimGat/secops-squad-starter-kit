@@ -1,0 +1,109 @@
+# =============================================================================
+# .secops/identity/tenants.yaml — Contoso Multi-Tenant Topology
+# =============================================================================
+# Full tenant landscape for Contoso Corp. Two active tenants with planned
+# Lighthouse delegation for an upcoming subsidiary acquisition.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Tenants
+# -----------------------------------------------------------------------------
+tenants:
+
+  - id: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    name: "Contoso Production"
+    type: "primary"
+    cloud: "azure-commercial"
+    domain: "contoso.com"
+    user_count: 12000
+    notes: >
+      Primary tenant. All SOC personnel, executives, and corporate users.
+      Sentinel, SOAR, MDE, MDI, MDCA, Entra ID P2 all deployed here.
+      6 on-prem domain controllers (contoso.local), hybrid-joined endpoints.
+
+  - id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"
+    name: "Contoso Dev/Test"
+    type: "secondary"
+    cloud: "azure-commercial"
+    domain: "devtest.contoso.com"
+    user_count: 800
+    notes: >
+      Engineering tenant. Mirrors prod Sentinel for detection rule testing.
+      Red team exercises run here. Isolated from prod — no trust relationship.
+      50 lab VMs for attack simulation (Atomic Red Team, Caldera).
+
+  # PLANNED: Fabrikam acquisition — Lighthouse delegation Q3 2026
+  # - id: "44556677-aabb-ccdd-eeff-001122334455"
+  #   name: "Fabrikam Industries"
+  #   type: "lighthouse-delegated"
+  #   cloud: "azure-commercial"
+  #   domain: "fabrikam.com"
+  #   user_count: 3500
+  #   notes: >
+  #     Acquisition target. Lighthouse delegation in planning.
+  #     Will get Sentinel Contributor + Responder + LA Reader access
+  #     scoped to rg-fabrikam-soc resource group only.
+
+# -----------------------------------------------------------------------------
+# Cross-Tenant Access
+# -----------------------------------------------------------------------------
+cross_tenant_access:
+
+  b2b:
+    enabled: true
+    target_tenants:
+      - tenant_id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"
+        tenant_name: "Contoso Dev/Test"
+        access_level: "member"
+        # 15 SOC engineers have B2B guest accounts in dev/test for rule testing
+        notes: "SOC engineers (sg-soc-devtest-access) have member-level B2B access"
+
+  lighthouse:
+    enabled: false
+    # Will be enabled when Fabrikam acquisition completes
+    # delegations:
+    #   - customer_tenant: "44556677-aabb-ccdd-eeff-001122334455"
+    #     customer_name: "Fabrikam Industries"
+    #     delegated_roles:
+    #       - "Microsoft Sentinel Contributor"
+    #       - "Microsoft Sentinel Responder"
+    #       - "Log Analytics Reader"
+    #     delegated_scopes:
+    #       - "/subscriptions/fab-sub-001/resourceGroups/rg-fabrikam-soc"
+    #     limitations:
+    #       - "No Entra ID access in Fabrikam tenant"
+    #       - "No Key Vault access — Fabrikam manages their own secrets"
+    #       - "Playbooks require Fabrikam-side managed identity"
+    #       - "Cannot create or modify Conditional Access policies"
+    #       - "No access to Fabrikam M365 audit logs directly"
+
+# -----------------------------------------------------------------------------
+# Service Principals — Cross-tenant app registrations
+# -----------------------------------------------------------------------------
+service_principals:
+  - name: "app-soc-soar-playbooks-prod"
+    app_id: "sp-soar-1a2b-3c4d-5e6f-7a8b9c0d1e2f"
+    tenant: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    purpose: "Logic App managed identity for SOAR playbook execution"
+    roles:
+      - "Microsoft Sentinel Responder"
+      - "Logic App Contributor"
+
+  - name: "app-soc-graph-security-prod"
+    app_id: "sp-graph-2b3c-4d5e-6f7a-8b9c0d1e2f3a"
+    tenant: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    purpose: "Graph Security API access for alert correlation and TI enrichment"
+    roles:
+      - "SecurityEvents.ReadWrite.All"
+      - "ThreatIndicators.ReadWrite.OwnedBy"
+
+  - name: "app-soc-dcr-ingestion-prod"
+    app_id: "sp-dcr-3c4d-5e6f-7a8b-9c0d1e2f3a4b"
+    tenant: "a3b1c2d4-e5f6-7890-abcd-ef1234567890"
+    purpose: "Data collection rule ingestion for custom tables"
+    roles:
+      - "Monitoring Metrics Publisher"

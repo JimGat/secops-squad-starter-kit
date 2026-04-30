@@ -12,6 +12,7 @@ How to decide who handles what.
 | Templates, install scripts, CLI, framework | Sydnor | Template engines, build system, CI/CD, developer tooling, package management |
 | Testing, validation, quality | Carver | KQL query testing, template validation, edge case discovery, test harnesses |
 | Architecture, scope, priorities, code review | McNulty | Architecture decisions, PR review, issue triage, scope management, design reviews |
+| Environment context, .secops/ framework | All agents (self-serve) | Agents read .secops/ directly; no routing needed. See .copilot/skills/secops-environment-context.md |
 | Session logging | Scribe | Automatic — never needs routing |
 
 ## Issue Routing

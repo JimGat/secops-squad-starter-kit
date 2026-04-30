@@ -19,6 +19,7 @@
 
 ## How I Work
 
+- Before any task touching Azure resources or data sources, read `.copilot/skills/secops-environment-context.md` and check `.secops/` for customer context
 - Review PRs thoroughly — reject if quality or scope is off
 - Keep templates reusable and patterns consistent
 - Triage issues by reading content, assigning the right squad member

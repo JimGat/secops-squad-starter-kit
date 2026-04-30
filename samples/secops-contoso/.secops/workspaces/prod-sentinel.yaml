@@ -1,0 +1,185 @@
+# =============================================================================
+# .secops/workspaces/prod-sentinel.yaml — Production Sentinel Workspace
+# =============================================================================
+# Contoso's primary SOC workspace. Handles ~500 GB/day across endpoints,
+# identity, cloud, network, and cross-cloud sources. Uses a mix of Analytics,
+# Basic, and Auxiliary tiers to optimize cost vs. query capability.
+#
+# Schema Version: 1.0
+# =============================================================================
+
+schema_version: "1.0"
+
+# -----------------------------------------------------------------------------
+# Workspace Identity
+# -----------------------------------------------------------------------------
+name: "soc-sentinel-prod"
+workspace_id: "c0nt0s0-s0c1-pr0d-w0rk-1a2b3c4d5e6f"
+resource_group: "rg-soc-prod"
+subscription: "1a2b3c4d-5e6f-7890-abcd-111111111111"
+region: "eastus2"
+
+# -----------------------------------------------------------------------------
+# Sentinel Configuration
+# -----------------------------------------------------------------------------
+sentinel_enabled: true
+
+# PerGB2018 with 500 GB/day commitment tier — ~$8K/month savings over PAYG
+tier: "PerGB2018"
+commitment_tier_gb: 500
+
+# -----------------------------------------------------------------------------
+# Retention Configuration
+# -----------------------------------------------------------------------------
+retention:
+  default_days: 90
+  interactive_days: 90
+  archive_days: 2555        # 7 years total — PCI-DSS Req 10.7
+
+# -----------------------------------------------------------------------------
+# Custom Tables — Tables with non-default tiers or ingestion configs
+# -----------------------------------------------------------------------------
+# Contoso uses all three log tiers to balance cost and query capability.
+custom_tables:
+
+  # --- Analytics Tier (full KQL, highest cost) ---
+
+  - name: "CustomThreatIntel_CL"
+    tier: "Analytics"
+    daily_gb: 0.8
+    dcr_id: "dcr-contoso-threatintel-prod-001"
+    dce_endpoint: "https://dce-soc-prod-contoso.eastus2.ingest.monitor.azure.com"
+    notes: "Custom TI feed from Contoso Threat Intel team — STIX/TAXII ingestion"
+
+  - name: "HoneypotAlerts_CL"
+    tier: "Analytics"
+    daily_gb: 0.2
+    dcr_id: "dcr-contoso-honeypot-prod-001"
+    dce_endpoint: "https://dce-soc-prod-contoso.eastus2.ingest.monitor.azure.com"
+    notes: "Internal honeypot network — any hit is suspicious by definition"
+
+  # --- Basic Tier (search-only, moderate cost) ---
+
+  - name: "AWSCloudTrail_CL"
+    tier: "Basic"
+    daily_gb: 18
+    notes: "AWS CloudTrail from Project Helios — S3 → Event Hub → DCR pipeline"
+
+  - name: "GCPAuditLogs_CL"
+    tier: "Basic"
+    daily_gb: 5
+    notes: "GCP audit logs from Meridian acquisition — Pub/Sub → Event Hub → DCR"
+
+  - name: "ProxyLogs_CL"
+    tier: "Basic"
+    daily_gb: 85
+    notes: "Zscaler web proxy logs — high volume, used for IOC sweeps only"
+
+  - name: "DNSQueryLogs_CL"
+    tier: "Basic"
+    daily_gb: 40
+    notes: "DNS query logs from Infoblox — DGA detection and IOC lookups"
+
+  # --- Auxiliary Tier (lowest cost, search-only, limited retention) ---
+
+  - name: "NetFlowLogs_CL"
+    tier: "Auxiliary"
+    daily_gb: 120
+    notes: "Network flow data — migrating from ADX (mig-001). Lateral movement detection."
+
+  - name: "VPNConnectionLogs_CL"
+    tier: "Auxiliary"
+    daily_gb: 8
+    notes: "GlobalProtect VPN connection logs — session metadata for remote access auditing"
+
+  # --- Archive-eligible tables ---
+
+  - name: "OfficeActivity"
+    tier: "Analytics"
+    daily_gb: 25
+    archive_retention_days: 2555
+    notes: "Office 365 activity — 90d interactive, 7yr archive for eDiscovery"
+
+  - name: "SecurityEvent"
+    tier: "Analytics"
+    daily_gb: 65
+    archive_retention_days: 2555
+    notes: "Windows Security Events — PCI-DSS requires 1yr interactive, 7yr total"
+
+# -----------------------------------------------------------------------------
+# Data Connectors — 8 active connectors
+# -----------------------------------------------------------------------------
+data_connectors:
+
+  - name: "Microsoft Defender for Endpoint"
+    status: "connected"
+    tables:
+      - "DeviceProcessEvents"
+      - "DeviceNetworkEvents"
+      - "DeviceFileEvents"
+      - "DeviceLogonEvents"
+      - "DeviceRegistryEvents"
+      - "DeviceImageLoadEvents"
+      - "AlertEvidence"
+    notes: "14,000 endpoints — Windows, macOS, Linux servers"
+
+  - name: "Microsoft Entra ID"
+    status: "connected"
+    tables:
+      - "SigninLogs"
+      - "AuditLogs"
+      - "AADNonInteractiveUserSignInLogs"
+      - "AADServicePrincipalSignInLogs"
+      - "AADManagedIdentitySignInLogs"
+      - "AADProvisioningLogs"
+    notes: "Full diagnostic settings — all log categories enabled"
+
+  - name: "CEF via AMA"
+    status: "connected"
+    tables:
+      - "CommonSecurityLog"
+    notes: "Palo Alto PA-5260 (3 pairs), Fortinet FG-600E (2 pairs) via syslog forwarder"
+
+  - name: "Syslog via AMA"
+    status: "connected"
+    tables:
+      - "Syslog"
+    notes: "Linux servers (Ubuntu 22.04, RHEL 9) — auth.log, syslog facilities"
+
+  - name: "AWS S3 Connector"
+    status: "connected"
+    tables:
+      - "AWSCloudTrail"
+    notes: "Project Helios AWS account — S3 → Event Hub → DCR. SQS-based notification."
+
+  - name: "Office 365"
+    status: "connected"
+    tables:
+      - "OfficeActivity"
+    notes: "Exchange, SharePoint, Teams audit logs — all workloads enabled"
+
+  - name: "Microsoft Defender for Cloud"
+    status: "connected"
+    tables:
+      - "SecurityAlert"
+      - "SecurityRecommendation"
+    notes: "Defender CSPM + all Defender plans enabled across SOC-Production sub"
+
+  - name: "Microsoft Defender for Identity"
+    status: "connected"
+    tables:
+      - "IdentityLogonEvents"
+      - "IdentityQueryEvents"
+      - "IdentityDirectoryEvents"
+    notes: "Sensors on all 6 domain controllers — contoso.local forest"
+
+# -----------------------------------------------------------------------------
+# Naming Conventions
+# -----------------------------------------------------------------------------
+naming_conventions:
+  analytics_rules: "CTSOCr-{severity}-{mitre_tactic}-{description}"
+  watchlists: "wl-contoso-{purpose}-{source}"
+  workbooks: "wb-contoso-{domain}-{description}"
+  automation_rules: "ar-contoso-{action}-{trigger}"
+  hunting_queries: "hq-contoso-{mitre_technique}-{description}"
+  # Prefix "CTSOC" = Contoso SOC — distinguishes custom rules from built-in
