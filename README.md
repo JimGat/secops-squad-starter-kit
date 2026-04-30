@@ -226,7 +226,7 @@ secops-squad playbook      SOAR playbook tools (scaffold, deploy) — Phase 2
 .\install.ps1
 ```
 
-This downloads and installs `secops-squad` CLI and initializes a new project in your current directory. See [install.sh](install.sh) and [install.ps1](install.ps1) for advanced options.
+This downloads secops-squad, creates a standalone project in `~/secops-squad` (not linked to the upstream repo), installs dependencies, and initializes a fresh git repository. See [install.sh](install.sh) and [install.ps1](install.ps1) for advanced options.
 
 ### Via npm
 

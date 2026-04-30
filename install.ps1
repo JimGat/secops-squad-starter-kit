@@ -106,24 +106,36 @@ function Install-SecOpsSquad {
     Write-Host "✅ All required prerequisites met." -ForegroundColor Green
     Write-Host ""
 
-    # Clone or update
     if (Test-Path $InstallDir) {
-        Write-Host "Updating existing installation at $InstallDir..." -ForegroundColor Cyan
-        Push-Location $InstallDir
-        try {
-            & git pull --quiet origin main 2>$null
-        } catch {
-            try {
-                & git pull --quiet origin master 2>$null
-            } catch {
-                Write-Host "  Could not update — continuing with existing files." -ForegroundColor Yellow
-            }
-        }
-        Pop-Location
-    } else {
-        Write-Host "Cloning secops-squad to $InstallDir..." -ForegroundColor Cyan
-        & git clone --depth 1 $RepoUrl $InstallDir
+        Write-Host "Directory $InstallDir already exists." -ForegroundColor Yellow
+        Write-Host "Remove it first or choose a different location with -InstallDir." -ForegroundColor DarkGray
+        Write-Host ""
+        exit 1
     }
+
+    # Download the repo content (shallow clone), then create a standalone repo
+    Write-Host "Downloading secops-squad..." -ForegroundColor Cyan
+    $TempDir = Join-Path $env:TEMP "secops-squad-download-$(Get-Random)"
+    & git clone --depth 1 $RepoUrl $TempDir 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  Failed to download secops-squad." -ForegroundColor Red
+        exit 1
+    }
+
+    # Copy content (without .git) to create a standalone project
+    Write-Host "Creating your secops-squad project..." -ForegroundColor Cyan
+    Copy-Item -Path $TempDir -Destination $InstallDir -Recurse -Force
+    Remove-Item -Path (Join-Path $InstallDir ".git") -Recurse -Force
+
+    # Initialize a fresh git repo
+    Push-Location $InstallDir
+    & git init --quiet
+    & git add .
+    & git commit --quiet -m "Initialize secops-squad project"
+    Pop-Location
+
+    # Clean up temp download
+    Remove-Item -Path $TempDir -Recurse -Force -ErrorAction SilentlyContinue
 
     # Install dependencies
     Write-Host "Installing dependencies..." -ForegroundColor Cyan

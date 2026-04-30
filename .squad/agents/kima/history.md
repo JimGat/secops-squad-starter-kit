@@ -1,8 +1,10 @@
-# Project Context
+# History
 
-- **Owner:** John Spaid
-- **Project:** secops-squad — SecOps framework for Microsoft Security products (Sentinel, Defender, Entra ID Protection), KQL, Logic Apps, Log Analytics, Azure Data Explorer
-- **Stack:** KQL, Logic Apps, Azure Functions, Bicep, PowerShell, Node.js/TypeScript
+<!-- Populated automatically during squad sessions. -->
+
+## Learnings
+
+<!-- Append new learnings below. Each entry is something lasting about the project. -->
 - **Created:** 2026-04-28
 
 ## Learnings
@@ -105,3 +107,16 @@
 - Pattern: Success = `{ ok: true, data: ..., nextLink?: string }` | Failure = `{ ok: false, error: string, status?: number, code?: string }`
 - Carver validation: Graph Security API test suite validates this pattern for all libraries
 - Implication: Kima's detection skills and Microsoft Security skills won't call APIs that throw; all error handling is explicit
+
+📌 **Westlake Customer Documentation: Sentinel & XDR Role Assignments** (2026-04-30)
+- Created `docs/westlake-sentinel-xdr-roles.md` — comprehensive customer-facing RBAC guide (~36 KB, 15 sections)
+- Three-group model: Infrastructure Engineers, CyberSec Analysts, CyberSec Administrators (subset of Analysts)
+- Role mapping approach: Entra ID directory roles → implicit XDR URBAC derivation, no separate URBAC assignments needed in current design
+- Custom role: "Westlake Policy Operator" (Resource Policy Contributor minus deletes, plus remediation) — JSON definition included
+- PIM configuration: 5 eligible roles with tiered activation (4h approval-required for Owner/SecAdmin, 8h self-service for operational roles)
+- Citation format: Every role assignment cites specific Microsoft Learn URL; 9 unique references consolidated in References section
+- Key documentation patterns learned:
+  - Effective permissions matrix (✅/🔑/❌) is the most scannable format for customer stakeholders
+  - Separation of duties notes with compensating controls table addresses audit concerns preemptively
+  - Playbook automation identity section is often missed — managed identities need their own RBAC, separate from user groups
+  - Future considerations with 📌 prefix flags optimization opportunities without scope-creeping the initial deployment

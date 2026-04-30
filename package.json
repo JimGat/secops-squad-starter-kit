@@ -23,11 +23,11 @@
     "defender",
     "squad"
   ],
-  "author": "jospaid",
+  "author": "x3nc0n",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jospaid/secops-squad.git"
+    "url": "git+https://github.com/x3nc0n/secops-squad.git"
   },
   "engines": {
     "node": ">=18"

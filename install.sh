@@ -96,16 +96,36 @@ main() {
 
   echo -e "${GREEN}✅ All required prerequisites met.${RESET}\n"
 
-  # Clone or update the repository
   if [ -d "$INSTALL_DIR" ]; then
-    echo -e "${CYAN}Updating existing installation at ${INSTALL_DIR}...${RESET}"
-    cd "$INSTALL_DIR"
-    git pull --quiet origin main 2>/dev/null || git pull --quiet origin master 2>/dev/null || true
-  else
-    echo -e "${CYAN}Cloning secops-squad to ${INSTALL_DIR}...${RESET}"
-    git clone --depth 1 "$REPO_URL" "$INSTALL_DIR"
-    cd "$INSTALL_DIR"
+    echo -e "${RED}${BOLD}Directory ${INSTALL_DIR} already exists.${RESET}"
+    echo -e "${DIM}Remove it first or set SECOPS_SQUAD_DIR to a different location.${RESET}\n"
+    exit 1
   fi
+
+  # Download the repo content (shallow clone), then create a standalone repo
+  echo -e "${CYAN}Downloading secops-squad...${RESET}"
+  local temp_dir
+  temp_dir=$(mktemp -d)
+  git clone --depth 1 "$REPO_URL" "$temp_dir" 2>/dev/null
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to download secops-squad.${RESET}"
+    rm -rf "$temp_dir"
+    exit 1
+  fi
+
+  # Copy content (without .git) to create a standalone project
+  echo -e "${CYAN}Creating your secops-squad project...${RESET}"
+  cp -r "$temp_dir" "$INSTALL_DIR"
+  rm -rf "$INSTALL_DIR/.git"
+
+  # Initialize a fresh git repo
+  cd "$INSTALL_DIR"
+  git init --quiet
+  git add .
+  git commit --quiet -m "Initialize secops-squad project"
+
+  # Clean up temp download
+  rm -rf "$temp_dir"
 
   # Install dependencies
   echo -e "${CYAN}Installing dependencies...${RESET}"
