@@ -8,13 +8,18 @@ const fs = require("fs");
 const COMMANDS = {
   init: {
     description: "Set up a new secops-squad project",
-    usage: "secops-squad init [--persona <name>] [--no-interactive]",
+    usage: "secops-squad init [--persona <name>] [--no-interactive] [--secops]",
     module: "./commands/init.js",
   },
   doctor: {
     description: "Check environment prerequisites and configuration health",
     usage: "secops-squad doctor",
     module: "./commands/doctor.js",
+  },
+  env: {
+    description: "Show and validate .secops/ environment configuration",
+    usage: "secops-squad env [validate|workspaces|data-sources]",
+    module: "./commands/env.js",
   },
   status: {
     description: "Show current config, loaded persona, and active skills",
@@ -91,6 +96,13 @@ async function handleCommand(command, args) {
     console.error(`Unknown command: ${command}`);
     console.error(`Run 'secops-squad --help' to see available commands.\n`);
     process.exit(1);
+  }
+
+  // Route `init --secops` to the secops init module
+  if (command === "init" && args.includes("--secops")) {
+    const secopsInit = require("./secops-init.js");
+    await secopsInit.run(args);
+    return;
   }
 
   // Dispatch to real module if available

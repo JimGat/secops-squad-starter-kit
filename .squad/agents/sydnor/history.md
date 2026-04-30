@@ -80,3 +80,12 @@
 📌 **`.secops/` separation from `.squad/`** — `.secops/` holds customer environment data (tenants, workspaces, data sources); `.squad/` holds framework internals (agents, routing, config). This is an architectural boundary — never mix them.
 
 📌 **Discovery log pattern** — Agents append to `.secops/discovery-log.yaml` during normal operations. Humans review and promote confirmed facts to authoritative YAML files. Entries are never modified or deleted by agents.
+
+🔷 **CLI `.secops/` Integration** (2026-04-30T16:42:21-05:00)
+- Built `cli/secops-config.js` — config loader module with `loadEnvironment()`, `loadWorkspace()`, `listWorkspaces()`, `loadDataSourceMap()`, `loadMigrations()`, `loadDiscoveryLog()`, `validateAll()`. Schema version validation. Uses `js-yaml` (first npm dependency).
+- Built `cli/commands/env.js` — 4 subcommands: `env` (summary), `env validate` (schema check), `env workspaces` (workspace listing), `env data-sources` (data source map + migrations). Follows existing command pattern (`run(args)` export).
+- Built `cli/secops-init.js` — scaffolds `.secops/` directory from scratch. Interactive mode prompts for org name, cloud type, region. Non-interactive with `--org`, `--cloud`, `--region` flags. Generates valid schema v1.0 YAML files. Skips if `.secops/environment.yaml` already exists (idempotent).
+- Wired `init --secops` routing in `cli/index.js` — intercepts before normal init dispatch.
+- Added `js-yaml` to `package.json` dependencies — needed for reliable YAML parsing of complex schema.
+
+📌 **`js-yaml` is the project's first npm dependency** — added to parse `.secops/` YAML files which use nested objects, arrays, and comments that a simple regex parser can't handle reliably. All other modules remain zero-dependency.
