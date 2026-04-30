@@ -68,3 +68,15 @@
 - All files tested: skill list/add, persona list, kql validate with glob, playbook list/deploy --dry-run, plugin list. Zero external dependencies.
 
 📌 **YAML frontmatter parsing** — skill .md files use `---` delimited YAML with arrays (mitre_attack, products). Parser handles inline comments on array items (e.g., `- T1078  # Valid Accounts`).
+
+🔷 **Phase 1 Foundation: `.secops/` Customer Knowledge Framework** (2026-04-30T16:42:00-05:00)
+- Built `.secops/` directory — 16 files across 6 subdirectories (workspaces, data-sources, identity, alerting, compliance + root).
+- Schema v1.0: every YAML file has `schema_version: "1.0"`, extensive inline comments, Contoso Corp example values.
+- **Key paths:** `.secops/environment.yaml` (primary descriptor), `.secops/data-sources/data-source-map.yaml` (table location map — most critical for agents), `.secops/discovery-log.yaml` (append-only agent discovery log).
+- Design: all files standalone (missing = unknown, not error), unknown fields preserved (forward-compatible), YAML for comments + human-editability.
+- Supports: multi-tenant, MSSP/Lighthouse, government cloud, cross-cloud (AWS/GCP), data tiering (Analytics/Basic/Auxiliary/Archive), active migrations, compliance constraints.
+- Decision doc written to `.squad/decisions/inbox/sydnor-secops-schema-v1.md`.
+
+📌 **`.secops/` separation from `.squad/`** — `.secops/` holds customer environment data (tenants, workspaces, data sources); `.squad/` holds framework internals (agents, routing, config). This is an architectural boundary — never mix them.
+
+📌 **Discovery log pattern** — Agents append to `.secops/discovery-log.yaml` during normal operations. Humans review and promote confirmed facts to authoritative YAML files. Entries are never modified or deleted by agents.
