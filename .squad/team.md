@@ -1,6 +1,6 @@
 # Squad Team
 
-> secops-squad — SecOps framework for Microsoft Security products
+> secops-squad-starter-kit — SecOps framework for Microsoft Security products
 
 ## Coordinator
 
@@ -23,5 +23,5 @@
 
 ## Project Context
 
-- **Project:** secops-squad — SecOps framework for Microsoft Security products (Microsoft Sentinel, Microsoft Defender XDR, Defender for Cloud, Defender for Identity, Defender for Endpoint, Microsoft Entra ID Protection), KQL query engineering, Logic Apps playbook automation, Log Analytics workspace patterns, and Azure Data Explorer integration.
+- **Project:** secops-squad-starter-kit — SecOps framework for Microsoft Security products (Microsoft Sentinel, Microsoft Defender XDR, Defender for Cloud, Defender for Identity, Defender for Endpoint, Microsoft Entra ID Protection), KQL query engineering, Logic Apps playbook automation, Log Analytics workspace patterns, and Azure Data Explorer integration.
 - **Stack:** KQL, Logic Apps, Azure Functions, Bicep, PowerShell, Node.js/TypeScript

@@ -1,29 +1,29 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    secops-squad installer for Windows
+    secops-squad-starter-kit installer for Windows
 .DESCRIPTION
-    Installs secops-squad — AI SecOps team for Microsoft Security stack.
+    Installs secops-squad-starter-kit — AI SecOps team for Microsoft Security stack.
     Checks prerequisites, clones the repository, installs dependencies.
 .EXAMPLE
-    irm https://raw.githubusercontent.com/x3nc0n/secops-squad/master/install.ps1 | iex
+    irm https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/master/install.ps1 | iex
 .EXAMPLE
     .\install.ps1
 #>
 
 [CmdletBinding()]
 param(
-    [string]$InstallDir = "$env:USERPROFILE\secops-squad"
+    [string]$InstallDir = "$env:USERPROFILE\secops-squad-starter-kit"
 )
 
 $ErrorActionPreference = "Stop"
 
-$RepoUrl = "https://github.com/x3nc0n/secops-squad.git"
+$RepoUrl = "https://github.com/x3nc0n/secops-squad-starter-kit.git"
 
 function Write-Banner {
     Write-Host ""
     Write-Host "  ┌─────────────────────────────────────┐" -ForegroundColor Cyan
-    Write-Host "  │       secops-squad installer         │" -ForegroundColor Cyan
+    Write-Host "  │  secops-squad-starter-kit installer   │" -ForegroundColor Cyan
     Write-Host "  │  AI SecOps team for Microsoft        │" -ForegroundColor Cyan
     Write-Host "  │  Security stack                      │" -ForegroundColor Cyan
     Write-Host "  └─────────────────────────────────────┘" -ForegroundColor Cyan
@@ -114,16 +114,16 @@ function Install-SecOpsSquad {
     }
 
     # Download the repo content (shallow clone), then create a standalone repo
-    Write-Host "Downloading secops-squad..." -ForegroundColor Cyan
-    $TempDir = Join-Path $env:TEMP "secops-squad-download-$(Get-Random)"
+    Write-Host "Downloading secops-squad-starter-kit..." -ForegroundColor Cyan
+    $TempDir = Join-Path $env:TEMP "secops-squad-starter-kit-download-$(Get-Random)"
     & git clone --depth 1 $RepoUrl $TempDir 2>$null
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "  Failed to download secops-squad." -ForegroundColor Red
+        Write-Host "  Failed to download secops-squad-starter-kit." -ForegroundColor Red
         exit 1
     }
 
     # Copy content (without .git) to create a standalone project
-    Write-Host "Creating your secops-squad project..." -ForegroundColor Cyan
+    Write-Host "Creating your secops-squad-starter-kit project..." -ForegroundColor Cyan
     Copy-Item -Path $TempDir -Destination $InstallDir -Recurse -Force
     Remove-Item -Path (Join-Path $InstallDir ".git") -Recurse -Force
 
@@ -131,7 +131,7 @@ function Install-SecOpsSquad {
     Push-Location $InstallDir
     & git init --quiet
     & git add .
-    & git commit --quiet -m "Initialize secops-squad project"
+    & git commit --quiet -m "Initialize secops-squad-starter-kit project"
     Pop-Location
 
     # Clean up temp download
@@ -148,7 +148,7 @@ function Install-SecOpsSquad {
     Pop-Location
 
     Write-Host ""
-    Write-Host "✅ secops-squad installed!" -ForegroundColor Green
+    Write-Host "✅ secops-squad-starter-kit installed!" -ForegroundColor Green
     Write-Host ""
     Write-Host "To use the CLI, either:" -ForegroundColor White
     Write-Host ""

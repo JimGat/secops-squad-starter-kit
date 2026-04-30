@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================================================
-# secops-squad installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/x3nc0n/secops-squad/master/install.sh | bash
+# secops-squad-starter-kit installer
+# Usage: curl -fsSL https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/master/install.sh | bash
 # ============================================================================
 
 set -euo pipefail
@@ -15,13 +15,13 @@ BOLD='\033[1m'
 DIM='\033[2m'
 RESET='\033[0m'
 
-REPO_URL="https://github.com/x3nc0n/secops-squad.git"
-INSTALL_DIR="${SECOPS_SQUAD_DIR:-$HOME/secops-squad}"
+REPO_URL="https://github.com/x3nc0n/secops-squad-starter-kit.git"
+INSTALL_DIR="${SECOPS_SQUAD_DIR:-$HOME/secops-squad-starter-kit}"
 
 print_banner() {
   echo ""
   echo -e "${CYAN}${BOLD}  ┌─────────────────────────────────────┐"
-  echo -e "  │       secops-squad installer         │"
+  echo -e "  │  secops-squad-starter-kit installer   │"
   echo -e "  │  AI SecOps team for Microsoft        │"
   echo -e "  │  Security stack                      │"
   echo -e "  └─────────────────────────────────────┘${RESET}"
@@ -103,18 +103,18 @@ main() {
   fi
 
   # Download the repo content (shallow clone), then create a standalone repo
-  echo -e "${CYAN}Downloading secops-squad...${RESET}"
+  echo -e "${CYAN}Downloading secops-squad-starter-kit...${RESET}"
   local temp_dir
   temp_dir=$(mktemp -d)
   git clone --depth 1 "$REPO_URL" "$temp_dir" 2>/dev/null
   if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to download secops-squad.${RESET}"
+    echo -e "${RED}Failed to download secops-squad-starter-kit.${RESET}"
     rm -rf "$temp_dir"
     exit 1
   fi
 
   # Copy content (without .git) to create a standalone project
-  echo -e "${CYAN}Creating your secops-squad project...${RESET}"
+  echo -e "${CYAN}Creating your secops-squad-starter-kit project...${RESET}"
   cp -r "$temp_dir" "$INSTALL_DIR"
   rm -rf "$INSTALL_DIR/.git"
 
@@ -122,7 +122,7 @@ main() {
   cd "$INSTALL_DIR"
   git init --quiet
   git add .
-  git commit --quiet -m "Initialize secops-squad project"
+  git commit --quiet -m "Initialize secops-squad-starter-kit project"
 
   # Clean up temp download
   rm -rf "$temp_dir"
@@ -136,7 +136,7 @@ main() {
 
   # Add to PATH hint
   echo ""
-  echo -e "${GREEN}${BOLD}✅ secops-squad installed!${RESET}"
+  echo -e "${GREEN}${BOLD}✅ secops-squad-starter-kit installed!${RESET}"
   echo ""
   echo -e "${BOLD}To use the CLI, either:${RESET}"
   echo ""

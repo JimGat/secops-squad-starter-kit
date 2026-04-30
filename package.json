@@ -1,5 +1,5 @@
 {
-  "name": "@secops-squad/secops-squad",
+  "name": "@secops-squad/secops-squad-starter-kit",
   "version": "0.1.0",
   "description": "SecOps-focused AI team framework for Microsoft Security products",
   "main": "cli/index.js",
@@ -27,7 +27,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/x3nc0n/secops-squad.git"
+    "url": "git+https://github.com/x3nc0n/secops-squad-starter-kit.git"
   },
   "engines": {
     "node": ">=18"
