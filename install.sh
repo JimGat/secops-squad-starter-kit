@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================================================
 # secops-squad-starter-kit installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/master/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh | bash
 # ============================================================================
 
 set -euo pipefail

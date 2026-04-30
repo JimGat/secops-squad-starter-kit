@@ -6,7 +6,7 @@
     Installs secops-squad-starter-kit — AI SecOps team for Microsoft Security stack.
     Checks prerequisites, clones the repository, installs dependencies.
 .EXAMPLE
-    irm https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/master/install.ps1 | iex
+    irm https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.ps1 | iex
 .EXAMPLE
     .\install.ps1
 #>

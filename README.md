@@ -14,12 +14,12 @@ Turns GitHub Copilot CLI into a full security operations squad — KQL hunting, 
 
 **Windows PowerShell:**
 ```powershell
-irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/master/install.ps1" | iex
+irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.ps1" | iex
 ```
 
 **macOS / Linux:**
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/master/install.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh" | bash
 ```
 
 That's it. The installer clones the repo, installs dependencies, and scaffolds a working SecOps project in `~/secops-squad-starter-kit`. Total time: ~3 minutes.
