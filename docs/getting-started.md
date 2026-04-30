@@ -31,8 +31,8 @@ npx secops-squad init
 ### Option 2: Clone and set up
 
 ```bash
-git clone https://github.com/x3nc0n/secops-squad.git
-cd secops-squad
+git clone https://github.com/x3nc0n/secops-squad-starter-kit.git
+cd secops-squad-starter-kit
 npm install
 node cli/index.js init
 ```
@@ -238,7 +238,7 @@ You can edit this by hand to switch personas, add/remove products, or load custo
 
 ✅ **Contribute:** Found a great hunt? See [CONTRIBUTING.md](../CONTRIBUTING.md) to submit it as a skill.
 
-✅ **File issues:** Need a skill that doesn't exist? Open a [skill request issue](https://github.com/x3nc0n/secops-squad/issues/new?labels=skill-request).
+✅ **File issues:** Need a skill that doesn't exist? Open a [skill request issue](https://github.com/x3nc0n/secops-squad-starter-kit/issues/new?labels=skill-request).
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/x3nc0n/secops-squad/secops-squad.config.schema.json",
+  "$id": "https://github.com/x3nc0n/secops-squad-starter-kit/secops-squad.config.schema.json",
   "title": "secops-squad configuration",
   "description": "Configuration schema for secops-squad projects",
   "type": "object",
