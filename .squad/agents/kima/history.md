@@ -49,11 +49,24 @@
 - **Custom role creation:** "Westlake Policy Operator" with Resource Policy Contributor permissions minus deletes, plus remediation capability
 - **Key lesson learned:** Managed identities need separate RBAC (often missed in automation identity section)
 
+📌 **Phase 6 eDiscovery & Purview API Skills (2026-04-30)**
+- **ediscovery-api-wrapper.md (~490 lines):** Full Graph eDiscovery API wrapper — case management, custodians, legal hold, KQL content search across Exchange/SharePoint/OneDrive/Teams, review sets, export (PST/MSG/native), 3 production wrapper functions (New-SecOpsEdiscoveryCase, Search-SecOpsMailboxes, Export-SecOpsReviewSet), 3 end-to-end agent workflows (phishing response, insider threat, regulator request), Sentinel monitoring KQL, rate limits, troubleshooting
+- **purview-api-wrapper.md (~630 lines):** Comprehensive Purview API surface — sensitivity labels (list/evaluate/auto-label), DLP alerts via Graph + policy management via PowerShell, data classification (SITs, trainable classifiers, EDM), records management (retention labels/policies), insider risk alert correlation, Unified Audit Log (PowerShell + Management API + Graph preview), Compliance Manager (score, assessments, improvement actions), 3 production wrapper functions (Get-SecOpsDlpAlerts, Get-SecOpsAuditLog, Get-SecOpsComplianceScore), 3 agent workflows (classify→label→protect→audit, incident data investigation, compliance posture monitoring)
+- **Key design:** Complements purview-dlp-patterns.md (policy design) with API integration; all wrappers follow structured result pattern {ok/error}
+- **Key insight:** Purview API surface is fragmented — Graph for labels/alerts/classification, IPPSSession for DLP policies, EXO for audit log, Management API for streaming events; agents must handle multiple auth contexts
+
 📌 **Cross-Team Context Dependencies**
 - **Freamon integration:** Can reference Sentinel/Defender skills when generating PowerShell; relies on PowerShell/rate-limiting patterns for API calls
 - **Herc integration:** SOAR playbooks can reference Defender/Sentinel API permission patterns for service principal setup; Automation Rules API documented
 - **Carver integration:** Can validate that detection rules follow least-privilege and rate-limiting patterns
 - **Westlake customer:** Role assignments follow documented three-tier model for analyst progression
+
+📌 **Phase 6 Copilot for Security + Defender for Cloud Apps Skills (2026-04-30)**
+- **copilot-for-security.md (~376 lines):** Comprehensive Copilot for Security integration — SCU capacity planning/provisioning (Bicep), built-in plugin matrix (9 plugins), custom plugin development (manifest + OpenAPI), promptbook creation/execution, REST API patterns (session management, prompt evaluation, plugin management), 4 agent integration patterns (incident summarization, TI enrichment, script analysis, guided investigation), rate limits, MITRE ATT&CK coverage across 8 tactics
+- **defender-cloud-apps.md (~454 lines):** Full MDCA CASB coverage — Cloud Discovery (4 data sources), app risk scoring, OAuth app governance with audit workflow, 6 policy types (activity, file, session, anomaly, discovery, OAuth), complete REST API reference (/api/v1/ — activities, alerts, files, discovery, entities), Conditional Access App Control (reverse proxy session controls), Sentinel SIEM integration (3 tables + 2 KQL queries), 3 agent workflows (Shadow IT assessment, OAuth audit, incident correlation), rate limit handler
+- **Key decisions:** Copilot API uses session-based context preservation (reuse sessions to save SCU); MDCA uses portal-generated API tokens (not OAuth); structured result pattern applied to both API wrappers
+- **MITRE coverage added:** T1071, T1199, T1537, T1550, T1567 (new techniques not previously covered in skill library)
+- **`.secops/` integration:** Both skills define environment.yaml configuration blocks for agent consumption
 
 📌 **ADX Staging Pattern & Impact**
 - **Herc decision:** All ADX security tables use two-table ingestion (Raw staging → structured table via update policy)
