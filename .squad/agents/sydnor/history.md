@@ -81,6 +81,20 @@
 
 📌 **Discovery log pattern** — Agents append to `.secops/discovery-log.yaml` during normal operations. Humans review and promote confirmed facts to authoritative YAML files. Entries are never modified or deleted by agents.
 
+🔷 **Sample Contoso Config: `samples/secops-contoso/`** (2026-04-30T16:42:21-05:00)
+- Built 13 files (12 YAML + README.md) under `samples/secops-contoso/.secops/` — a complete, realistic demo of the framework.
+- **Environment:** 2 tenants (prod + dev/test), 3 subscriptions, cross-cloud (AWS + GCP), Lighthouse commented-out.
+- **Workspaces:** prod-sentinel (500GB commitment, 10 custom tables, 8 connectors), dev-sentinel (detection testing), soc-adx (long-term retention, external tables over blob).
+- **Data sources:** 20+ tables across Analytics/Basic/Auxiliary/Archive tiers, cross-cloud identity mapping, migration flags.
+- **Migrations:** 1 in-progress (ADX→Sentinel Auxiliary), 1 planned (workspace consolidation), 1 completed (MMA→AMA).
+- **Identity:** Full tenant topology with B2B access, service principals, L1-L3 RBAC role bundles, PIM policies, 2 custom role definitions.
+- **Alerting:** 7 routing rules (Teams, PagerDuty, ServiceNow), 4-tier escalation (L1→L2→L3→CISO), after-hours policy.
+- **Compliance:** US data residency, NIST 800-53 + PCI-DSS + SOC 2, 9 per-table retention overrides.
+- **Discovery log:** 6 realistic entries (table confirmations, tier limitations, permission errors, migration verification).
+- All cross-references validated: subscription IDs, tenant IDs, workspace names, migration refs, ADX cluster names consistent across files.
+
+📌 **Sample config cross-reference pattern** — When creating multi-file configs, subscription IDs, tenant IDs, workspace names, table names, and migration IDs must be consistent across all files. Validated via automated checks.
+
 🔷 **CLI `.secops/` Integration** (2026-04-30T16:42:21-05:00)
 - Built `cli/secops-config.js` — config loader module with `loadEnvironment()`, `loadWorkspace()`, `listWorkspaces()`, `loadDataSourceMap()`, `loadMigrations()`, `loadDiscoveryLog()`, `validateAll()`. Schema version validation. Uses `js-yaml` (first npm dependency).
 - Built `cli/commands/env.js` — 4 subcommands: `env` (summary), `env validate` (schema check), `env workspaces` (workspace listing), `env data-sources` (data source map + migrations). Follows existing command pattern (`run(args)` export).
@@ -89,3 +103,21 @@
 - Added `js-yaml` to `package.json` dependencies — needed for reliable YAML parsing of complex schema.
 
 📌 **`js-yaml` is the project's first npm dependency** — added to parse `.secops/` YAML files which use nested objects, arrays, and comments that a simple regex parser can't handle reliably. All other modules remain zero-dependency.
+
+🔷 **Agent Environment Context Integration** (2026-04-30T16:42:21-05:00)
+- Created `.copilot/skills/secops-environment-context.md` — Copilot-level skill teaching all agents the 7-step `.secops/` discovery flow (environment → data sources → migrations → workspaces → compliance → execute → log discoveries).
+- Covers: government cloud endpoint awareness, multi-tenant/MSSP/Lighthouse patterns, data residency enforcement, discovery-log.yaml append protocol with confidence levels.
+- Added `## Environment Context` section to 11 domain skill files (kql/2, log-analytics/4, detection/2, soar/1, adx/1, msft-security/1) — consistent block referencing data-source-map, migrations, workspace config, and compliance before skill execution.
+- Updated all 6 agent charters (McNulty, Kima, Freamon, Herc, Sydnor, Carver) — added `.secops/` context check as first item under "How I Work".
+- Added self-serve routing rule to `.squad/routing.md` — agents read `.secops/` directly, no coordinator routing needed.
+
+📌 **`.copilot/skills/` vs `.squad/skills/`** — `.copilot/skills/` holds Copilot-platform-level skills (consumed by GitHub Copilot skill system); `.squad/skills/` holds squad-internal conventions. The secops-environment-context skill is in `.copilot/skills/` because it needs to be discoverable by the Copilot skill resolution system, not just squad agents.
+
+🔷 **Phase 1 Foundation Complete — Scribe Session** (2026-04-30T16:42:21-05:00)
+- All Phase 1 foundation agents completed: sydnor-schema (18 files), sydnor-gitignore, sydnor-cli (8 files, 874 lines), sydnor-samples (13 files), sydnor-agent-ctx (20 files modified).
+- Decision merging: 4 new decisions from inbox merged into decisions.md (Customer Knowledge Framework, Schema v1.0, Agent Context Integration, CLI Integration). No archival triggered (6981 bytes < 20KB).
+- Orchestration log written: `2026-04-30T16-42-phase1-complete.md` with full manifest and status.
+- Session log written: `2026-04-30T16-42-phase1-foundation.md` (brief summary).
+- Sydnor history updated with Phase 1 completion marker.
+- Git commit pending: `.squad/` files only (decisions.md, logs, orchestration-log, agent histories).
+- Phase 2 ready: Skills development, persona templates, CLI expansion.
