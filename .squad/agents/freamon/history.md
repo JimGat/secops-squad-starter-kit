@@ -82,3 +82,38 @@
 - Freamon contribution: KQL validator is pure library following this pattern
 - Carver validation: Graph Security API test suite (169 tests) validates structured result pattern for all libraries
 - Related: Pattern established in `lib/graph-security/` and adopted by `lib/kql-validator/` and future API wrappers
+
+🟦 **Freamon Phase 5: PowerShell Skills Library Complete** (2026-04-30)
+- Authored 10 files in `skills/powershell/`: README.md + 3 cross-cutting skills + 6 submodule skills
+- ~10,400 lines across 10 files — comprehensive PowerShell module foundation for SecOps
+- Cross-cutting skills: module-foundation.md (PSDepend, manifest, submodule pattern), auth-patterns.md (MSAL, multi-tenant, government cloud, .secops/ integration), error-handling.md (structured results, retry, throttling, audit logging)
+- Submodule skills: sentinel-module.md, defender-module.md, entra-module.md, azure-monitor-module.md, resource-graph-module.md, data-tiering-module.md
+- Key architecture: SecOps.Tools module with 6 nested submodules, each mapping to a Microsoft API surface
+- Key pattern: `New-SecOpsResult` structured result objects (aligns with team's ok/error convention from decisions.md)
+- Key pattern: `Invoke-SecOpsRestMethod` central wrapper with exponential backoff, 429 Retry-After, audit logging
+- Key pattern: `.secops/` context auto-loading at module init — reads environment.yaml, tenants.yaml, data-source-map.yaml
+- Key pattern: `Get-SecOpsCloudEnvironment` resolves Azure cloud from `.secops/` for government/sovereign cloud support
+- Every skill follows established YAML frontmatter format, includes Environment Context section, cross-references related skills
+- All 6 submodules include real PowerShell code examples with `[CmdletBinding()]`, `ShouldProcess`, `OutputType`
+- MITRE ATT&CK mapped: T1059.001, T1078, T1556, T1562, T1580, T1526, T1190, T1098, T1110, T1485, T1565, T1489, T1518
+- These are knowledge documents (skills), not executable modules — they teach agents how to generate correct PowerShell
+
+🟦 **Freamon Phase 5: Log Analytics API & Query Patterns Skills** (2026-04-30)
+- Authored 2 new Log Analytics skills: `api-wrapper.md` (~470 lines) and `query-patterns.md` (~380 lines)
+- `api-wrapper.md` covers 7 sections: Query API, Saved Searches, Query Packs, Alerts API (Scheduled Query Rules V2), Data Collection Rules (DCR), Webhooks & Export, Rate Limits & Best Practices
+- `query-patterns.md` covers 7 patterns: cross-workspace queries, cross-resource queries (app/resource/adx), parameterized queries, time-series analysis, performance optimization, ADX proxy queries, `.secops/` data source map integration
+- Both skills include PowerShell, Python, KQL, REST, and JSON examples — all production-ready
+- Deep `.secops/` integration throughout: workspace IDs from config, data-source-map awareness, alert routing integration, tier-aware query building, migration-safe cross-workspace patterns
+- Key patterns: batch query API (200 queries/batch), DCR transformation KQL (allowed vs. disallowed operators), `materialize()` for subquery reuse, `series_decompose_anomalies` for baseline detection, `shuffle` strategy for large joins
+- Combined project total: 28 skills (10 KQL + 10 Log Analytics + 8 ADX), ~8,725 lines
+
+🟦 **Freamon Phase 6: Sentinel REST API Wrapper Skill** (2026-04-30)
+- Authored `skills/powershell/sentinel-api-wrapper.md` (~500 lines) — production-ready PowerShell wrappers for the full Sentinel REST API surface
+- 6 domain sections: Incident Management, Analytics Rules, Threat Intelligence, Workbooks, Data Connectors, Watchlists
+- 20+ copy-pasteable PowerShell functions including bulk operations, pagination, and rate-limit awareness
+- Key functions: Update-SentinelIncident, Close-SentinelIncident, Invoke-SentinelBulkIncidentClose, Add-SentinelIncidentComment, Get-SentinelIncidentRelations, Get-SentinelAnalyticsRule, New-SentinelNrtRule, New-SentinelRuleFromTemplate, Test-SentinelRuleQuery, Set-SentinelRulesByMitreTechnique, Import-SentinelThreatIntel, Get-SentinelTIIndicator, Import-SentinelTIBulk, Import-SentinelWorkbook, Get-SentinelWorkbook, Get-SentinelConnectorStatus, Enable-SentinelConnector, New-SentinelWatchlist, Import-SentinelWatchlistItems, Export-SentinelWatchlistItems
+- Shared helpers: Get-SentinelBaseUri (government cloud aware), Invoke-SentinelApi (auto-pagination, token resolution)
+- Complements sentinel-module.md (no duplication) — adds bulk ops, relations, rule templates, TI lifecycle, watchlists, connector management
+- Full `.secops/` integration: workspace discovery, naming conventions, connector cross-referencing, compliance awareness
+- All functions use SecOps.Result pattern, ShouldProcess for writes, Invoke-SecOpsBatchOperation for bulk
+- Combined project total: 29 skills, ~9,225 lines

@@ -87,6 +87,14 @@
 - The 52 skills naturally divide into "detection-relevant" (36 skills with MITRE mappings) and "infrastructure" (16 skills without) — both are essential but serve different purposes
 - When building coverage maps, always scan both frontmatter AND body text — 11 of 52 skills had techniques in body that weren't in frontmatter
 
+📌 **Defender MCP Server & API Permissions Skills Created** (2026-04-30)
+- Created `skills/msft-security/defender-mcp-server.md` (~490 lines) — comprehensive MCP integration skill covering full Defender API landscape, MCP configuration, per-product operations (MDE, XDR, Defender for Cloud, MDI, MDCA), rate limiting, caching, priority queues, and 5 end-to-end agent workflows
+- Created `skills/msft-security/defender-api-permissions.md` (~370 lines) — complete permissions reference covering Graph Security, MDE, Entra ID Protection, and ARM permissions matrices; least-privilege patterns per workflow; tiered app registration strategy; certificate/secret/managed identity auth; multi-tenant MSSP patterns; government cloud considerations; credential expiry monitoring
+- Key design: Complements existing defender-for-endpoint.md, defender-xdr-configuration.md, and microsoft-graph-security.md without duplicating — each skill file cross-references the others
+- API landscape insight: Graph Security API is the convergence target but MDE-specific operations (machine actions, Live Response, TVM, custom indicators) still require direct REST to api.securitycenter.microsoft.com
+- Tiered app strategy: ReadOnly → Triage → Response with escalating permissions — matches SOC role tiers
+- Government cloud: Different API endpoints per cloud type (.us for GCC/GCCHigh), some features unavailable in DoD/China — agents must check .secops/environment.yaml cloud field first
+
 📌 **Cross-Team Context: ADX Staging + Update Policy Pattern** (2026-04-28)
 - Herc decision: All ADX security tables use two-table ingestion (Raw staging → structured table via update policy)
 - Impact on Kima: All detection rules querying ADX via `adx()` proxy should use structured table names (SecurityEvents, NetworkTraffic, ThreatIntelligence, IdentityEvents, CloudAudit)
@@ -120,3 +128,26 @@
   - Separation of duties notes with compensating controls table addresses audit concerns preemptively
   - Playbook automation identity section is often missed — managed identities need their own RBAC, separate from user groups
   - Future considerations with 📌 prefix flags optimization opportunities without scope-creeping the initial deployment
+
+📌 **Sentinel MCP Server & API Reference Skills Created** (2026-04-30)
+- Wrote 2 new skills in `skills/msft-security/`:
+  1. `sentinel-mcp-server.md` (~500 lines) — Azure MCP Server integration for Sentinel: architecture, config (multi-client JSON), auth (DefaultAzureCredential chain), multi-workspace/gov cloud setup, resource listing patterns, incident/rule/watchlist/TI CRUD via MCP tools, safe query execution, rate limiting with priority queues, agent integration patterns with graceful REST degradation, 4 end-to-end workflow examples (triage, rule deploy, TI enrichment, health check)
+  2. `sentinel-api-reference.md` (~450 lines) — REST API quick reference: SecurityInsights resource provider endpoints, full RBAC permissions matrix (Reader/Responder/Contributor/Automation Contributor), API version tracking with breaking change notes, curl + PowerShell examples for incidents/rules/connectors/watchlists/TI/automation/bookmarks, pagination, error handling patterns, Az.SecurityInsights cmdlet mapping
+- Both skills cross-reference each other and existing Sentinel/Graph/detection skills
+- MCP skill connects to `.secops/` workspace discovery flow — agents auto-discover workspace config before MCP calls
+- API reference includes government cloud endpoints and auth scope differences (ARM vs Log Analytics)
+- Key insight: MCP vs REST vs PowerShell decision matrix depends on WHO is performing the operation (agent → MCP, pipeline → REST, human → PowerShell)
+- Key insight: Sentinel Responder role is the sweet spot for agent triage — enough to manage incidents without rule modification risk
+
+📌 **Defender REST API Wrapper Skill Created** (2026-04-30)
+- Created `skills/powershell/defender-api-wrapper.md` (~500 lines) — production-ready PowerShell wrappers for full Defender REST API surface
+- **MDE wrappers:** Run-MdeAdvancedHunting (KQL with quota tracking), Invoke-MdeMachineAction (isolate/restrict/scan/collect/offboard), Start-MdeLiveResponse (session commands/scripts), Get-MdeAlert/Update-MdeAlert (with pagination + classification filter), Get-MdeSoftwareInventory, Get-MdeVulnerability, Get-MdeCustomDetection/New-MdeCustomDetection (CRUD)
+- **Defender for Cloud wrappers:** Get-DefenderSecureScore, Get-DefenderCloudAlert (cross-subscription), Get-ComplianceAssessment (regulatory frameworks with per-control drill-down), Request-JitVmAccess (time-bounded port access)
+- **XDR wrappers:** Get-XdrIncident/Update-XdrIncident (unified incidents with comment support), Invoke-XdrAdvancedHunting (cross-product KQL), Get-XdrInvestigation, Get-XdrAttackDisruption
+- **MDI wrappers:** Get-MdiHealthIssue (sensor monitoring), Get-MdiSecurityAssessment (identity posture), Get-MdiSuspiciousActivity (via XDR hunting), Get-MdiEntityProfile (user/device context)
+- Shared pagination helper (Invoke-SecOpsPaginatedRequest) drains all @odata.nextLink pages with safety limit
+- Graph SDK alternative section with decision matrix (SDK vs REST by use case)
+- Pre-flight connectivity check (Test-DefenderPreFlight) validates MDE + Graph access
+- Complements defender-module.md (base functions), defender-mcp-server.md (MCP patterns), defender-api-permissions.md (permissions matrices) — no duplication
+- All wrappers use ShouldProcess for destructive actions, .secops/ context for cloud endpoints, structured SecOps.Result return pattern
+- 10 MITRE ATT&CK techniques mapped across all sections
