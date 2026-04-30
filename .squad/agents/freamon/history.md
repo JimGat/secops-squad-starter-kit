@@ -107,6 +107,29 @@
 - Key patterns: batch query API (200 queries/batch), DCR transformation KQL (allowed vs. disallowed operators), `materialize()` for subquery reuse, `series_decompose_anomalies` for baseline detection, `shuffle` strategy for large joins
 - Combined project total: 28 skills (10 KQL + 10 Log Analytics + 8 ADX), ~8,725 lines
 
+🟦 **Freamon Phase 6: Data Tiering Commands Skill** (2026-04-30)
+- Authored `skills/powershell/data-tiering-commands.md` (~500 lines) — production-ready PowerShell for full data tiering lifecycle
+- 15 new PowerShell functions: tier management (Get/Set-LogAnalyticsTablePlan, Get-TierRecommendation, Get-TierCostImpact), retention (Get/Set-LogAnalyticsRetention, Test-RetentionCompliance, Set-BulkRetentionPolicy), summary rules (New/Get/Test-SummaryRule), purge (Submit-DataPurge, Get-PurgeStatus), migration (Start-DataMigration, Get-MigrationStatus)
+- Key pattern: pre-flight safety checks on tier downgrades — blocks if analytics rules reference the table or migrations are in progress
+- Key pattern: compliance-as-hard-constraint — retention changes validate against `.secops/compliance/requirements.yaml` before applying
+- Key pattern: cost calculator uses `.secops/data-source-map.yaml` daily volumes as default data source
+- Includes decision tree, frequency-based tier selection matrix, cost modeling formulas, and complete production workflow
+- Summary rule templates for Syslog, CommonSecurityLog, and AWSCloudTrail pre-built
+- Complements existing `data-tiering-module.md` (submodule overview) without duplicating base functions
+- Decision filed: `.squad/decisions/inbox/freamon-data-tiering.md`
+- Combined project total: 29 skills, ~9,225 lines
+
+🟦 **Freamon Phase 6: Unified API Rate Limiting & Common API Patterns** (2026-04-30)
+- Authored 2 new cross-cutting PowerShell skills: `rate-limiting.md` and `api-patterns.md`
+- `rate-limiting.md` (~400 lines): Comprehensive rate limits reference for all Microsoft Security APIs (ARM, Graph, MDE, Sentinel, Log Analytics, MDCA, Resource Graph) with numeric limits and sources
+- Covers 7 sections: rate limit reference table, exponential backoff with jitter (per-provider tuning), 3-tier priority queue (Critical/Normal/Low token buckets), quota pooling (file-based mutex + Redis distributed), circuit breaker (Closed/Open/HalfOpen states), monitoring/alerting (80% threshold), cross-API coordination (multi-tenant MSSP, batch scheduling)
+- `api-patterns.md` (~320 lines): Reusable patterns across all API wrappers — pagination (nextLink, skipToken, $top/$skip), Graph $batch (20-request batches), ARM async operations (Location + Azure-AsyncOperation polling), idempotent create-or-update (ETag-based concurrency), correlation ID propagation, request/response audit logging, PowerShell pipeline streaming
+- Both skills include production-ready PowerShell implementations: `Invoke-WithRetry`, `Request-ApiWithPriority`, `Get-QuotaBudget`, `Request-QuotaSlot`, `Invoke-WithCircuitBreaker`, `Get-SecOpsAllPages`, `Invoke-SecOpsGraphBatch`, `Wait-SecOpsAsyncOperation`, `Set-SecOpsResource`, `Get-SecOpsStream`
+- Pester test scenarios for each major pattern: retry behavior, circuit breaker state transitions, priority fairness, pagination formats, batch limits, async timeout, idempotent create
+- Deep `.secops/` integration: environment-aware cloud endpoints, per-tenant quota isolation for MSSPs, alerting/routing.yaml integration for rate limit alerts
+- These are cross-cutting skills referenced by every API wrapper skill in the project
+- Combined project total: 30 skills (10 KQL + 10 Log Analytics + 8 ADX + 12 PowerShell), ~9,445 lines
+
 🟦 **Freamon Phase 6: Sentinel REST API Wrapper Skill** (2026-04-30)
 - Authored `skills/powershell/sentinel-api-wrapper.md` (~500 lines) — production-ready PowerShell wrappers for the full Sentinel REST API surface
 - 6 domain sections: Incident Management, Analytics Rules, Threat Intelligence, Workbooks, Data Connectors, Watchlists
