@@ -4,6 +4,16 @@
 
 ## Learnings
 
+📌 **Phase 8 Connectivity Setup Skill (2026-05-04)**
+- **connectivity-setup.md (~700 lines):** Definitive connectivity guide for all 6 Microsoft Security products — Microsoft Sentinel, Defender XDR, Defender for Cloud, Defender for Identity, Defender for Endpoint, Entra ID Protection.
+- **Quick Connectivity Test:** Single PowerShell block runs all 6 product checks in sequence and prints a color-coded summary. Acts as a "doctor command" for the entire security product stack.
+- **Key connectivity pattern:** Products on `management.azure.com` (Sentinel, Defender for Cloud) use Azure RBAC — no app registration needed for human users. Products on Graph and `api.securitycenter.microsoft.com` require app registration with admin-consented application permissions for agent/service use.
+- **Per-product structure:** Each section has Required Roles/Permissions table → Setup Steps → Verification Commands → Common Issues & Fixes table → cross-references to existing skills.
+- **Troubleshooting Matrix:** 20 error messages mapped to root causes and fixes, covering token expiry, license gaps, missing consent, wrong tenant, provider registration, and endpoint selection.
+- **Authentication Summary table:** Maps each product to its API target, auth method, and token resource — agents can use this to determine which auth context to use before calling any product.
+- **Cross-references:** Deliberately references `defender-api-permissions.md` for full permissions detail rather than duplicating the matrix; references `gov-cloud-support.md` for endpoint overrides; references each product's dedicated skill for deep configuration.
+- **Key insight:** MDE permissions are on the `WindowsDefenderATP` resource (not Graph); this is the most common agent confusion point and is called out explicitly in both setup steps and the troubleshooting matrix.
+
 📌 **Kima Domain Summary** (2026-04-30)
 - **Core expertise:** Detection engineering, Sentinel operations, Defender integration, threat modeling
 - **Total contribution:** 20 skills across Microsoft Security, Detection Engineering, and Threat Models

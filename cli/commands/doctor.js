@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
+const yaml = require("js-yaml");
 
 const c = {
   reset: "\x1b[0m",
@@ -173,6 +174,60 @@ function checkAzureCli() {
   const vMatch = firstLine.match(/(\d+\.\d+\.\d+)/);
   const vStr = vMatch ? vMatch[1] : "installed";
   return { status: "pass", message: `Azure CLI ${vStr}` };
+}
+
+function checkAzureConnectivity() {
+  const result = execSafe("az account show --output json");
+  if (!result) {
+    return {
+      status: "warn",
+      message: "Azure not logged in. Run: az login",
+    };
+  }
+  try {
+    const account = JSON.parse(result);
+    const name = account.name || "(unknown)";
+    const id = account.id || "(unknown)";
+    const tenantId = account.tenantId || "(unknown)";
+    return {
+      status: "pass",
+      message: `Azure: ${name} | sub: ${id} | tenant: ${tenantId}`,
+    };
+  } catch {
+    return {
+      status: "warn",
+      message: "Azure not logged in. Run: az login",
+    };
+  }
+}
+
+function checkSecopsConfig(rootDir) {
+  const envPath = path.join(rootDir, ".secops", "environment.yaml");
+  if (!fs.existsSync(envPath)) {
+    return {
+      status: "warn",
+      message: "No .secops/ configuration found — run: secops-squad init --secops",
+    };
+  }
+  try {
+    const envData = yaml.load(fs.readFileSync(envPath, "utf8")) || {};
+    const orgName = (envData.organization || {}).name;
+    if (orgName === "Contoso Corp") {
+      return {
+        status: "warn",
+        message: "Environment config found but using template defaults — run: secops-squad workspace connect",
+      };
+    }
+    return {
+      status: "pass",
+      message: `SecOps config: ${orgName || "(org name not set)"}`,
+    };
+  } catch (e) {
+    return {
+      status: "warn",
+      message: `Could not parse .secops/environment.yaml: ${e.message}`,
+    };
+  }
 }
 
 function checkGitHubCli() {
@@ -346,6 +401,8 @@ function run() {
     checkConfig(rootDir),
     checkTeamRoster(rootDir),
     checkAzureCli(),
+    checkAzureConnectivity(),
+    checkSecopsConfig(rootDir),
     checkGitHubCli(),
     checkSkills(rootDir),
     checkKqlTemplates(rootDir),

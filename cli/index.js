@@ -38,6 +38,7 @@ const COMMANDS = {
   workspace: {
     description: "Manage Microsoft Sentinel workspace connection",
     usage: "secops-squad workspace [connect|status|disconnect]",
+    module: "./commands/workspace.js",
   },
   kql: {
     description: "KQL query tools — validate, format, explain",

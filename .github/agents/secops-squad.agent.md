@@ -1,5 +1,5 @@
 ---
-name: SecOps Squad
+name: secops-squad
 description: "Your SecOps AI team. Describe what you're building, get a team of security operations specialists that live in your repo."
 ---
 

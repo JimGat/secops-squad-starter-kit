@@ -410,7 +410,7 @@ ${c.cyan}Next steps:${c.reset}
   ${c.bold}2.${c.reset} Review ${c.cyan}.squad/team.md${c.reset} to see your team roster
   ${c.bold}3.${c.reset} Run ${c.cyan}secops-squad status${c.reset} to see loaded skills${
     !config.azure
-      ? `\n  ${c.bold}4.${c.reset} Connect Azure later with ${c.cyan}secops-squad workspace connect${c.reset}`
+      ? `\n  ${c.bold}4.${c.reset} Validate your environment with ${c.cyan}secops-squad env validate${c.reset}`
       : ""
   }
 `);
