@@ -4,6 +4,21 @@
 // for streaming security data into ADX with managed identity access.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Validate ingestion pipeline and configure monitoring.
+// See skills/powershell/data-tiering-commands.md § Data Migration for
+// verifying ingestion flow from Event Hub/IoT/Event Grid to ADX tables.
+// See skills/powershell/sentinel-api-wrapper.md § Data Connectors for
+// configuring complementary Sentinel data connectors.
+// See skills/powershell/rate-limiting.md § Event Hub for ingestion
+// throughput limits (1 MB/s or 1000 events/s per partition).
+//
+// .secops/ context: Check data-sources/data-source-map.yaml for ingestion
+// source configuration and target table routing.
+// Verify compliance/requirements.yaml for data residency constraints on
+// Event Hub namespace and storage account locations.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

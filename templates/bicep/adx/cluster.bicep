@@ -4,6 +4,19 @@
 // security, auto-scale, streaming ingestion, and optional CMK encryption.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Verify cluster health and configure MCP access.
+// See skills/powershell/data-tiering-commands.md § Cluster Health for
+// cluster state validation and diagnostic verification.
+// See skills/msft-security/sentinel-mcp-server.md for registering the
+// cluster URI with MCP Server for agent-based KQL execution.
+// See skills/powershell/rate-limiting.md § Azure Data Explorer for
+// ADX query throttling (concurrent query limits per cluster SKU).
+//
+// .secops/ context: Read workspaces/*.yaml for diagnostic workspace targets.
+// Check compliance/requirements.yaml for CMK and network isolation mandates.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

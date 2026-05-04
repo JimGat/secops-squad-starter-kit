@@ -4,6 +4,21 @@
 // watchlist lookups, and optional VirusTotal integration.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Configure TI watchlist and optional VirusTotal integration.
+// See skills/powershell/sentinel-api-wrapper.md § Threat Intelligence and
+// § Watchlists for managing TI indicators and watchlist lifecycle.
+// See skills/powershell/rate-limiting.md § External APIs for VirusTotal
+// rate limits (4 req/min on free tier, 500 req/day on free tier).
+//
+// .secops/ context: Read workspaces/*.yaml for workspace-scoped TI indicators.
+// Check data-sources/data-source-map.yaml for TI connector configuration.
+//
+// Post-deployment script:
+//   ./scripts/Configure-SoarPlaybooks.ps1 -Playbook IpEnrichment
+//   Configures: Sentinel connection auth, TI watchlist creation, VT key vault.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

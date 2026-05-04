@@ -4,6 +4,17 @@
 // severity-mapped Teams channels with rich Adaptive Cards.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Authorize Teams API connection via portal or PowerShell.
+// See skills/powershell/sentinel-api-wrapper.md § Automation Rules for
+// configuring incident-triggered automation rules after deployment.
+// See skills/powershell/rate-limiting.md § Microsoft Graph API for Teams
+// API throttling limits (4 requests/sec per app per channel).
+//
+// .secops/ context: Read alerting/routing.yaml for severity-to-channel mappings.
+// Validate channel IDs against .secops/alerting/escalation.yaml before deploy.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

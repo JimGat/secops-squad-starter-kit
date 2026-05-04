@@ -5,6 +5,28 @@
 // Usage: az deployment group create -g <rg> -f main.bicep -p clusterName=<name>
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Configure data tiering, ingestion validation, and MCP access.
+// See skills/powershell/data-tiering-commands.md for table tier management,
+// retention policy auditing, and summary rule creation post-deployment.
+// See skills/powershell/sentinel-api-wrapper.md § Data Connectors for
+// configuring Sentinel→ADX cross-resource queries (adx() proxy function).
+// See skills/msft-security/sentinel-mcp-server.md for MCP-based agent access
+// to ADX tables via the Azure MCP Server.
+// See skills/powershell/rate-limiting.md § Azure Resource Manager for ARM
+// API throttling during bulk resource deployments (1200 writes/hr/subscription).
+//
+// .secops/ integration: Templates read workspace config from .secops/workspaces/
+// to resolve Log Analytics workspace IDs for diagnostic settings.
+// Check data-sources/data-source-map.yaml for ADX table→data source mapping.
+// Verify compliance/requirements.yaml for data residency and retention rules.
+//
+// Post-deployment script:
+//   ./scripts/Configure-AdxSecurityLake.ps1 -ClusterName <name> -Tier <tier>
+//   This configures: table tiers, ingestion validation, Sentinel cross-query,
+//   MCP registration, and data source mapping in .secops/.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Core Parameters ─────────────────────────────────────────────────────────

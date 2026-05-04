@@ -4,6 +4,21 @@
 // Usage: az deployment group create -g <rg> -f main.bicep -p workspaceName=<ws>
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Run PowerShell wrappers to complete Sentinel configuration.
+// See skills/powershell/sentinel-api-wrapper.md for incident/rule/watchlist setup.
+// See skills/powershell/rate-limiting.md for API call patterns used by playbooks.
+// See skills/soar/workbook-automation.md for deploying SOC dashboards post-deploy.
+//
+// .secops/ integration: Templates read workspace config from .secops/workspaces/
+// to resolve workspaceName, workspaceResourceGroup, and subscription context.
+// Run 'secops-squad env validate' before deployment to verify environment config.
+//
+// Post-deployment script:
+//   ./scripts/Configure-SoarPlaybooks.ps1 -ResourceGroup <rg> -WorkspaceName <ws>
+//   This configures: automation rules, API connection auth, Sentinel permissions.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Shared Parameters ───────────────────────────────────────────────────────

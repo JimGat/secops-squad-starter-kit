@@ -4,6 +4,23 @@
 // conditionally disables accounts, and notifies the SOC via Teams.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Configure Entra ID permissions and Sentinel automation rule.
+// See skills/powershell/sentinel-api-wrapper.md § Automation Rules.
+// See skills/powershell/defender-api-wrapper.md § Identity Protection for
+// risky user remediation and session revocation APIs.
+// See skills/powershell/rate-limiting.md § Microsoft Graph API for
+// Entra ID throttling (10,000 req/10min per app per tenant).
+//
+// .secops/ context: Check identity/tenants.yaml for multi-tenant user lookups.
+// Verify identity/rbac-conventions.yaml for account disable policy alignment.
+// Check compliance/requirements.yaml for data residency before user actions.
+//
+// Post-deployment script:
+//   ./scripts/Configure-SoarPlaybooks.ps1 -Playbook CompromisedAccount
+//   Configures: Entra ID consent, Graph permissions, automation rule.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

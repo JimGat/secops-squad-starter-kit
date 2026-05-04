@@ -5,6 +5,20 @@
 // Each table includes retention policies, update policies, and docstrings.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Validate table schemas and configure update policies.
+// See skills/powershell/data-tiering-commands.md § Table Inventory for
+// verifying deployed tables match .secops/data-sources/data-source-map.yaml.
+// See skills/powershell/sentinel-api-wrapper.md § Data Connectors for
+// configuring Sentinel cross-resource queries (adx() proxy) to these tables.
+// See skills/soar/workbook-automation.md for deploying workbooks that
+// visualize data from these ADX tables.
+//
+// .secops/ context: Check data-sources/data-source-map.yaml for table→source
+// mapping (which tables map to which security data sources).
+// Review data-sources/migrations.yaml for any pending schema migrations.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

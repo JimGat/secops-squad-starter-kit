@@ -4,6 +4,18 @@
 // and role assignments for security data lake operations.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Configure retention policies and role assignments via PS.
+// See skills/powershell/data-tiering-commands.md § Retention Policies for
+// auditing retention against compliance requirements post-deployment.
+// See skills/powershell/data-tiering-commands.md § Cost Analysis for
+// running cost impact analysis before changing hot cache or retention.
+//
+// .secops/ context: Check compliance/requirements.yaml for minimum retention
+// periods (e.g., GDPR 30d, PCI-DSS 365d, FedRAMP 365d).
+// Verify data-sources/data-source-map.yaml for table-level tier assignments.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

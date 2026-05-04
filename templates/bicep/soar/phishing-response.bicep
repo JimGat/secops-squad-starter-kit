@@ -4,6 +4,21 @@
 // email purge, and SOC notification via Teams.
 // ============================================================================
 
+// ── Phase 2 Integration ────────────────────────────────────────────────────
+// Post-deployment: Configure Sentinel automation rule to trigger this playbook.
+// See skills/powershell/sentinel-api-wrapper.md § Automation Rules.
+// See skills/powershell/defender-api-wrapper.md for MDE/Office 365 enrichment.
+// See skills/powershell/rate-limiting.md § Exchange Online for email purge
+// rate limits (10,000 purge actions/day per tenant).
+//
+// .secops/ context: Check identity/tenants.yaml for multi-tenant scenarios.
+// Verify data-sources/data-source-map.yaml includes Office 365 connector.
+//
+// Post-deployment script:
+//   ./scripts/Configure-SoarPlaybooks.ps1 -Playbook PhishingResponse
+//   Configures: O365 connection auth, Entra ID consent, automation rule.
+// ────────────────────────────────────────────────────────────────────────────
+
 targetScope = 'resourceGroup'
 
 // ── Parameters ──────────────────────────────────────────────────────────────

@@ -43,3 +43,13 @@
 - Edge cases tested: empty results, malformed JSON, null tokens, missing required fields, URL-encoding of path params, frozen constants, OData nextLink pagination, bulk operations with stopOnError
 - Auth tests cover: client credentials (validation, token acquisition, caching, cache clear), managed identity (App Service path, IMDS fallback, network errors), device code (validation, request failures)
 - CommonJS modules loaded via `createRequire(import.meta.url)` since test file uses ESM (consistent with kql-validator tests)
+
+📌 **Bicep Templates Refactored for Phase 2 Integration** (2026-05-04)
+- Updated all 11 Bicep templates in `templates/bicep/` with Phase 2 integration comment blocks
+- SOAR templates (6): main, phishing-response, compromised-account, malware-containment, ip-enrichment, teams-notification
+- ADX templates (5): main, cluster, database, tables, ingestion
+- Each template now references: relevant PowerShell wrapper skills, `.secops/` config files, post-deployment scripts, and rate-limiting considerations
+- Created `templates/bicep/README.md` (222 lines) documenting template inventory, Phase 2 skill cross-reference, pre-deployment checklist, parameter cross-reference, post-deployment automation patterns, rate limiting table, and architecture overview
+- Skills referenced: sentinel-api-wrapper.md, defender-api-wrapper.md, data-tiering-commands.md, rate-limiting.md, sentinel-mcp-server.md, workbook-automation.md
+- Pattern: comment blocks inserted between file header and `targetScope` declaration in all templates
+- QA observation: Templates are structurally sound but post-deployment scripts (Configure-SoarPlaybooks.ps1, Configure-AdxSecurityLake.ps1) don't exist yet — they are forward-referenced for future implementation
