@@ -53,3 +53,16 @@
 - Skills referenced: sentinel-api-wrapper.md, defender-api-wrapper.md, data-tiering-commands.md, rate-limiting.md, sentinel-mcp-server.md, workbook-automation.md
 - Pattern: comment blocks inserted between file header and `targetScope` declaration in all templates
 - QA observation: Templates are structurally sound but post-deployment scripts (Configure-SoarPlaybooks.ps1, Configure-AdxSecurityLake.ps1) don't exist yet — they are forward-referenced for future implementation
+
+📌 **Integration Test Suite Skill Created** (2026-05-04)
+- Created `skills/testing/integration-test-suite.md` (562 lines) — comprehensive integration test patterns for all 5 orchestration workflows
+- Created `skills/testing/README.md` (61 lines) — testing skill domain overview
+- Test harness design: mock `Invoke-RestMethod` at boundary, `Register-MockResponse` pattern with URI regex matching, call count tracking, configurable failure injection
+- Mock factories: `New-MockSentinelIncident`, `New-MockIncidentEntities`, `New-MockDefenderAlert`, `New-MockEdiscoveryCase`, `New-MockEdiscoverySearch`
+- Environment isolation: `New-TestSecopsConfig` generates single-tenant, multi-tenant, and gov-cloud fixtures; `New-TestDataSourceMap` for workspace routing tests
+- 5 workflow scenarios tested: Incident Investigation (Sequential+FanOut+Loop), Compliance Export (Sequential+Checkpoint), Threat Hunting (Sequential+Conditional+Loop), Data Tiering (Loop+Checkpoint), Shadow IT (Sequential+FanOut+Conditional)
+- Error handling tests: retry with backoff (429/503), partial failure continuation, auth token refresh on 401, invalid `.secops/` graceful degradation
+- Performance tests: 1000+ incident pagination, fan-out MaxConcurrency, query timeout, 500-entity batch
+- `.secops/` context tests: missing config → helpful error, workspace routing, migration state, discovery log YAML format, gov-cloud endpoints, multi-tenant MSSP
+- Pester patterns: `Assert-SuccessResult`/`Assert-ErrorResult` helpers for `@{ok;data/error}` contract, `Register-RateLimitedMock`, `Mock Invoke-AzRestMethod`
+- All scenarios reference corresponding workflows from `cross-skill-orchestration.md`
