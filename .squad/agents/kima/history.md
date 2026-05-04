@@ -62,6 +62,13 @@
 - **Key pattern:** All three personas follow MCP-first → PowerShell → REST fallback tool selection hierarchy
 - **Key pattern:** Routing files now include API & Tool Routing tables mapping operations to specific skills and agents
 
+📌 **Phase 7 Gov Cloud + Copilot Workflow Skills (2026-05-04)**
+- **gov-cloud-support.md (~640 lines):** Comprehensive sovereign cloud support — 6 cloud environments (Commercial, GCC, GCC High, DoD, Azure Gov, China), full endpoint matrices for identity/Graph/ARM/Sentinel/Defender/Log Analytics per cloud, auth flow differences with certificate-based auth for GCC High/DoD, `.secops/` integration with `cloud_type` field driving automatic endpoint resolution, feature availability matrices (Sentinel, Defender, Copilot, Purview) per cloud, 4 production PowerShell functions (`Get-SecOpsCloudEndpoints`, `Connect-SecOpsEnvironment`, `Test-SecOpsCloudFeature`, `Export-SecOpsCloudConfig`), compliance constraints for IL2/IL4/IL5, agent decision flow for sovereign operations
+- **copilot-security-workflows.md (~780 lines):** Copilot for Security enriched workflow patterns — 5 enrichment patterns (incident summarization, TI enrichment, script deobfuscation, KQL assistance, vulnerability assessment), 3 full workflow templates with ASCII diagrams and production PowerShell (AI-Assisted Incident Triage, Threat Hunt with AI, Automated Reporting), SCU cost management (budget thresholds, per-workflow limits, fallback logic), response caching for TI enrichment, graceful degradation matrix for all Copilot-dependent features, cloud availability guard function
+- **Key design:** Both skills integrate with `.secops/environment.yaml` cloud_type field; gov-cloud-support drives endpoint resolution, copilot-security-workflows provides fallback paths when Copilot unavailable
+- **Key insight:** GCC High/DoD have no Copilot for Security (planned); workflows must always include non-AI fallback paths
+- **Cross-references:** gov-cloud-support.md ↔ copilot-security-workflows.md ↔ copilot-for-security.md ↔ cross-skill-orchestration.md
+
 📌 **Cross-Team Context Dependencies**
 - **Freamon integration:** Can reference Sentinel/Defender skills when generating PowerShell; relies on PowerShell/rate-limiting patterns for API calls
 - **Herc integration:** SOAR playbooks can reference Defender/Sentinel API permission patterns for service principal setup; Automation Rules API documented

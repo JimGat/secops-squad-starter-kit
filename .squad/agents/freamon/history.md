@@ -42,3 +42,26 @@
 - **skills.json v2.0.0:** Added 9 new skill references — `advanced-hunting-api`, `query-builder`, `workbook-automation`, `sentinel-api-wrapper`, `defender-api-wrapper`, `log-analytics/api-wrapper`, `log-analytics/query-patterns`, `copilot-for-security`, `rate-limiting`. Skills distributed across tiers: rate-limiting + copilot shared by all; Bunk gets sentinel-api; Kima gets sentinel + defender + workbooks; Freamon gets full hunting + query stack; Daniels gets workbooks.
 - **routing.md:** Added Tool-Chain Routing section with task-type → skill mapping table. Documented 4 flows: Threat Hunting (KQL builder → Advanced Hunting), Investigation (Sentinel → Defender → Log Analytics → Copilot), Dashboard (workbook-automation), Alert Triage (`.secops/alerting/` rules). Added 3 new routing rules (#9-11).
 - **README.md:** Documented incident lifecycle (Detect → Hunt → Investigate → Respond → Report) with tool references at each stage. Added Tool Chain diagram (KQL Builder → Advanced Hunting → Sentinel API → Workbook). Restructured Pre-Loaded Skills table to show Core vs Phase 2-3 columns. Added `.secops/` to environment assumptions.
+
+📌 **Cross-Cloud Data Connectors Skill (2026-05-04)**
+- **Task:** Created `skills/platform/cross-cloud-connectors.md` (509 lines) — comprehensive skill for ingesting security data from AWS, GCP, and multi-SIEM sources into Sentinel
+- **AWS Integration:** CloudTrail (S3→SQS native connector), GuardDuty (EventBridge→S3), Security Hub, VPC Flow Logs, IAM Access Analyzer custom ingestion. Full ASIM normalization for Authentication and NetworkSession schemas.
+- **GCP Integration:** Cloud Audit Logs (Pub/Sub native connector), Security Command Center, VPC Flow Logs, Chronicle→Sentinel migration patterns. ASIM Authentication parser for GCP fields.
+- **Multi-SIEM:** SPL→KQL translation table (10 patterns), QRadar concept mapping (AQL→KQL, Offense→Incident), Elastic Sigma rule conversion via sigma-cli.
+- **Connector Patterns:** CEF/Syslog via AMA with DCR transforms, REST API custom connectors (Push-LogsToSentinel function), CCP overview, DCR transformation KQL, DCE setup.
+- **ASIM Unifying Parsers:** Cross-cloud Authentication parser (Azure+AWS+GCP in single query), threat hunting queries for multi-cloud IP targeting and cross-cloud privilege escalation chains.
+- **`.secops/` Integration:** data-source-map.yaml entries for 4 AWS + 1 GCP sources, migration tracking template for SIEM migrations, discovery-log entry format.
+- **Cost Optimization:** Tier selection table (6 sources), DCR volume reduction, summary rules for VPC flow aggregation, archive tier for 7-year compliance.
+- **PowerShell:** Get-CrossCloudConnectorHealth (staleness detection), Test-CrossCloudIngestionVolume (drift from expected daily_gb).
+- **New domain:** Created `skills/platform/` directory for platform-level cross-cutting skills.
+
+📌 **MSSP SecOps Workflows Skill (2026-05-04)**
+- **Task:** Created `skills/orchestration/mssp-workflows.md` (~554 lines) — comprehensive MSSP operating model skill building on `multi-tenant-support.md`
+- **Tenant Onboarding:** Customer intake YAML template, `New-MSSPCustomerOnboarding` automated workflow (Lighthouse delegation → .secops/ provisioning → connector validation → tier-based detection deployment), `Test-CustomerDataConnectors`, `Deploy-TierDetectionRules` with Gold/Silver/Bronze rule packs
+- **SOC Dashboard:** Cross-tenant incident summary KQL, SLA tracking per severity with P95 response metrics, tenant health scorecards (ingestion drops, alert fatigue ratio), `Get-MSSPDashboard` aggregation function with summary/sla/health views
+- **Multi-Tenant Alerting:** Per-customer routing YAML schema (PagerDuty/Teams/email/ServiceNow channels), SLA escalation paths table, `Find-CrossTenantThreatActor` for IoC correlation across all tenants, `Set-MSSPAlertSuppression` with audit trail
+- **Tenant Switching:** `Switch-MSSPCustomer` with `-PreserveState` (saves/restores analyst investigation context), `Invoke-MSSPBatchOperation` with tier filtering
+- **Reporting & Compliance:** `Export-MSSPCustomerReport` (monthly metrics export), compliance evidence export (SOC 2/ISO 27001/PCI-DSS control-mapped queries), portfolio trend analysis KQL
+- **Billing Integration:** Per-tenant ingestion tracking KQL, `Get-MSSPBillingSummary` (cost-per-GB by tier), `Assert-MSSPFeatureTier` enforcement
+- **`.secops/` Extensions:** Full `mssp-config.yaml` schema (SOC teams, customer assignments, billing tiers, SLA definitions, analyst rotation schedules), centralized vs distributed vs hybrid config patterns
+- **References:** 13 functions in Quick Reference table, cross-references to `multi-tenant-support.md` throughout

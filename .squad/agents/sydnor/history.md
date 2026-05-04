@@ -133,3 +133,18 @@
   - Agent orchestration patterns: decomposition table, handoff protocol, result aggregation.
 - Cross-references 20+ existing skill files across all 7 domains (powershell, kql, detection, msft-security, soar, log-analytics, adx).
 - Follows established conventions: YAML frontmatter, `@{ ok = $true; data = ... }` result objects, `.secops/` context checks.
+
+🔷 **Multi-Tenant SecOps Skill** (2026-05-04T08:41:39-05:00)
+- Created `skills/platform/` domain — new skill domain for infrastructure-level SecOps capabilities.
+- **`skills/platform/README.md`** (68 lines) — Domain overview, skill inventory, dependency map, `.secops/` integration guide.
+- **`skills/platform/multi-tenant-support.md`** (558 lines) — Comprehensive multi-tenant skill covering:
+  - Azure Lighthouse: onboarding (ARM + PowerShell), RBAC scoping, cross-workspace incident management
+  - `.secops/` multi-tenant schema: extended `environment.yaml` with tenant array, per-tenant workspace mappings, tenant-scoped data sources, tenant context file, cross-tenant discovery log entries
+  - API wrapper patterns: `Get-TenantScopedToken` (cached), `Invoke-TenantScopedApi`, `Invoke-CrossTenantQuery` (union across workspaces), `Assert-TenantIsolation`
+  - Cross-tenant workflows: MSSP incident dashboard, unified threat hunting with cross-tenant correlation, compliance posture rollup, SLA-tier-aware alert routing
+  - PowerShell patterns: `Switch-SecOpsTenant`, `Invoke-ParallelTenantOperation` (throttled + retry), token cache management
+  - Security: least privilege table, audit logging, data residency enforcement, isolation verification
+- All PowerShell follows `@{ ok = $true; data = ... }` result object convention.
+- MSSP-friendly: supports 10–100+ customer tenants with SLA-tier-aware escalation paths.
+
+📌 **`skills/platform/` domain established** — infrastructure-level skills that span security products (multi-tenancy, API patterns, environment management). Consumed by all other skill domains.
