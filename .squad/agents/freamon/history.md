@@ -65,3 +65,9 @@
 - **Billing Integration:** Per-tenant ingestion tracking KQL, `Get-MSSPBillingSummary` (cost-per-GB by tier), `Assert-MSSPFeatureTier` enforcement
 - **`.secops/` Extensions:** Full `mssp-config.yaml` schema (SOC teams, customer assignments, billing tiers, SLA definitions, analyst rotation schedules), centralized vs distributed vs hybrid config patterns
 - **References:** 13 functions in Quick Reference table, cross-references to `multi-tenant-support.md` throughout
+
+📌 **Threat Intelligence & Performance Tuning Skills (2026-05-04)**
+- **Task:** Created 2 new skill documents requested by Jose
+- **`skills/detection/threat-intel-enrichment.md`** (404 lines) — External TI feed integration (CISA KEV, abuse.ch, VirusTotal, Shodan, AlienVault OTX, MISP), Sentinel TI data connector paths (TAXII, Graph API, Upload), Defender TI reputation scoring, PowerShell automation (`Import-ThreatIntelFeed` multi-source orchestrator, `Get-IOCEnrichment` aggregator with multi-source confidence scoring, `Test-TIFeedHealth` monitoring), KQL correlation patterns (TI→SigninLogs join, multi-source IOC scoring, time-decay indicator freshness), `.secops/data-sources/ti-feeds.yaml` config template
+- **`skills/platform/performance-tuning.md`** (363 lines) — KQL query profiling (LAQueryLogs analysis), anti-pattern table with before/after examples, materialized views and summary rules, query checklist. API wrapper optimization (connection pooling, Graph $batch requests, TTL-based caching). Rate limiter tuning (`Get-ThrottleMetrics`, tier priority config, queue depth monitoring). MCP server caching and connection health. Cost optimization (commitment tier analysis, Basic vs Analytics tier migration with `Get-TierMigrationCandidates`). `Measure-KQLPerformance` benchmarking function
+- **Cross-references:** Both skills reference rate-limiting.md, api-patterns.md, cost-optimization.md, sentinel-api-wrapper.md, and .secops/ integration patterns
