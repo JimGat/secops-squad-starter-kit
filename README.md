@@ -192,6 +192,35 @@ See [`.secops/` Schema Reference](docs/SECOPS_SCHEMA.md) for field-level documen
 
 ---
 
+## Keeping Your Data Personal
+
+SecOps Squad follows the same personal-data pattern as [Productivity Squad](https://github.com/x3nc0n/productivity-squad-starter-kit): the starter kit is a **shared template**, but your working copy is **yours** — customer data never leaves your machine or flows upstream.
+
+### What stays personal (gitignored)
+
+| File / Directory | Purpose |
+|-----------------|---------|
+| `secops-squad.config.json` | Your persona selection, workspace bindings, local preferences |
+| `.secops/discovery-log.yaml` | Agent-discovered environment facts (accumulated at runtime) |
+| `.squad/log/`, `.squad/orchestration-log/` | Session history — your conversations, agent traces |
+| `.squad/decisions/inbox/` | Pending decisions before the Scribe merges them |
+| `node_modules/` | Dependencies (reinstalled from `package.json`) |
+
+### What's shared (committed)
+
+Skills, team roster, agent charters, `.secops/` schema templates, CLI code, and merged decisions. These define **how** the team works — not **where** it works or **whose** data it touches.
+
+### How it works
+
+1. **The installer clones the starter kit** — it becomes a standalone local project, not a fork. There's no upstream to accidentally push customer data to.
+2. **`.secops/` templates are committed; runtime data is gitignored.** You commit the schema (`environment.yaml`, `workspaces/`) with your tenant topology so teammates get the same structure. Discovery logs and config stay local.
+3. **Agents read `.secops/` before touching Azure resources.** This means queries hit the right workspace, respect compliance boundaries, and use the correct tenant — without you repeating context every session.
+4. **All data flows through your authenticated Azure / Microsoft Graph sessions.** The AI sees query results in-session but doesn't retain them after the session ends. No customer telemetry is stored in the repo or sent to third parties.
+
+> **Want the same pattern for productivity workflows?** See [Productivity Squad Starter Kit](https://github.com/x3nc0n/productivity-squad-starter-kit) — same framework, different domain. It adds Teams, Calendar, Planner, and Mail skills with a personal-repo-per-user install model.
+
+---
+
 ## Supported Microsoft Security Products
 
 | Product | Coverage |
@@ -398,6 +427,10 @@ SecOps Squad is built on <a href="https://github.com/bradygaster/squad">Squad</a
 
 - **[Squad](https://github.com/bradygaster/squad)** — Brady Gaster's agent team framework that powers the casting, routing, decisions, and ceremony system
 - **[GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — The runtime that makes it all work
+
+### Sibling Projects
+
+- **[Productivity Squad Starter Kit](https://github.com/x3nc0n/productivity-squad-starter-kit)** — Same Squad framework applied to Microsoft 365 productivity workflows (Teams, Calendar, Planner, Mail). Uses a personal-repo-per-user install model with MCP server integration.
 
 ---
 
