@@ -30,3 +30,12 @@
 📌 **js-yaml must be required at top of doctor.js** — doctor.js now uses yaml.load() in checkSecopsConfig(). The import must remain.
 
 📌 **workspace.js pattern** — connect is async (readline prompts); status and disconnect are sync. run() export is async. All three interact with .secops/workspaces/*.yaml and .secops/environment.yaml via js-yaml.
+
+🔷 **README.md Rewrite — Squad Structure Pattern** (2026-05-04T17:12:14.241-05:00)
+- Rewrote README.md to follow the bradygaster/squad README structural pattern: alpha warning → "What is X?" value prop → Quick Start with ✓ Validate steps → All Commands table → Personas → Parallel execution → Skills → .secops/ framework → Products → API Wrappers → What Gets Created (directory tree) → Samples → FAQ → Troubleshooting → Documentation (split into 3 tables: Guides, Reference, Developer) → Built On → Status
+- Updated skill counts to match SKILLS_CATALOG.md (Detection: 9, Microsoft Security: 16 — corrected from 10/18 in old README)
+- Removed emoji from section headers for cleaner markdown rendering (matching Squad pattern)
+- Added "Agents Work in Parallel" section showing SecOps-specific parallel execution example (BEC detection scenario)
+- Verified all 20 local file links resolve to existing files
+- Badge updated: removed "Phase 3" (too internal), added "status: alpha" (matching Squad), kept skills-96 and Node.js badges
+- README expanded from 210 to 302 lines — no content dropped, structure improved

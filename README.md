@@ -1,16 +1,39 @@
-# 🛡️ SecOps Squad Starter Kit
+# SecOps Squad Starter Kit
 
-[![Phase 3 Active](https://img.shields.io/badge/Phase-3%20Active-brightgreen)](docs/getting-started.md) [![Skills](https://img.shields.io/badge/Skills-96-blue)](SKILLS_CATALOG.md) [![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+[![Status](https://img.shields.io/badge/status-alpha-blueviolet)](#status)
+[![Skills](https://img.shields.io/badge/skills-96-blue)](SKILLS_CATALOG.md)
+[![Platform](https://img.shields.io/badge/platform-GitHub%20Copilot-blue)](#what-is-secops-squad)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
 
-> **Your AI SecOps team for the Microsoft Security stack. 96 skills. One command to install.**
+> ⚠️ **Alpha Software** — SecOps Squad is under active development. Skill schemas, CLI commands, and `.secops/` format may change between releases.
 
-Turns GitHub Copilot CLI into a full security operations squad — KQL hunting, SOAR automation, detection engineering, threat modeling, multi-tenant operations, and API wrappers for the entire Microsoft Security stack — all through natural conversation. Pick a persona, load your skills, go hunting.
+---
 
-## 🚀 Install
+## What is SecOps Squad?
 
-**Step 1:** Get a GitHub Copilot license at [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for all Microsoft FTEs)
+SecOps Squad gives you a human-directed AI security operations team through GitHub Copilot. Install it into any repo. Get a team of specialists — KQL hunting, detection engineering, SOAR automation, threat modeling — that live in your repo as files. They persist across sessions, learn your environment, share decisions, and help you move faster without giving up oversight.
 
-**Step 2:** Open a terminal and paste:
+It's a security overlay on top of [Squad](https://github.com/bradygaster/squad). The base framework gives you agent teams. SecOps Squad adds **96 skills** across 11 security domains, **6 personas** for different SOC roles, a **customer knowledge framework** (`.secops/`) that maps your actual infrastructure, and production-ready patterns for the entire Microsoft Security stack.
+
+SecOps Squad is a productivity tool for security professionals, not a replacement for analysts, engineers, or incident responders. People stay accountable for response decisions, detection logic, and compliance — Squad helps with the repetition, the KQL, and the parallel execution.
+
+It's not a chatbot wearing a SOC badge. Each team member runs in its own context, reads its own skill files, and writes back what it learned so the work stays inspectable and auditable.
+
+---
+
+## Quick Start
+
+### 1. Prerequisites
+
+| Requirement | How to get it |
+|------------|---------------|
+| **GitHub Copilot license** | [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for Microsoft FTEs) |
+| **Node.js 18+** | [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
+| **Git** | [git-scm.com](https://git-scm.com/) or `winget install Git.Git` |
+
+**✓ Validate:** Run `node --version` — you should see `v18` or higher.
+
+### 2. Install
 
 **Windows PowerShell:**
 ```powershell
@@ -22,46 +45,61 @@ irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/inst
 curl -fsSL "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh" | bash
 ```
 
-That's it. The installer clones the repo, installs dependencies, and scaffolds a working SecOps project in `~/secops-squad-starter-kit`. Total time: ~3 minutes.
+The installer clones the repo, installs dependencies, runs persona selection, and scaffolds a working SecOps project in `~/secops-squad-starter-kit`. Total time: ~3 minutes.
 
-> **Getting an execution policy error?** Run this first, then try the one-liner again:
+**✓ Validate:** Run `cd ~/secops-squad-starter-kit && ls .squad/team.md` — you should see the team roster file.
+
+> **Execution policy error on Windows?** Run this first, then retry:
 > ```powershell
 > Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 > ```
 
-### Prerequisites
+### 3. Connect your environment
 
-| Requirement | How to get it |
-|------------|---------------|
-| **GitHub Copilot license** | [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for Microsoft FTEs) |
-| **Node.js 18+** | [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
-| **Git** | [git-scm.com](https://git-scm.com/) or `winget install Git.Git` |
+```bash
+secops-squad env validate
+```
 
-### What happens during install (~3 min)
+If you have an Azure Sentinel workspace, connect it during init or later with `secops-squad workspace connect`. No Azure subscription? That's fine — detection engineering skills, threat model templates, and KQL learning work offline.
 
-1. Clones `x3nc0n/secops-squad-starter-kit` into `~/secops-squad-starter-kit`
-2. Installs Node.js dependencies
-3. Runs persona selection (SOC Analyst, Detection Engineering, Threat Hunting, etc.)
-4. Configures Azure workspace connection
-5. Initializes a fresh git repository — your copy, not linked to upstream
+**✓ Validate:** Run `secops-squad doctor` — all checks should pass.
 
-## What You Get
+### 4. Open Copilot and go
 
-| Capability | What It Does |
-|-----------|-------------|
-| 🔍 **KQL Hunting** | 11 skills — threat hunting, Sentinel analytics, Entra sign-in analysis, UEBA, cross-workspace |
-| ⚡ **SOAR Automation** | 12 skills — phishing response, compromised account, auto-triage, data exfil, TI ingest |
-| 🛡️ **Detection Engineering** | 10 skills — MITRE ATT&CK mapping, rule lifecycle, NRT/scheduled patterns, watchlists |
-| 📊 **Azure Data Explorer** | 8 skills — security data lake, long-term retention, ML anomaly, cross-cluster |
-| 🔧 **PowerShell Modules** | 14 skills — API wrappers, auth patterns, Sentinel/Defender/Entra submodules |
-| 🏢 **Microsoft Security** | 18 skills — Defender XDR, Sentinel, Entra, Purview, MCP servers, Graph API |
-| 📋 **Log Analytics** | 10 skills — workspace architecture, data connectors, DCR, cost optimization |
-| 🌐 **Platform** | 3 skills — multi-tenant, sovereign cloud (GCC/GCC-H/DoD), cross-cloud |
-| 🔗 **Orchestration** | 3 skills — cross-skill workflows, Copilot for Security, MSSP patterns |
-| 🤖 **Copilot Skills** | 9 skills — agent collaboration, git workflow, error recovery, conventions |
-| ✅ **KQL Validation** | Automated syntax checks on every PR |
+```bash
+copilot --agent secops-squad
+```
 
-## 🎯 Personas
+Then:
+
+```
+I need to hunt for suspicious sign-ins across our Entra logs from the last 7 days.
+```
+
+**✓ Validate:** The agent responds with KQL queries tailored to your workspace configuration.
+
+---
+
+## All Commands
+
+| Command | What it does |
+|---------|-------------|
+| `secops-squad init` | Set up a new secops-squad project with persona selection |
+| `secops-squad init --secops` | Scaffold `.secops/` directory interactively |
+| `secops-squad doctor` | Check environment prerequisites (Node.js, Git, Azure CLI, `.secops/` config) |
+| `secops-squad env [validate\|workspaces\|data-sources]` | Show or validate `.secops/` configuration |
+| `secops-squad skill [list\|add <name>]` | List available skills or add a skill to your project |
+| `secops-squad persona [list\|switch <name>]` | List personas or switch the active persona |
+| `secops-squad kql validate <file\|glob>` | Offline KQL syntax validation (~60 operators, 250+ functions, ~50 tables) |
+| `secops-squad playbook [list\|deploy <name>]` | List or deploy SOAR playbooks |
+| `secops-squad plugin [install\|list\|remove]` | Manage CLI plugins |
+| `secops-squad workspace [connect\|status\|disconnect]` | Connect to a Sentinel workspace |
+
+See [CLI Reference](cli/README.md) for full details and flags.
+
+---
+
+## Personas — Pick Your SOC Role
 
 Six specialized personas, each with its own team composition, skill routing, and ceremony cadence:
 
@@ -74,19 +112,48 @@ Six specialized personas, each with its own team composition, skill routing, and
 | **Incident Response** | IR procedures, forensics, containment | Malware containment, compromised account, data exfil |
 | **Full SOC** | All skills combined for a mature SOC | Complete 96-skill library |
 
-Each persona includes `team.md`, `routing.md`, and `ceremonies.md` for structured agent collaboration. See [Personas Guide](docs/personas-guide.md) for details.
+Each persona includes `team.md`, `routing.md`, and `ceremonies.md` for structured agent collaboration. Switch anytime with `secops-squad persona switch <name>`.
 
-## 🛠 Skills at a Glance
+See [Personas Guide](docs/personas-guide.md) for team compositions and ceremony definitions.
 
-**96 skills** across **11 domains:**
+---
+
+## Agents Work in Parallel — You Stay in Control
+
+When you give a task, the coordinator launches every agent that can usefully start — simultaneously — while you keep priorities, review, and final decisions.
+
+```
+You: "Team, build a detection for BEC phishing campaigns"
+
+  🏗️ McNulty (Lead) — scoping requirements, MITRE mapping...    ⎤
+  🔒 Kima (SecOps) — researching BEC attack patterns...          ⎥ all launched
+  📊 Freamon (KQL) — writing detection query logic...            ⎥ in parallel
+  ⚙️ Herc (SOAR) — building auto-response playbook...           ⎥
+  🧪 Carver (QA) — writing validation test cases...              ⎥
+  📋 Scribe — logging decisions...                               ⎦
+```
+
+When agents finish, the coordinator records follow-up work and leaves a breadcrumb trail:
+
+- **`decisions.md`** — every decision any agent made
+- **`orchestration-log/`** — what was spawned, why, and what happened
+- **`log/`** — full session history, searchable
+
+**Knowledge compounds across sessions.** Every time an agent works, it writes lasting learnings to its `history.md`. After a few sessions, agents know your KQL style, your workspace layout, your detection conventions. They stop asking questions they've already answered.
+
+**And it's all in git.** Anyone who clones your repo gets the team — with all their accumulated knowledge.
+
+---
+
+## Skills — 96 Across 11 Domains
 
 | Domain | Count | Examples |
 |--------|-------|----------|
 | **KQL Hunting & Analytics** | 11 | Threat hunting, Sentinel analytics, UEBA, Defender XDR, cross-workspace |
 | **SOAR Automation** | 12 | Phishing response, compromised account, auto-triage, TI ingest, compliance |
-| **Detection Engineering** | 10 | MITRE mapping, detection lifecycle, NRT rules, watchlist detection, fusion |
+| **Detection Engineering** | 9 | MITRE mapping, detection lifecycle, NRT rules, watchlist detection, fusion |
 | **Azure Data Explorer** | 8 | Cluster architecture, data modeling, ML anomaly, dashboards, migration |
-| **Microsoft Security** | 18 | Defender XDR, Sentinel, Entra, Purview DLP, MCP servers, Graph API |
+| **Microsoft Security** | 16 | Defender XDR, Sentinel, Entra, Purview DLP, MCP servers, Graph API |
 | **PowerShell Modules** | 14 | Module foundation, API wrappers, auth, rate limiting, submodules |
 | **Log Analytics** | 10 | Workspace architecture, DCR, data connectors, cost optimization, RBAC |
 | **Platform** | 3 | Multi-tenant, GCC/GCC-H/DoD sovereign cloud, cross-cloud connectors |
@@ -94,33 +161,59 @@ Each persona includes `team.md`, `routing.md`, and `ceremonies.md` for structure
 | **Testing** | 1 | Integration test suites for SecOps workflows |
 | **Copilot Agent Skills** | 9 | Agent collaboration, git workflow, error recovery, conventions |
 
+Every skill is a Markdown file that teaches agents how to perform a specific security operations task. Skills are composable — agents combine them dynamically based on the work.
+
 See [**SKILLS_CATALOG.md**](SKILLS_CATALOG.md) for the complete inventory with every skill listed by domain.
 
-## 🏗️ Customer Knowledge Framework (`.secops/`)
+---
 
-The `.secops/` directory is a customer-specific environment knowledge layer that tells agents **where** things are — not just how to do them. While skills teach agents KQL and SOAR patterns, `.secops/` maps the customer's actual infrastructure:
+## Customer Knowledge Framework (`.secops/`)
 
-- **`environment.yaml`** — Primary environment descriptor (tenant, subscription, regions)
-- **`workspaces/`** — Log Analytics and Sentinel workspace configurations
-- **`data-sources/`** — What data lives where, active migrations, table-to-workspace mapping
-- **`identity/`** — Multi-tenant topology, RBAC conventions, service principal inventory
-- **`alerting/`** — Alert routing rules and notification channels
-- **`compliance/`** — Regulatory boundaries, data residency, retention requirements
-- **`discovery-log.yaml`** — Agent-discovered environment facts
+Skills teach agents **how** to do things. `.secops/` tells them **where** — which tenants, workspaces, data sources, and compliance boundaries exist in your specific environment.
 
-This framework ensures agents don't guess — they know that `SecurityEvent` is in ADX (not Sentinel), that the customer is GDPR-bound to EU regions, or that `NetFlowLogs` is mid-migration.
+```
+.secops/
+├── environment.yaml        # Tenant, subscription, regions
+├── workspaces/             # Log Analytics and Sentinel workspace configs
+├── data-sources/           # What data lives where, active migrations
+├── identity/               # Multi-tenant topology, RBAC conventions
+├── alerting/               # Alert routing rules and notification channels
+├── compliance/             # Regulatory boundaries, data residency
+└── discovery-log.yaml      # Agent-discovered environment facts
+```
 
-## 🌐 Platform Skills — Multi-Tenant, Sovereign Cloud & Cross-Cloud
+**Without `.secops/`:** Agents guess where data lives, assume single-tenant, and can't respect compliance boundaries.
 
-The `skills/platform/` domain handles enterprise-scale deployment patterns:
+**With `.secops/`:** Agents know that `SecurityEvent` is in ADX (not Sentinel), that the customer is GDPR-bound to EU regions, and that `NetFlowLogs` is mid-migration.
 
-- **Multi-Tenant Support** — Azure Lighthouse, cross-tenant KQL queries, tenant-scoped RBAC for MSSPs and multi-org environments
-- **Sovereign Cloud (GCC/GCC-H/DoD)** — Endpoint mappings, API differences, feature parity matrices for Azure Government clouds
-- **Cross-Cloud Connectors** — Ingesting AWS CloudTrail, GCP Security Command Center, and other cloud provider data into Sentinel
+All 6 agent charters include a mandatory environment context step — before any task touching Azure resources, agents read `.secops/` and the [environment context skill](.copilot/skills/secops-environment-context.md) to understand the customer's infrastructure.
 
-## 🔌 API Wrappers & MCP Servers
+See [`.secops/` Schema Reference](docs/SECOPS_SCHEMA.md) for field-level documentation.
 
-The kit includes production-ready API integration skills:
+---
+
+## Supported Microsoft Security Products
+
+| Product | Coverage |
+|---------|----------|
+| Microsoft Sentinel | ✅ Full — analytics rules, hunting queries, workbooks, watchlists, data connectors |
+| Microsoft Defender XDR | ✅ Full — incidents, advanced hunting, alerts, threat intel |
+| Microsoft Defender for Endpoint | ✅ API wrappers, live response, device timeline queries |
+| Microsoft Defender for Identity | ✅ Lateral movement detection, identity hunting |
+| Microsoft Defender for Office 365 | ✅ Phishing detection, email forensics |
+| Microsoft Defender for Cloud / Cloud Apps | ✅ Cloud posture, CSPM, app governance |
+| Microsoft Entra ID Protection | ✅ Sign-in analysis, risky user detection, conditional access |
+| Microsoft Graph Security API | ✅ Alerts, incidents, threat intel, secure score |
+| Microsoft Purview | ✅ DLP policies, eDiscovery, compliance automation |
+| Microsoft Copilot for Security | ✅ Integration patterns, prompt engineering, orchestration |
+| Azure Data Explorer | ✅ Security data lake, long-term retention, ML anomaly detection |
+| Azure Monitor / Log Analytics | ✅ Workspace architecture, DCR, data connectors, cost optimization |
+
+---
+
+## API Wrappers & MCP Servers
+
+Production-ready API integration skills for tool-calling agents:
 
 | Type | Skills | What They Cover |
 |------|--------|-----------------|
@@ -130,26 +223,102 @@ The kit includes production-ready API integration skills:
 | **Purview / eDiscovery** | `purview-api-wrapper`, `ediscovery-api-wrapper` | Compliance and legal hold automation |
 | **Log Analytics** | `api-wrapper` | Query API, workspace management, data export |
 
-## Supported Microsoft Security Products
+---
 
-- ✅ Microsoft Sentinel
-- ✅ Microsoft Defender XDR (incidents, advanced hunting)
-- ✅ Microsoft Defender for Endpoint
-- ✅ Microsoft Defender for Identity
-- ✅ Microsoft Defender for Office 365
-- ✅ Microsoft Defender for Cloud / Cloud Apps
-- ✅ Microsoft Entra ID Protection
-- ✅ Microsoft Graph Security API
-- ✅ Microsoft Purview (DLP, eDiscovery)
-- ✅ Microsoft Copilot for Security
-- ✅ Azure Data Explorer (security data lake)
-- ✅ Azure Monitor / Log Analytics
+## Platform Skills — Multi-Tenant, Sovereign Cloud & Cross-Cloud
 
-## ❓ FAQ
+The `skills/platform/` domain handles enterprise-scale deployment patterns:
+
+- **Multi-Tenant Support** — Azure Lighthouse, cross-tenant KQL queries, tenant-scoped RBAC for MSSPs and multi-org environments
+- **Sovereign Cloud (GCC/GCC-H/DoD)** — Endpoint mappings, API differences, feature parity matrices for Azure Government clouds
+- **Cross-Cloud Connectors** — Ingesting AWS CloudTrail, GCP Security Command Center, and other cloud provider data into Sentinel
+
+---
+
+## What Gets Created
+
+```
+your-repo/
+├── .squad/                          # Agent team framework
+│   ├── team.md                      # Roster — who's on the team
+│   ├── routing.md                   # Who handles what
+│   ├── decisions.md                 # Shared brain — team decisions
+│   ├── ceremonies.md                # Sprint ceremonies config
+│   ├── casting/                     # Persistent name registry
+│   ├── agents/
+│   │   ├── mcnulty/                 # Lead — architecture, scope, review
+│   │   ├── kima/                    # SecOps — security products, hunting
+│   │   ├── freamon/                 # KQL — queries, analytics, ADX
+│   │   ├── herc/                    # SOAR — automation, playbooks
+│   │   ├── sydnor/                  # Platform — CLI, templates, CI/CD
+│   │   ├── carver/                  # QA — testing, validation
+│   │   ├── scribe/                  # Session logger
+│   │   └── ralph/                   # Work monitor
+│   ├── identity/                    # Team focus and reusable patterns
+│   └── log/                         # Session history
+├── .secops/                         # Customer environment knowledge
+│   ├── environment.yaml             # Tenant, subscription, regions
+│   ├── workspaces/                  # Sentinel / Log Analytics configs
+│   ├── data-sources/                # Data mapping and migrations
+│   ├── identity/                    # Multi-tenant topology, RBAC
+│   ├── alerting/                    # Alert routing
+│   ├── compliance/                  # Regulatory constraints
+│   └── discovery-log.yaml           # Agent-discovered facts
+├── .copilot/                        # Copilot agent configuration
+│   ├── skills/                      # 9 Copilot-level skills
+│   └── mcp-config.json              # MCP server configuration
+├── skills/                          # 96 security operations skills
+│   ├── kql/                         # KQL hunting & analytics (11)
+│   ├── soar/                        # SOAR automation (12)
+│   ├── detection/                   # Detection engineering (9)
+│   ├── adx/                         # Azure Data Explorer (8)
+│   ├── msft-security/               # Microsoft Security products (16)
+│   ├── powershell/                  # PowerShell modules (14)
+│   ├── log-analytics/               # Log Analytics (10)
+│   ├── platform/                    # Multi-tenant, sovereign cloud (3)
+│   ├── orchestration/               # Cross-skill workflows (3)
+│   └── testing/                     # Integration testing (1)
+├── personas/                        # 6 SOC role configurations
+│   ├── soc-analyst/
+│   ├── detection-engineering/
+│   ├── threat-hunting/
+│   ├── cloud-security/
+│   ├── incident-response/
+│   └── full-soc/
+├── templates/                       # Bicep, KQL, threat model templates
+├── samples/                         # Contoso reference implementation
+├── cli/                             # secops-squad CLI (10 commands)
+├── lib/                             # KQL validator, MITRE mapping, plugins
+└── docs/                            # Full documentation suite
+```
+
+**Commit this folder.** Your team persists. Names persist. Environment knowledge persists. Anyone who clones gets the team — with accumulated knowledge and your `.secops/` configuration.
+
+---
+
+## Samples
+
+The `samples/` directory includes a complete reference implementation:
+
+### [Contoso Corp](samples/secops-contoso/README.md)
+
+A full `.secops/` configuration for a fictional 12,000-employee enterprise with a mature SOC:
+
+- 2 Entra tenants, 3 Azure subscriptions
+- ~500 GB/day log ingestion across 3 workspaces
+- Cross-cloud monitoring (AWS + GCP)
+- Data tiering with active Sentinel → ADX migrations
+- NIST, PCI-DSS, and SOC 2 compliance boundaries
+
+Copy it, replace Contoso values with yours, validate with `secops-squad doctor`.
+
+---
+
+## FAQ
 
 <details>
 <summary><b>What's the difference between this and a regular Sentinel deployment?</b></summary>
-SecOps Squad Starter Kit is an AI-assisted overlay — it doesn't replace your Sentinel workspace. It gives your Copilot CLI deep knowledge of KQL, detection engineering, SOAR patterns, and your security stack so you can hunt, build detections, and automate response through natural conversation.
+SecOps Squad is an AI-assisted overlay — it doesn't replace your Sentinel workspace. It gives your Copilot CLI agents deep knowledge of KQL, detection engineering, SOAR patterns, and your specific security stack so you can hunt, build detections, and automate response through natural conversation.
 </details>
 
 <details>
@@ -163,49 +332,79 @@ Yes. During <code>init</code>, you connect to your existing workspace. The start
 </details>
 
 <details>
-<summary><b>Mac support?</b></summary>
-Yes. Use the <code>install.sh</code> one-liner above. Requires Node.js 18+ and Git.
+<summary><b>Mac / Linux support?</b></summary>
+Yes. Use the <code>install.sh</code> one-liner. Requires Node.js 18+ and Git. The CLI and all skills are cross-platform.
 </details>
 
-## 🔧 Troubleshooting
+<details>
+<summary><b>How does this relate to Squad?</b></summary>
+SecOps Squad is built on <a href="https://github.com/bradygaster/squad">Squad</a> by Brady Gaster. Squad provides the agent team framework (casting, routing, decisions, ceremonies). SecOps Squad adds the security domain — 96 skills, 6 personas, the <code>.secops/</code> knowledge layer, and Microsoft Security product coverage.
+</details>
+
+---
+
+## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
-| Script won't run | `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` then retry |
+| Script won't run (Windows) | `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` then retry |
 | Node.js not found | Install from [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
 | KQL validation fails | Run `npm test` locally to see syntax errors before pushing |
 | Auth expired | Re-run `az login` for Azure, `gh auth login` for GitHub |
 | Persona not loading | Check `secops-squad.config.json` exists in your project root |
+| `.secops/` validation errors | Run `secops-squad env validate` to see specific issues |
+| Doctor shows warnings | Follow the suggested fix for each check — most are one-liners |
 
-## 📚 Documentation
+---
 
-- [**Getting Started**](docs/getting-started.md) — Installation, init wizard, your first hunt
-- [**Architecture Guide**](docs/ARCHITECTURE.md) — Full platform architecture, skills system, orchestration patterns
-- [**Integration Guide**](docs/INTEGRATION.md) — Connect to real Azure environments, multi-tenant, gov cloud
-- [**`.secops/` Schema Reference**](docs/SECOPS_SCHEMA.md) — Complete field-level docs for customer knowledge framework
-- [**Skills Catalog**](SKILLS_CATALOG.md) — All 96 skills organized by domain
-- [**Personas Guide**](docs/personas-guide.md) — All 6 personas, team composition, ceremony cadence
-- [**ADX Setup Guide**](docs/adx-setup.md) — Azure Data Explorer quick-start, ADX vs Log Analytics
-- [**Graph Security API**](docs/graph-security-api.md) — Library usage, auth flows, error handling
-- [**MITRE Coverage**](docs/mitre-coverage.md) — ATT&CK technique coverage map
-- [**Customer Knowledge**](.secops/README.md) — `.secops/` environment framework docs
-- [**All Docs Index**](docs/README.md) — Navigable index of all documentation
+## Documentation
 
-### Developer & Framework References
+### Getting Started & Guides
 
-- [**CLI Reference**](cli/README.md) — All 11 `secops-squad` CLI commands
-- [**Libraries**](lib/README.md) — KQL validator, MITRE mapping, Graph Security, plugins
-- [**Squad Framework**](.squad/README.md) — Agent roster, ceremonies, routing, casting system
-- [**Copilot Config**](.copilot/README.md) — Copilot skills, MCP servers, agent definitions
-- [**GitHub Automation**](.github/README.md) — Workflows, issue automation, agent config
-- [**Templates**](templates/README.md) — Bicep, KQL, and threat model templates
-- [**Samples**](samples/README.md) — Contoso reference implementation
+| Doc | What it covers |
+|-----|---------------|
+| [**Getting Started**](docs/getting-started.md) | Installation, init wizard, your first hunt |
+| [**Architecture Guide**](docs/ARCHITECTURE.md) | Full platform architecture, skills system, orchestration patterns |
+| [**Integration Guide**](docs/INTEGRATION.md) | Connect to real Azure environments, multi-tenant, gov cloud |
+| [**Personas Guide**](docs/personas-guide.md) | All 6 personas, team composition, ceremony cadence |
+| [**ADX Setup Guide**](docs/adx-setup.md) | Azure Data Explorer quick-start, ADX vs Log Analytics |
 
-## 🙏 Built On
+### Reference
 
-- **[@bradygaster/squad-sdk](https://github.com/bradygaster/squad-sdk)** — Brady Gaster's Squad SDK that powers the agent team architecture
-- **[GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli)** — The runtime that makes it all work
+| Doc | What it covers |
+|-----|---------------|
+| [**Skills Catalog**](SKILLS_CATALOG.md) | All 96 skills organized by domain |
+| [**`.secops/` Schema Reference**](docs/SECOPS_SCHEMA.md) | Complete field-level docs for customer knowledge framework |
+| [**Graph Security API**](docs/graph-security-api.md) | Library usage, auth flows, error handling |
+| [**MITRE Coverage**](docs/mitre-coverage.md) | ATT&CK technique coverage map |
+| [**Customer Knowledge**](.secops/README.md) | `.secops/` environment framework docs |
+| [**All Docs Index**](docs/README.md) | Navigable index of all documentation |
+
+### Developer & Framework
+
+| Doc | What it covers |
+|-----|---------------|
+| [**CLI Reference**](cli/README.md) | All `secops-squad` CLI commands |
+| [**Libraries**](lib/README.md) | KQL validator, MITRE mapping, Graph Security, plugins |
+| [**Squad Framework**](.squad/README.md) | Agent roster, ceremonies, routing, casting system |
+| [**Copilot Config**](.copilot/README.md) | Copilot skills, MCP servers, agent definitions |
+| [**GitHub Automation**](.github/README.md) | Workflows, issue automation, agent config |
+| [**Templates**](templates/README.md) | Bicep, KQL, and threat model templates |
+| [**Samples**](samples/README.md) | Contoso reference implementation |
+
+---
+
+## Built On
+
+- **[Squad](https://github.com/bradygaster/squad)** — Brady Gaster's agent team framework that powers the casting, routing, decisions, and ceremony system
+- **[GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — The runtime that makes it all work
+
+---
+
+## Status
+
+SecOps Squad is alpha software. The skill library, CLI commands, and `.secops/` schema are stabilizing but may change. We'll document breaking changes as they happen.
 
 ## License
 
-[MIT](LICENSE)
+MIT
