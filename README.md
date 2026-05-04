@@ -51,10 +51,10 @@ That's it. The installer clones the repo, installs dependencies, and scaffolds a
 |-----------|-------------|
 | 🔍 **KQL Hunting** | 11 skills — threat hunting, Sentinel analytics, Entra sign-in analysis, UEBA, cross-workspace |
 | ⚡ **SOAR Automation** | 12 skills — phishing response, compromised account, auto-triage, data exfil, TI ingest |
-| 🛡️ **Detection Engineering** | 9 skills — MITRE ATT&CK mapping, rule lifecycle, NRT/scheduled patterns, watchlists |
+| 🛡️ **Detection Engineering** | 10 skills — MITRE ATT&CK mapping, rule lifecycle, NRT/scheduled patterns, watchlists |
 | 📊 **Azure Data Explorer** | 8 skills — security data lake, long-term retention, ML anomaly, cross-cluster |
 | 🔧 **PowerShell Modules** | 14 skills — API wrappers, auth patterns, Sentinel/Defender/Entra submodules |
-| 🏢 **Microsoft Security** | 16 skills — Defender XDR, Sentinel, Entra, Purview, MCP servers, Graph API |
+| 🏢 **Microsoft Security** | 18 skills — Defender XDR, Sentinel, Entra, Purview, MCP servers, Graph API |
 | 📋 **Log Analytics** | 10 skills — workspace architecture, data connectors, DCR, cost optimization |
 | 🌐 **Platform** | 3 skills — multi-tenant, sovereign cloud (GCC/GCC-H/DoD), cross-cloud |
 | 🔗 **Orchestration** | 3 skills — cross-skill workflows, Copilot for Security, MSSP patterns |
@@ -84,9 +84,9 @@ Each persona includes `team.md`, `routing.md`, and `ceremonies.md` for structure
 |--------|-------|----------|
 | **KQL Hunting & Analytics** | 11 | Threat hunting, Sentinel analytics, UEBA, Defender XDR, cross-workspace |
 | **SOAR Automation** | 12 | Phishing response, compromised account, auto-triage, TI ingest, compliance |
-| **Detection Engineering** | 9 | MITRE mapping, detection lifecycle, NRT rules, watchlist detection, fusion |
+| **Detection Engineering** | 10 | MITRE mapping, detection lifecycle, NRT rules, watchlist detection, fusion |
 | **Azure Data Explorer** | 8 | Cluster architecture, data modeling, ML anomaly, dashboards, migration |
-| **Microsoft Security** | 16 | Defender XDR, Sentinel, Entra, Purview DLP, MCP servers, Graph API |
+| **Microsoft Security** | 18 | Defender XDR, Sentinel, Entra, Purview DLP, MCP servers, Graph API |
 | **PowerShell Modules** | 14 | Module foundation, API wrappers, auth, rate limiting, submodules |
 | **Log Analytics** | 10 | Workspace architecture, DCR, data connectors, cost optimization, RBAC |
 | **Platform** | 3 | Multi-tenant, GCC/GCC-H/DoD sovereign cloud, cross-cloud connectors |
@@ -189,6 +189,17 @@ Yes. Use the <code>install.sh</code> one-liner above. Requires Node.js 18+ and G
 - [**Graph Security API**](docs/graph-security-api.md) — Library usage, auth flows, error handling
 - [**MITRE Coverage**](docs/mitre-coverage.md) — ATT&CK technique coverage map
 - [**Customer Knowledge**](.secops/README.md) — `.secops/` environment framework docs
+- [**All Docs Index**](docs/README.md) — Navigable index of all documentation
+
+### Developer & Framework References
+
+- [**CLI Reference**](cli/README.md) — All 11 `secops-squad` CLI commands
+- [**Libraries**](lib/README.md) — KQL validator, MITRE mapping, Graph Security, plugins
+- [**Squad Framework**](.squad/README.md) — Agent roster, ceremonies, routing, casting system
+- [**Copilot Config**](.copilot/README.md) — Copilot skills, MCP servers, agent definitions
+- [**GitHub Automation**](.github/README.md) — Workflows, issue automation, agent config
+- [**Templates**](templates/README.md) — Bicep, KQL, and threat model templates
+- [**Samples**](samples/README.md) — Contoso reference implementation
 
 ## 🙏 Built On
 
