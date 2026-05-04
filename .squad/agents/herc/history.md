@@ -100,3 +100,18 @@
 - All PowerShell functions follow Sydnor's structured result pattern (ok/error)
 - SOAR skill library now at 12 skills covering incident response, enrichment, ticketing, compliance, and visualization
 - Cross-references established: compliance data → workbook dashboards, workbook alerts → Teams notifications
+
+🟥 **Herc Phase 5: Persona Configuration Updates for Phases 2-3** (2026-05-04)
+- Updated `personas/incident-response/` (skills.json, routing.md, README.md) to v2.0.0:
+  - Added 7 new skill references: compliance-framework-mappings, ediscovery-api-wrapper, purview-api-wrapper, data-tiering-commands, workbook-automation, rate-limiting, api-patterns
+  - Added compliance & automation routing table (6 new routing rules for compliance checks, evidence preservation, data classification, data retention, post-incident reporting, regulatory reporting)
+  - Added 3 new rules: compliance assessment before closure, legal holds before evidence collection, mandatory post-incident dashboards
+  - Documented new capabilities and expanded environment assumptions (Purview, Defender for Cloud, Sentinel Workbooks)
+- Updated `personas/full-soc/` (skills.json, routing.md, README.md) to v2.0.0:
+  - Expanded shared skills from 4 → 9 (added api-patterns, rate-limiting, auth-patterns, error-handling, module-foundation)
+  - Added 35+ new per-agent skill assignments across all 8 agents covering SOAR, msft-security, powershell, detection, and KQL domains
+  - Added infrastructure_skills section with 7 platform-level skills (MCP servers, workspace setup, API reference, data tiering)
+  - Expanded domain routing from 16 → 27 entries (added eDiscovery, data classification, ADX hunting, compliance automation, workbook deployment, threat intel feeds, cloud posture, DLP patterns, MCP queries)
+  - Added 6 cross-functional routing scenarios (compliance checks, legal holds, data classification, dashboards, threat feed onboarding, MCP self-serve)
+  - Added 5 new rules (compliance before closure, legal holds, automated dashboards, automated threat feeds, MCP self-serve)
+  - Documented full Phase 2-3 skill portfolio in README with categorized breakdown

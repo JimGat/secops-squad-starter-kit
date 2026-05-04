@@ -46,6 +46,67 @@ Bunk (L1) → Kima (L2) → Freamon (L3) → Daniels (Shift Lead) → External (
 | Freamon → Daniels | Major incident declaration, stakeholder notification required, resource coordination needed |
 | Daniels → External | Critical business impact, regulatory reporting required, executive escalation |
 
+## Tool-Chain Routing
+
+How specific task types map to Phase 2-3 skills and tool chains.
+
+| Task Type | Primary Tool Chain | Agent | Skill References |
+|-----------|-------------------|-------|------------------|
+| Threat hunting | KQL builder → Advanced Hunting API | Freamon | `skills/kql/query-builder.md` → `skills/detection/advanced-hunting-api.md` |
+| Hunt query development | KQL builder (template + validate + optimize) | Freamon | `skills/kql/query-builder.md` |
+| Investigation queries | Log Analytics API → Sentinel API | Kima / Freamon | `skills/log-analytics/api-wrapper.md` → `skills/powershell/sentinel-api-wrapper.md` |
+| Cross-workspace hunting | Log Analytics query patterns → KQL builder | Freamon | `skills/log-analytics/query-patterns.md` → `skills/kql/query-builder.md` |
+| Endpoint investigation | Defender API → Advanced Hunting | Kima / Freamon | `skills/powershell/defender-api-wrapper.md` → `skills/detection/advanced-hunting-api.md` |
+| SOC dashboards | Workbook automation | Kima / Daniels | `skills/soar/workbook-automation.md` |
+| Alert triage routing | `.secops/alerting/routing.yaml` rules | Bunk / Kima | `.secops/alerting/routing.yaml` → `skills/powershell/sentinel-api-wrapper.md` |
+| Alert escalation | `.secops/alerting/escalation.yaml` rules | Daniels | `.secops/alerting/escalation.yaml` |
+| Query optimization | KQL builder validation + optimization tiers | Freamon | `skills/kql/query-builder.md` (performance tier) |
+| Incident enrichment | Copilot for Security → Sentinel/Defender APIs | Kima | `skills/msft-security/copilot-for-security.md` |
+| API operations (all) | Rate limiting patterns (mandatory) | All | `skills/powershell/rate-limiting.md` |
+
+### Threat Hunting Flow
+
+```
+Hypothesis → KQL builder (template) → query-builder validate → Advanced Hunting API execute → results → detection gap analysis
+```
+
+1. **Freamon** formulates hypothesis, selects or builds KQL template via `query-builder.md`
+2. **KQL builder** validates query (syntax → schema → performance → injection), optimizes with filter-first patterns
+3. **Advanced Hunting API** executes against MDE/XDR unified schema or Sentinel workspace
+4. Results feed back into detection gap analysis and new analytics rule proposals
+
+### Investigation Flow
+
+```
+Alert → Sentinel API (incident details) → Defender API (endpoint context) → Log Analytics (cross-source) → Copilot enrichment
+```
+
+1. **Bunk/Kima** retrieves incident via `sentinel-api-wrapper.md`
+2. **Kima** pulls endpoint/identity context via `defender-api-wrapper.md`
+3. **Freamon** runs cross-workspace queries via `log-analytics/api-wrapper.md` + `query-patterns.md`
+4. **Copilot for Security** provides natural-language enrichment and threat context
+
+### Dashboard Flow
+
+```
+Workbook template → workbook-automation deploy → Sentinel workspace → SOC operational view
+```
+
+1. **Kima/Daniels** selects workbook template from `workbook-automation.md`
+2. **Workbook automation** deploys to target Sentinel workspace (respects `.secops/` workspace config)
+3. Dashboards cover: detection coverage, alert volume trends, SLA tracking, shift performance
+
+### Alert Triage Flow
+
+```
+New alert → .secops/alerting/routing.yaml (severity mapping) → agent assignment → playbook or investigation
+```
+
+1. Alert enters via Sentinel or Defender XDR
+2. `.secops/alerting/routing.yaml` maps alert source + severity to agent tier
+3. `.secops/alerting/escalation.yaml` defines escalation triggers and override rules
+4. Agent executes assigned playbook or begins investigation per routing table above
+
 ## Rules
 
 1. **Severity drives initial routing** — every alert enters through its severity tier.
@@ -56,3 +117,6 @@ Bunk (L1) → Kima (L2) → Freamon (L3) → Daniels (Shift Lead) → External (
 6. **Daniels owns the queue** — Shift Lead has final say on assignment and priority overrides.
 7. **Cross-domain = Daniels coordinates** — any incident spanning endpoint + identity + email starts with Shift Lead.
 8. **Automation requests go to main squad** — playbook and SOAR work routes to Herc in the secops-squad core team, not the SOC persona.
+9. **All API calls use rate limiting** — every agent must follow `skills/powershell/rate-limiting.md` patterns for exponential backoff and quota management.
+10. **`.secops/` before API calls** — agents check `.secops/alerting/routing.yaml` for alert routing and `.secops/` workspace config before API operations.
+11. **KQL builder validates before execution** — all hunting queries pass through `query-builder.md` 4-tier validation before Advanced Hunting API submission.

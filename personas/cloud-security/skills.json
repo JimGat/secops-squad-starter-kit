@@ -1,7 +1,7 @@
 {
   "persona": "cloud-security",
-  "version": "1.0.0",
-  "description": "Skills for cloud security posture management, policy enforcement, and Defender for Cloud operations",
+  "version": "2.0.0",
+  "description": "Skills for cloud security posture management, policy enforcement, Defender for Cloud operations, and Defender API integration",
   "skills": {
     "shared": [
       {
@@ -11,6 +11,21 @@
       {
         "name": "defender-for-cloud-policies",
         "description": "Defender for Cloud policy management — Azure Policy integration, regulatory compliance dashboards, initiative assignment, compliance assessment, exemption handling."
+      },
+      {
+        "name": "defender-api-wrapper",
+        "path": "skills/powershell/defender-api-wrapper.md",
+        "description": "20+ PowerShell wrappers for Defender APIs — MDE (hunting, machine actions, Live Response, TVM), Defender for Cloud (secure score, alerts, compliance, JIT), XDR (incidents, advanced hunting), MDI (health, assessments)."
+      },
+      {
+        "name": "defender-mcp-server",
+        "path": "skills/msft-security/defender-mcp-server.md",
+        "description": "Defender MCP integration — per-product operations (MDE, XDR, Defender for Cloud, MDI, MDCA), rate limiting, caching, agent workflows with REST fallback."
+      },
+      {
+        "name": "defender-api-permissions",
+        "path": "skills/msft-security/defender-api-permissions.md",
+        "description": "Defender permission matrices — Graph, MDE, Entra, ARM permissions; least-privilege per workflow; tiered app strategy; multi-tenant/MSSP patterns."
       }
     ],
     "per_agent": {
@@ -26,18 +41,38 @@
         {
           "name": "diagnostic-settings",
           "description": "Azure diagnostic settings — configure log and metric collection, route to Log Analytics workspace, verify data ingestion, troubleshoot collection gaps."
+        },
+        {
+          "name": "advanced-hunting-api",
+          "path": "skills/detection/advanced-hunting-api.md",
+          "description": "Defender XDR Advanced Hunting API — programmatic query execution, custom detection rule management, quota/throttling, cross-domain hunting schemas."
+        },
+        {
+          "name": "copilot-for-security",
+          "path": "skills/msft-security/copilot-for-security.md",
+          "description": "Copilot for Security integration — SCU provisioning, built-in plugins, custom plugin development, promptbook execution, session-based API, agent integration patterns."
         }
       ],
       "stringer": [
         {
           "name": "defender-for-cloud-policies",
           "description": "Advanced policy management — custom policy definitions, initiative design, policy-as-code workflows, compliance framework mapping (CIS, NIST, PCI-DSS)."
+        },
+        {
+          "name": "defender-cloud-apps",
+          "path": "skills/msft-security/defender-cloud-apps.md",
+          "description": "Defender for Cloud Apps (MDCA) — Cloud Discovery, app risk scoring, OAuth app governance, session policies, REST API, Conditional Access App Control, Sentinel integration."
         }
       ],
       "dangelo": [
         {
           "name": "cloud-security-posture",
           "description": "CSPM assessment execution — Secure Score deep-dive, recommendation prioritization, posture trend analysis, subscription baseline comparison."
+        },
+        {
+          "name": "copilot-for-security",
+          "path": "skills/msft-security/copilot-for-security.md",
+          "description": "Copilot for Security for posture — incident summarization, guided investigation, TI enrichment via Copilot promptbooks and API."
         }
       ]
     }

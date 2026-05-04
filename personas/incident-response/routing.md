@@ -44,6 +44,17 @@ Detection → Rawls (triage) → Sydnor (evidence) + Prez (intel) → Rawls (con
 | Prez → Rawls | Intelligence indicates nation-state actor or coordinated campaign |
 | Beadie → Rawls | Stakeholder requests information beyond current disclosure authorization |
 
+## Compliance & Automation Routing
+
+| Request Type | Route To | Skill | Examples |
+|-------------|----------|-------|----------|
+| Compliance check | Beadie (Comms) | `compliance-framework-mappings` | Map incident to NIST 800-53, PCI-DSS, HIPAA, SOC 2 controls; assess regulatory notification obligations |
+| Evidence preservation / legal hold | Sydnor (Forensic) | `ediscovery-api-wrapper` | Place custodian legal hold, create eDiscovery case, export review set for legal proceedings |
+| Data classification assessment | Sydnor (Forensic) | `purview-api-wrapper` | Determine sensitivity of exposed data, check DLP policy violations, assess data classification labels |
+| Data retention / tiering | Sydnor (Forensic) | `data-tiering-commands` | Tier forensic evidence to appropriate storage, enforce retention policies for legal holds |
+| Post-incident reporting | Rawls (IR Lead) | `workbook-automation` | Deploy incident summary dashboard, generate compliance audit workbook, executive briefing visuals |
+| Regulatory reporting | Beadie (Comms) | `compliance-framework-mappings` | Generate framework-specific compliance reports, map findings to control families |
+
 ## Rules
 
 1. **Rawls commands the incident** — all containment and escalation decisions go through IR Lead. No freelancing.
@@ -54,3 +65,6 @@ Detection → Rawls (triage) → Sydnor (evidence) + Prez (intel) → Rawls (con
 6. **Every incident gets lessons learned** — no incident closes without a post-incident review, regardless of severity.
 7. **Major incidents get Rawls immediately** — critical severity bypasses any queue or routing logic.
 8. **Chain of custody is sacred** — Sydnor maintains forensic integrity. No evidence handling without documentation.
+9. **Compliance assessment before closure** — Beadie maps every High/Critical incident to applicable compliance frameworks before Rawls closes it.
+10. **Legal holds before evidence collection** — Sydnor places eDiscovery legal holds before collecting mailbox or document evidence to ensure admissibility.
+11. **Post-incident dashboards are mandatory** — Rawls deploys an incident summary workbook for every High/Critical incident using workbook-automation.

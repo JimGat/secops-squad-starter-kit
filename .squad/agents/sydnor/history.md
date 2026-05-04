@@ -121,3 +121,15 @@
 - Sydnor history updated with Phase 1 completion marker.
 - Git commit pending: `.squad/` files only (decisions.md, logs, orchestration-log, agent histories).
 - Phase 2 ready: Skills development, persona templates, CLI expansion.
+
+🔷 **Cross-Skill Orchestration Skill** (2026-05-04T07:53:46-05:00)
+- Created `skills/orchestration/` domain — teaches agents how to compose multi-skill workflows across Sentinel, eDiscovery, Purview, Defender, and other tools.
+- **`skills/orchestration/README.md`** (52 lines) — Domain overview, dependency map, usage guide.
+- **`skills/orchestration/cross-skill-orchestration.md`** (522 lines) — Full orchestration skill with:
+  - 5 orchestration patterns: Sequential Pipeline, Fan-Out/Fan-In, Conditional Branching, Loop/Iteration, Checkpoint/Resume — each with production PowerShell.
+  - 5 pre-built workflow templates: Incident Investigation, Compliance Export, Threat Hunting Campaign, Data Tiering Migration, Shadow IT Assessment — all fully executable.
+  - Error handling: circuit breaker (in loop pattern), retry with exponential backoff, dead letter queue, partial failure handling.
+  - `.secops/` integration: reads data-source-map, environment, routing, compliance; writes to discovery-log.
+  - Agent orchestration patterns: decomposition table, handoff protocol, result aggregation.
+- Cross-references 20+ existing skill files across all 7 domains (powershell, kql, detection, msft-security, soar, log-analytics, adx).
+- Follows established conventions: YAML frontmatter, `@{ ok = $true; data = ... }` result objects, `.secops/` context checks.

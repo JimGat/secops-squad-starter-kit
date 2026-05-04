@@ -55,6 +55,13 @@
 - **Key design:** Complements purview-dlp-patterns.md (policy design) with API integration; all wrappers follow structured result pattern {ok/error}
 - **Key insight:** Purview API surface is fragmented — Graph for labels/alerts/classification, IPPSSession for DLP policies, EXO for audit log, Management API for streaming events; agents must handle multiple auth contexts
 
+📌 **Phase 2-3 Persona Updates (2026-05-04)**
+- **detection-engineering:** Updated skills.json (v2.0.0) with 8 new skills across shared+per-agent: sentinel-api-wrapper, sentinel-mcp-server, sentinel-api-reference (shared), data-tiering-commands, workbook-automation (Daniels), log-analytics/api-wrapper, log-analytics/query-patterns, kql/query-builder (Lester). Updated routing.md with API & Tool Routing table + tool selection priority. Updated README.md with Phase 2-3 capabilities table.
+- **threat-hunting:** Updated skills.json (v2.0.0) with 8 new skills: sentinel-api-wrapper, sentinel-mcp-server, sentinel-api-reference (shared), data-tiering-commands (Omar), log-analytics/api-wrapper, log-analytics/query-patterns, kql/query-builder (Slim Charles), workbook-automation (Rhonda). Updated routing.md with API & Tool Routing table. Updated README.md with Phase 2-3 capabilities.
+- **cloud-security:** Updated skills.json (v2.0.0) with 6 new skills: defender-api-wrapper, defender-mcp-server, defender-api-permissions (shared), advanced-hunting-api, copilot-for-security (Avon), defender-cloud-apps (Stringer), copilot-for-security (D'Angelo). Updated routing.md with API & Tool Routing table + 3 new rules. Updated README.md with Phase 2-3 capabilities.
+- **Key pattern:** All three personas follow MCP-first → PowerShell → REST fallback tool selection hierarchy
+- **Key pattern:** Routing files now include API & Tool Routing tables mapping operations to specific skills and agents
+
 📌 **Cross-Team Context Dependencies**
 - **Freamon integration:** Can reference Sentinel/Defender skills when generating PowerShell; relies on PowerShell/rate-limiting patterns for API calls
 - **Herc integration:** SOAR playbooks can reference Defender/Sentinel API permission patterns for service principal setup; Automation Rules API documented

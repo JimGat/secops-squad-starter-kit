@@ -1,7 +1,7 @@
 {
   "persona": "full-soc",
-  "version": "1.0.0",
-  "description": "Complete SOC skill set — all skills across triage, investigation, detection, hunting, automation, and threat intelligence",
+  "version": "2.0.0",
+  "description": "Complete SOC skill set — all skills across triage, investigation, detection, hunting, automation, threat intelligence, compliance, data governance, and infrastructure management",
   "skills": {
     "shared": [
       {
@@ -19,6 +19,31 @@
       {
         "name": "cross-workspace-queries",
         "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions, ADX proxy queries, multi-tenant operations."
+      },
+      {
+        "name": "api-patterns",
+        "path": "skills/powershell/api-patterns.md",
+        "description": "API integration patterns — standardized REST client patterns, retry logic, pagination, and error handling for Microsoft Security APIs."
+      },
+      {
+        "name": "rate-limiting",
+        "path": "skills/powershell/rate-limiting.md",
+        "description": "API rate limiting patterns — throttle-aware request patterns to avoid 429 errors during high-volume operations."
+      },
+      {
+        "name": "auth-patterns",
+        "path": "skills/powershell/auth-patterns.md",
+        "description": "Authentication patterns — managed identity, service principal, certificate-based auth for unattended security automation."
+      },
+      {
+        "name": "error-handling",
+        "path": "skills/powershell/error-handling.md",
+        "description": "Structured error handling — consistent error patterns across all PowerShell modules following the structured result pattern."
+      },
+      {
+        "name": "module-foundation",
+        "path": "skills/powershell/module-foundation.md",
+        "description": "PowerShell module foundation — module structure, manifest creation, function exports, dependency management for security modules."
       }
     ],
     "per_agent": {
@@ -30,6 +55,16 @@
         {
           "name": "teams-notification",
           "description": "SOC-wide notifications — shift communications, incident escalation alerts, stakeholder updates."
+        },
+        {
+          "name": "compliance-framework-mappings",
+          "path": "skills/soar/compliance-framework-mappings.md",
+          "description": "Compliance framework oversight — NIST 800-53, CIS v8, PCI-DSS v4, HIPAA, SOC 2, ISO 27001:2022 compliance posture monitoring and gap analysis."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "SOC metrics dashboards — automated deployment of operational workbooks for incident metrics, SLA tracking, and executive briefings."
         }
       ],
       "bodie": [
@@ -40,20 +75,46 @@
         {
           "name": "compromised-account",
           "description": "Automated compromised account playbook — force password reset, revoke sessions, review sign-in logs, check MFA status."
+        },
+        {
+          "name": "auto-triage",
+          "path": "skills/soar/auto-triage.md",
+          "description": "L1 auto-triage — evidence-based auto-close, assignment, and escalation for informational and low-severity alerts."
+        },
+        {
+          "name": "sentinel-enrichment-ip",
+          "description": "Basic IP enrichment for L1 triage — quick reputation checks before escalation decisions."
         }
       ],
       "poot": [
         {
           "name": "sentinel-enrichment-ip",
-          "description": "IP address enrichment — threat intelligence lookups, geo-location, ASN/ISP identification, reputation scoring."
+          "path": "skills/soar/sentinel-enrichment-ip.md",
+          "description": "IP address enrichment — multi-source threat intelligence (VirusTotal, MDTI, GeoIP, watchlists), reputation scoring."
         },
         {
           "name": "sentinel-enrichment-user",
-          "description": "User entity enrichment — Entra ID profile, group membership, recent sign-in activity, risk score."
+          "path": "skills/soar/sentinel-enrichment-user.md",
+          "description": "User entity enrichment — Entra ID profile, group membership, MFA status, risk score, privileged role detection."
         },
         {
           "name": "entra-signin-analysis",
           "description": "Entra ID sign-in log analysis — sign-in pattern analysis, impossible travel detection, conditional access review."
+        },
+        {
+          "name": "purview-api-wrapper",
+          "path": "skills/msft-security/purview-api-wrapper.md",
+          "description": "Data classification assessment — Microsoft Purview sensitivity labels, DLP policy status, data exposure scope during investigations."
+        },
+        {
+          "name": "ediscovery-api-wrapper",
+          "path": "skills/msft-security/ediscovery-api-wrapper.md",
+          "description": "eDiscovery evidence collection — legal hold placement, custodian management, review set creation for investigation evidence."
+        },
+        {
+          "name": "entra-module",
+          "path": "skills/powershell/entra-module.md",
+          "description": "Entra ID PowerShell operations — user investigation, group enumeration, conditional access review, PIM role checks."
         }
       ],
       "carver": [
@@ -68,6 +129,21 @@
         {
           "name": "defender-xdr-hunting",
           "description": "Microsoft Defender XDR advanced hunting — DeviceEvents, EmailEvents, IdentityLogonEvents, cross-domain correlation."
+        },
+        {
+          "name": "adx-integration",
+          "path": "skills/kql/adx-integration.md",
+          "description": "ADX cross-cluster hunting — long-term historical queries across ADX security data lake for advanced investigations."
+        },
+        {
+          "name": "query-builder",
+          "path": "skills/kql/query-builder.md",
+          "description": "KQL query builder — programmatic query construction, parameterization, and template-based query generation for hunting campaigns."
+        },
+        {
+          "name": "resource-graph-module",
+          "path": "skills/powershell/resource-graph-module.md",
+          "description": "Azure Resource Graph hunting — cross-subscription resource queries for cloud security posture investigation."
         }
       ],
       "herc": [
@@ -90,6 +166,26 @@
         {
           "name": "detection-tuning",
           "description": "Detection tuning — threshold adjustment, false positive reduction, allowlist management, query performance improvement."
+        },
+        {
+          "name": "watchlist-driven-detection",
+          "path": "skills/detection/watchlist-driven-detection.md",
+          "description": "Watchlist-driven detections — dynamic allowlists/blocklists, VIP user monitoring, IOC-based detection rules."
+        },
+        {
+          "name": "fusion-rule-context",
+          "path": "skills/detection/fusion-rule-context.md",
+          "description": "Fusion rule patterns — multi-stage attack detection, ML-driven alert correlation, advanced multi-signal rules."
+        },
+        {
+          "name": "sentinel-api-wrapper",
+          "path": "skills/powershell/sentinel-api-wrapper.md",
+          "description": "Sentinel API automation — programmatic rule deployment, bulk rule management, analytics rule CRUD via REST API."
+        },
+        {
+          "name": "sentinel-module",
+          "path": "skills/powershell/sentinel-module.md",
+          "description": "Az.SecurityInsights module — PowerShell-native Sentinel operations for rule management and incident handling."
         }
       ],
       "cutty": [
@@ -104,6 +200,46 @@
         {
           "name": "microsoft-graph-security",
           "description": "Microsoft Graph Security API automation — unified alert management, automated response actions, cross-product orchestration."
+        },
+        {
+          "name": "malware-containment",
+          "path": "skills/soar/malware-containment.md",
+          "description": "Malware containment automation — MDE device isolation, forensic evidence collection, automated containment playbooks."
+        },
+        {
+          "name": "data-exfiltration-response",
+          "path": "skills/soar/data-exfiltration-response.md",
+          "description": "Data exfiltration response automation — DLP alert enrichment, manager notification, sharing block playbooks."
+        },
+        {
+          "name": "auto-triage",
+          "path": "skills/soar/auto-triage.md",
+          "description": "Automated triage — L1 evidence-based auto-close/assign/escalate playbooks."
+        },
+        {
+          "name": "threat-intel-ingest",
+          "path": "skills/soar/threat-intel-ingest.md",
+          "description": "Threat intelligence ingestion — TAXII/STIX scheduled feed ingestion to Sentinel TI indicators."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Workbook lifecycle automation — ARM/Bicep templates, CRUD REST API, CI/CD pipeline for dashboard deployment."
+        },
+        {
+          "name": "compliance-framework-mappings",
+          "path": "skills/soar/compliance-framework-mappings.md",
+          "description": "Compliance automation — automated compliance gap analysis, evidence collection, audit report generation across 6 frameworks."
+        },
+        {
+          "name": "defender-api-wrapper",
+          "path": "skills/powershell/defender-api-wrapper.md",
+          "description": "Defender API automation — MDE device actions, alert management, investigation package collection via REST API."
+        },
+        {
+          "name": "azure-monitor-module",
+          "path": "skills/powershell/azure-monitor-module.md",
+          "description": "Azure Monitor automation — action group management, alert rule deployment, diagnostic settings for SOAR infrastructure."
         }
       ],
       "mcnulty": [
@@ -118,6 +254,16 @@
         {
           "name": "defender-xdr-hunting",
           "description": "Defender XDR hunt queries — cross-domain advanced hunting, custom detection rules, behavioral pattern searches."
+        },
+        {
+          "name": "advanced-hunting-api",
+          "path": "skills/detection/advanced-hunting-api.md",
+          "description": "Advanced Hunting API — programmatic hunt query execution, result processing, scheduled hunt automation."
+        },
+        {
+          "name": "cloud-security-posture",
+          "path": "skills/kql/cloud-security-posture.md",
+          "description": "Cloud security posture hunting — Defender for Cloud recommendations, secure score analysis, misconfiguration hunting."
         }
       ],
       "lester": [
@@ -132,8 +278,68 @@
         {
           "name": "malware-containment",
           "description": "Malware intelligence — sample analysis context, campaign attribution, IOC extraction from malware analysis."
+        },
+        {
+          "name": "threat-intel-ingest",
+          "path": "skills/soar/threat-intel-ingest.md",
+          "description": "Threat intelligence feed management — TAXII/STIX feed configuration, TI indicator lifecycle, feed quality assessment."
+        },
+        {
+          "name": "copilot-for-security",
+          "path": "skills/msft-security/copilot-for-security.md",
+          "description": "Copilot for Security integration — AI-assisted threat analysis, natural language security queries, incident summarization."
+        },
+        {
+          "name": "defender-for-endpoint",
+          "path": "skills/msft-security/defender-for-endpoint.md",
+          "description": "MDE threat intelligence — device threat landscape, vulnerability intel, attack surface insights for threat assessments."
+        },
+        {
+          "name": "purview-dlp-patterns",
+          "path": "skills/msft-security/purview-dlp-patterns.md",
+          "description": "DLP pattern intelligence — data loss prevention policy patterns, sensitive information type definitions for threat context."
         }
       ]
     }
+  },
+  "infrastructure_skills": {
+    "description": "Infrastructure and platform skills available to all agents for environment management",
+    "skills": [
+      {
+        "name": "sentinel-mcp-server",
+        "path": "skills/msft-security/sentinel-mcp-server.md",
+        "description": "Sentinel MCP Server — execute KQL queries, manage incidents, and interact with Sentinel workspace via MCP protocol."
+      },
+      {
+        "name": "defender-mcp-server",
+        "path": "skills/msft-security/defender-mcp-server.md",
+        "description": "Defender MCP Server — query Defender XDR data, manage alerts, and execute response actions via MCP protocol."
+      },
+      {
+        "name": "sentinel-workspace-setup",
+        "path": "skills/msft-security/sentinel-workspace-setup.md",
+        "description": "Sentinel workspace configuration — workspace architecture, data connectors, retention settings, RBAC."
+      },
+      {
+        "name": "sentinel-api-reference",
+        "path": "skills/msft-security/sentinel-api-reference.md",
+        "description": "Sentinel REST API reference — complete API surface for programmatic Sentinel management."
+      },
+      {
+        "name": "defender-api-permissions",
+        "path": "skills/msft-security/defender-api-permissions.md",
+        "description": "Defender API permissions — required permissions, app registration, consent flows for security API access."
+      },
+      {
+        "name": "data-tiering-commands",
+        "path": "skills/powershell/data-tiering-commands.md",
+        "description": "Data tiering operations — hot/cool/archive lifecycle management, retention compliance, cost optimization."
+      },
+      {
+        "name": "data-tiering-module",
+        "path": "skills/powershell/data-tiering-module.md",
+        "description": "Data tiering PowerShell module — automated data lifecycle management across Log Analytics and ADX."
+      }
+    ]
   }
 }

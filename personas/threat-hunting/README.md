@@ -57,6 +57,27 @@ After installation, everything lives in `.squad/` and is yours to edit:
 - **Tune ceremonies** — change debrief frequency, add a weekly intel briefing, modify templates.
 - **Swap skills** — add custom skills for your environment, remove ones you don't use.
 
+## Phase 2-3 Capabilities
+
+This persona now includes API integration and tooling skills from Phases 2-3:
+
+| Capability | Skill | Used By |
+|-----------|-------|---------|
+| Sentinel PowerShell API wrappers (20+ functions) | `sentinel-api-wrapper` | All agents |
+| Azure MCP Server integration | `sentinel-mcp-server` | All agents |
+| Sentinel REST API reference | `sentinel-api-reference` | All agents |
+| Table data tiering awareness | `data-tiering-commands` | Omar |
+| Log Analytics API wrapper | `log-analytics/api-wrapper` | Slim Charles |
+| Cross-workspace query patterns | `log-analytics/query-patterns` | Slim Charles |
+| KQL builder utility | `kql/query-builder` | Slim Charles |
+| Hunt findings workbooks | `workbook-automation` | Rhonda |
+
+### Tool Selection
+
+- **Agents** use MCP (`sentinel-mcp-server`) for interactive KQL execution during hunts
+- **Pipelines** use PowerShell wrappers (`sentinel-api-wrapper`) for batch IOC sweeps and incident context
+- **Fallback** to REST API directly using `sentinel-api-reference` when MCP/PS unavailable
+
 ## Environment Assumptions
 
 This persona assumes a Microsoft Security stack:
@@ -64,3 +85,5 @@ This persona assumes a Microsoft Security stack:
 - **Microsoft Defender XDR** for cross-domain advanced hunting (endpoint, identity, email, cloud apps)
 - **Microsoft Entra ID** for identity signal hunting (sign-in logs, risky users, audit logs)
 - **MITRE ATT&CK** as the framework for hunt hypothesis prioritization
+- **Azure MCP Server** for agent-driven query execution (Phase 4+)
+- **Az.SecurityInsights** PowerShell module for API automation

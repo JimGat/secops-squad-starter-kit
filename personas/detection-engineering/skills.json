@@ -1,7 +1,7 @@
 {
   "persona": "detection-engineering",
-  "version": "1.0.0",
-  "description": "Skills for detection content development, KQL authoring, threat modeling, and QA validation",
+  "version": "2.0.0",
+  "description": "Skills for detection content development, KQL authoring, threat modeling, QA validation, and Sentinel API operations",
   "skills": {
     "shared": [
       {
@@ -11,6 +11,21 @@
       {
         "name": "detection-lifecycle",
         "description": "Detection rule lifecycle management — draft, review, test, deploy, tune, retire. Stage gates, ownership transitions, and documentation standards."
+      },
+      {
+        "name": "sentinel-api-wrapper",
+        "path": "skills/powershell/sentinel-api-wrapper.md",
+        "description": "20+ PowerShell wrappers for Sentinel REST API — analytics rules CRUD, incident management, watchlists, data connectors, threat intelligence, automation rules. Structured result pattern."
+      },
+      {
+        "name": "sentinel-mcp-server",
+        "path": "skills/msft-security/sentinel-mcp-server.md",
+        "description": "Azure MCP Server integration for Sentinel — multi-workspace config, CRUD via MCP tools, safe query execution, rate limiting, REST fallback patterns."
+      },
+      {
+        "name": "sentinel-api-reference",
+        "path": "skills/msft-security/sentinel-api-reference.md",
+        "description": "Sentinel REST API quick reference — RBAC matrix, API versioning, curl/PowerShell examples, error patterns, cmdlet mapping."
       }
     ],
     "per_agent": {
@@ -26,6 +41,16 @@
         {
           "name": "sentinel-analytics-rules",
           "description": "Create, tune, and validate Microsoft Sentinel analytics rules — scheduled queries, NRT rules, fusion rules, threshold calibration, entity mapping, false positive reduction."
+        },
+        {
+          "name": "data-tiering-commands",
+          "path": "skills/powershell/data-tiering-commands.md",
+          "description": "Sentinel table data tiering — Analytics, Basic, Archive tier management, retention policies, cost optimization, table-level configuration via PowerShell."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Workbook lifecycle management — create, update, deploy, version Sentinel workbooks programmatically. Gallery templates, parameter bindings, CI/CD patterns."
         }
       ],
       "lester": [
@@ -40,6 +65,21 @@
         {
           "name": "detection-tuning",
           "description": "Detection rule tuning and optimization — threshold adjustment, false positive reduction, allowlist management, query performance improvement, noise reduction."
+        },
+        {
+          "name": "log-analytics-api-wrapper",
+          "path": "skills/log-analytics/api-wrapper.md",
+          "description": "Log Analytics REST API wrapper — query execution, workspace management, saved searches, data collection endpoints, ingestion APIs."
+        },
+        {
+          "name": "query-patterns",
+          "path": "skills/log-analytics/query-patterns.md",
+          "description": "Cross-workspace query patterns — union across workspaces, resource-context queries, ADX proxy, Lighthouse multi-tenant, performance optimization."
+        },
+        {
+          "name": "kql-query-builder",
+          "path": "skills/kql/query-builder.md",
+          "description": "KQL builder utility — programmatic query construction, parameterized templates, dynamic filter composition, safe string interpolation."
         }
       ],
       "prop-joe": [

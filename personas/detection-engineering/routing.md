@@ -30,6 +30,25 @@ Hypothesis/Request → Daniels (design) → Prop Joe (threat model) → Lester (
 | Production deployment | Daniels | All gates passed, deployment plan documented |
 | Post-production tuning | Daniels + Lester | Tuning request logged, change validated by Landsman |
 
+## API & Tool Routing
+
+| Operation | Skill / Tool | Agent |
+|-----------|-------------|-------|
+| Sentinel analytics rule CRUD (create, update, delete, list) | `sentinel-api-wrapper` (PowerShell) | Daniels |
+| Sentinel incident management via API | `sentinel-api-wrapper` (PowerShell) | Daniels |
+| Agent-driven Sentinel operations (KQL execution, incident triage) | `sentinel-mcp-server` (MCP) | Lester |
+| Cross-workspace query execution | `log-analytics/api-wrapper` + `log-analytics/query-patterns` | Lester |
+| KQL query construction and parameterization | `kql/query-builder` | Lester |
+| Workbook creation, update, deployment | `workbook-automation` | Daniels |
+| Table data tiering (Analytics/Basic/Archive) | `data-tiering-commands` | Daniels |
+| REST API reference lookup | `sentinel-api-reference` | Any agent |
+
+### Tool Selection Priority
+
+1. **MCP-first** — agents use `sentinel-mcp-server` for interactive operations (query execution, incident triage)
+2. **PowerShell wrappers** — pipelines and automation use `sentinel-api-wrapper` for bulk CRUD
+3. **REST direct** — fallback when MCP unavailable or PS modules not installed; consult `sentinel-api-reference`
+
 ## Rules
 
 1. **Every new detection starts with Daniels** — he owns the pipeline and the design decision.
@@ -39,3 +58,5 @@ Hypothesis/Request → Daniels (design) → Prop Joe (threat model) → Lester (
 5. **Tuning loops back through QA** — every change to a production rule gets revalidated.
 6. **MITRE mapping is mandatory** — no rule enters production without at least one ATT&CK technique ID.
 7. **Retirement is a decision, not neglect** — disabled rules get a documented reason and a rollback plan.
+8. **MCP for agents, PowerShell for pipelines** — interactive agent work uses MCP; CI/CD and bulk operations use PowerShell wrappers.
+9. **Data tiering changes require cost review** — tier changes affect retention and query cost; Daniels documents impact before applying.

@@ -1,7 +1,7 @@
 {
   "persona": "soc-analyst",
-  "version": "1.0.0",
-  "description": "Skills for L1/L2/L3 SOC analyst operations",
+  "version": "2.0.0",
+  "description": "Skills for L1/L2/L3 SOC analyst operations — Phase 2-3 enhanced with Advanced Hunting, KQL builder, workbook automation, and API wrappers",
   "skills": {
     "shared": [
       {
@@ -11,6 +11,16 @@
       {
         "name": "teams-notification",
         "description": "Send notifications to Microsoft Teams channels for incident updates, escalations, and shift communications."
+      },
+      {
+        "name": "rate-limiting",
+        "path": "skills/powershell/rate-limiting.md",
+        "description": "API rate limiting patterns — exponential backoff, Retry-After handling, token bucket, circuit breaker. Required for all API calls across tiers."
+      },
+      {
+        "name": "copilot-for-security",
+        "path": "skills/msft-security/copilot-for-security.md",
+        "description": "Microsoft Copilot for Security enrichment — natural language threat investigation, incident summarization, KQL generation assistance, threat intelligence correlation."
       }
     ],
     "per_agent": {
@@ -22,6 +32,11 @@
         {
           "name": "compromised-account",
           "description": "Automated compromised account playbook — force password reset, revoke sessions, review sign-in logs, check MFA status, assess blast radius."
+        },
+        {
+          "name": "sentinel-api-wrapper",
+          "path": "skills/powershell/sentinel-api-wrapper.md",
+          "description": "Sentinel API operations for L1 — query incidents, update status, add comments, retrieve alert details via PowerShell wrappers."
         }
       ],
       "kima": [
@@ -36,6 +51,21 @@
         {
           "name": "sentinel-enrichment-user",
           "description": "User entity enrichment — Entra ID profile, group membership, recent sign-in activity, risk score, device registrations, privilege level, behavioral baseline comparison."
+        },
+        {
+          "name": "sentinel-api-wrapper",
+          "path": "skills/powershell/sentinel-api-wrapper.md",
+          "description": "Sentinel API operations for L2 — incident management, analytics rule CRUD, watchlist operations, threat intelligence indicators, connector health checks."
+        },
+        {
+          "name": "defender-api-wrapper",
+          "path": "skills/powershell/defender-api-wrapper.md",
+          "description": "Defender API operations — device inventory, vulnerability assessments, alert management, response actions (isolate, collect, restrict), security recommendations."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Sentinel workbook management — create, update, and deploy workbooks for SOC dashboards, investigation views, and detection coverage reporting."
         }
       ],
       "freamon": [
@@ -54,6 +84,36 @@
         {
           "name": "defender-xdr-hunting",
           "description": "Microsoft Defender XDR advanced hunting — DeviceEvents, EmailEvents, IdentityLogonEvents, CloudAppEvents, cross-domain correlation, custom detection rules."
+        },
+        {
+          "name": "advanced-hunting-api",
+          "path": "skills/detection/advanced-hunting-api.md",
+          "description": "MDE/XDR Advanced Hunting via API — programmatic query execution, custom detection rule management, Live Response sessions, hunting by MITRE ATT&CK technique, GCC-High support."
+        },
+        {
+          "name": "query-builder",
+          "path": "skills/kql/query-builder.md",
+          "description": "KQL query construction, validation, and optimization — template engine with parameter substitution, 4-tier validation (syntax, schema, performance, injection), cross-platform query routing."
+        },
+        {
+          "name": "log-analytics-api-wrapper",
+          "path": "skills/log-analytics/api-wrapper.md",
+          "description": "Log Analytics Query API — execute KQL queries, manage saved searches, query packs, DCR ingestion, webhook integration, cross-workspace federation."
+        },
+        {
+          "name": "log-analytics-query-patterns",
+          "path": "skills/log-analytics/query-patterns.md",
+          "description": "Cross-workspace query patterns — workspace() federation, resource-context queries, ADX proxy, multi-tenant hunting, performance optimization for large-scale joins."
+        },
+        {
+          "name": "sentinel-api-wrapper",
+          "path": "skills/powershell/sentinel-api-wrapper.md",
+          "description": "Sentinel API operations for L3 — bulk incident queries, analytics rule deployment, threat intelligence batch operations, workbook management, connector diagnostics."
+        },
+        {
+          "name": "defender-api-wrapper",
+          "path": "skills/powershell/defender-api-wrapper.md",
+          "description": "Defender API operations for deep investigation — advanced hunting execution, forensic collection, Live Response, device timeline, threat analytics."
         }
       ],
       "daniels": [
@@ -64,6 +124,11 @@
         {
           "name": "ticket-create",
           "description": "Create and update tickets in the incident management system — severity classification, assignment, SLA tracking, stakeholder notification, status updates."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Sentinel workbook management — SOC operational dashboards, shift performance views, SLA tracking workbooks, detection coverage reports."
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "persona": "incident-response",
-  "version": "1.0.0",
-  "description": "Skills for structured incident response — triage, forensics, communications, and threat intelligence",
+  "version": "2.0.0",
+  "description": "Skills for structured incident response — triage, forensics, communications, threat intelligence, compliance, and post-incident automation",
   "skills": {
     "shared": [
       {
@@ -11,6 +11,21 @@
       {
         "name": "cross-workspace-queries",
         "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions for multi-workspace evidence collection during incidents."
+      },
+      {
+        "name": "compliance-framework-mappings",
+        "path": "skills/soar/compliance-framework-mappings.md",
+        "description": "Compliance framework mappings — NIST 800-53, CIS v8, PCI-DSS v4, HIPAA, SOC 2, ISO 27001:2022 mapped to Microsoft controls. Used during incident compliance checks and post-incident regulatory reporting."
+      },
+      {
+        "name": "api-patterns",
+        "path": "skills/powershell/api-patterns.md",
+        "description": "API integration patterns — standardized REST client patterns, retry logic, pagination, and error handling for Microsoft Security API calls during incident response."
+      },
+      {
+        "name": "rate-limiting",
+        "path": "skills/powershell/rate-limiting.md",
+        "description": "API rate limiting patterns — throttle-aware request patterns to avoid 429 errors during high-volume incident evidence collection and enrichment."
       }
     ],
     "per_agent": {
@@ -22,6 +37,11 @@
         {
           "name": "microsoft-graph-security",
           "description": "Microsoft Graph Security API — unified alert management, incident correlation, automated response actions, cross-product security orchestration."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Automated dashboard deployment — post-incident reporting dashboards, workbook lifecycle management, ARM/Bicep templates for Sentinel workbook deployment."
         }
       ],
       "sydnor": [
@@ -32,12 +52,37 @@
         {
           "name": "data-exfiltration-response",
           "description": "Data exfiltration investigation — identify accessed data, determine exfiltration method and volume, assess regulatory impact, preserve evidence for legal proceedings."
+        },
+        {
+          "name": "ediscovery-api-wrapper",
+          "path": "skills/msft-security/ediscovery-api-wrapper.md",
+          "description": "eDiscovery and legal hold — evidence preservation via Microsoft Purview eDiscovery, custodian management, legal hold placement, review set export for forensic analysis."
+        },
+        {
+          "name": "purview-api-wrapper",
+          "path": "skills/msft-security/purview-api-wrapper.md",
+          "description": "Data governance and classification — Microsoft Purview data classification, sensitivity labels, DLP policy assessment for determining data exposure scope during exfiltration incidents."
+        },
+        {
+          "name": "data-tiering-commands",
+          "path": "skills/powershell/data-tiering-commands.md",
+          "description": "Data retention and tiering — manage evidence data lifecycle, tier forensic data between hot/cool/archive storage, ensure retention compliance for legal holds."
         }
       ],
       "beadie": [
         {
           "name": "microsoft-graph-security",
           "description": "Security incident reporting via Graph API — incident status tracking, automated stakeholder notification, compliance reporting data extraction."
+        },
+        {
+          "name": "compliance-framework-mappings",
+          "path": "skills/soar/compliance-framework-mappings.md",
+          "description": "Regulatory compliance reporting — map incident findings to applicable compliance frameworks (NIST, PCI-DSS, HIPAA, SOC 2) for stakeholder and regulatory notification."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Post-incident reporting dashboards — automated deployment of incident summary workbooks for executive briefings and compliance audits."
         }
       ],
       "prez": [

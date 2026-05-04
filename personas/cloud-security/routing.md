@@ -38,6 +38,27 @@ D'Angelo (assess) → Stringer (policy check) → Avon (remediate) → D'Angelo 
 | Stringer → Avon | Policy violation requires technical remediation |
 | Avon → SOC (soc-analyst persona) | Remediation uncovers active exploitation — route to incident response |
 
+## API & Tool Routing
+
+| Operation | Skill / Tool | Agent |
+|-----------|-------------|-------|
+| Defender XDR incident management | `defender-api-wrapper` (PowerShell) | Avon |
+| MDE machine actions (isolate, scan, Live Response) | `defender-api-wrapper` (PowerShell) | Avon |
+| Advanced Hunting query execution | `advanced-hunting-api` | Avon |
+| Agent-driven Defender operations | `defender-mcp-server` (MCP) | Avon |
+| Copilot for Security promptbooks | `copilot-for-security` | Avon, D'Angelo |
+| Defender for Cloud Apps policy management | `defender-cloud-apps` | Stringer |
+| OAuth app governance and audit | `defender-cloud-apps` | Stringer |
+| Permission review and app registration | `defender-api-permissions` | Avon |
+| Secure Score and compliance APIs | `defender-api-wrapper` (PowerShell) | D'Angelo |
+
+### Tool Selection Priority
+
+1. **MCP-first** — agents use `defender-mcp-server` for interactive Defender operations
+2. **PowerShell wrappers** — pipelines and automation use `defender-api-wrapper` for bulk operations and machine actions
+3. **Copilot for Security** — use for incident summarization, TI enrichment, and guided investigation
+4. **REST direct** — fallback when MCP unavailable; consult `defender-api-permissions` for required scopes
+
 ## Rules
 
 1. **D'Angelo assesses first** — no remediation without a prioritized finding and risk assessment.
@@ -47,3 +68,6 @@ D'Angelo (assess) → Stringer (policy check) → Avon (remediate) → D'Angelo 
 5. **Defender for Cloud changes go through Avon** — plan enablement, alert configuration, and integration changes are Avon's domain.
 6. **Active exploitation escalates** — if posture review or remediation uncovers active threat activity, route to SOC immediately.
 7. **Compliance reports need both** — Stringer provides the framework mapping, D'Angelo provides the posture data.
+8. **MCP for agents, PowerShell for pipelines** — interactive agent work uses MCP; CI/CD and bulk operations use PowerShell wrappers.
+9. **Least-privilege by default** — consult `defender-api-permissions` before creating app registrations; use tiered app strategy.
+10. **MDCA changes go through Stringer** — Cloud App policy, OAuth governance, and session control changes are Stringer's domain.

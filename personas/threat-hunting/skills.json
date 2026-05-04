@@ -1,7 +1,7 @@
 {
   "persona": "threat-hunting",
-  "version": "1.0.0",
-  "description": "Skills for hypothesis-driven threat hunting, OSINT research, and hunt reporting",
+  "version": "2.0.0",
+  "description": "Skills for hypothesis-driven threat hunting, OSINT research, hunt reporting, and Sentinel API-driven query execution",
   "skills": {
     "shared": [
       {
@@ -11,6 +11,21 @@
       {
         "name": "cross-workspace-queries",
         "description": "Cross-workspace and cross-resource KQL queries — workspace() and resource() functions, ADX proxy queries, multi-tenant hunting, performance optimization."
+      },
+      {
+        "name": "sentinel-api-wrapper",
+        "path": "skills/powershell/sentinel-api-wrapper.md",
+        "description": "20+ PowerShell wrappers for Sentinel REST API — incident management, watchlists, threat intelligence indicators, saved searches. Structured result pattern."
+      },
+      {
+        "name": "sentinel-mcp-server",
+        "path": "skills/msft-security/sentinel-mcp-server.md",
+        "description": "Azure MCP Server integration for Sentinel — multi-workspace config, safe KQL query execution, incident context retrieval, rate limiting, REST fallback."
+      },
+      {
+        "name": "sentinel-api-reference",
+        "path": "skills/msft-security/sentinel-api-reference.md",
+        "description": "Sentinel REST API quick reference — RBAC matrix, API versioning, endpoint patterns, error handling."
       }
     ],
     "per_agent": {
@@ -22,6 +37,11 @@
         {
           "name": "detection-tuning",
           "description": "Hunt-to-detection pipeline — translate hunt findings into detection recommendations, assess detection feasibility, prioritize by adversary relevance."
+        },
+        {
+          "name": "data-tiering-commands",
+          "path": "skills/powershell/data-tiering-commands.md",
+          "description": "Sentinel table data tiering — understand which tables are Analytics vs Basic vs Archive to scope hunts to queryable data sources."
         }
       ],
       "slim-charles": [
@@ -36,6 +56,21 @@
         {
           "name": "entra-signin-analysis",
           "description": "Entra ID sign-in log analysis — sign-in pattern hunting, impossible travel detection, conditional access bypass identification, risky sign-in correlation."
+        },
+        {
+          "name": "log-analytics-api-wrapper",
+          "path": "skills/log-analytics/api-wrapper.md",
+          "description": "Log Analytics REST API wrapper — execute hunt queries programmatically, manage saved searches, query across workspaces."
+        },
+        {
+          "name": "query-patterns",
+          "path": "skills/log-analytics/query-patterns.md",
+          "description": "Cross-workspace query patterns — union across workspaces, resource-context queries, ADX proxy, Lighthouse multi-tenant hunting."
+        },
+        {
+          "name": "kql-query-builder",
+          "path": "skills/kql/query-builder.md",
+          "description": "KQL builder utility — programmatic query construction, parameterized hunt templates, dynamic filter composition."
         }
       ],
       "bubbles": [
@@ -48,6 +83,11 @@
         {
           "name": "detection-tuning",
           "description": "Hunt findings reporting — document detection gaps, quantify risk from hunt findings, track recommendation implementation status."
+        },
+        {
+          "name": "workbook-automation",
+          "path": "skills/soar/workbook-automation.md",
+          "description": "Workbook lifecycle management — create hunt result dashboards, visualize hunt findings in Sentinel workbooks programmatically."
         }
       ]
     }

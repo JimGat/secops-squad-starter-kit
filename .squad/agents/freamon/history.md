@@ -36,3 +36,9 @@
 - **Herc:** Azure Monitor skill aligns with SOAR playbook triggers; migration patterns complement ADX orchestration
 - **Carver:** PowerShell patterns inform CI validation; KQL queries pass 100% validator test suite
 - **All agents:** Rate limiting patterns are mandatory for every API call; `.secops/` context is always checked before API invocations
+
+📌 **SOC Analyst Persona Update (2026-05-04)**
+- **Task:** Updated `personas/soc-analyst/` to reference Phase 2-3 tools (requested by Jose)
+- **skills.json v2.0.0:** Added 9 new skill references — `advanced-hunting-api`, `query-builder`, `workbook-automation`, `sentinel-api-wrapper`, `defender-api-wrapper`, `log-analytics/api-wrapper`, `log-analytics/query-patterns`, `copilot-for-security`, `rate-limiting`. Skills distributed across tiers: rate-limiting + copilot shared by all; Bunk gets sentinel-api; Kima gets sentinel + defender + workbooks; Freamon gets full hunting + query stack; Daniels gets workbooks.
+- **routing.md:** Added Tool-Chain Routing section with task-type → skill mapping table. Documented 4 flows: Threat Hunting (KQL builder → Advanced Hunting), Investigation (Sentinel → Defender → Log Analytics → Copilot), Dashboard (workbook-automation), Alert Triage (`.secops/alerting/` rules). Added 3 new routing rules (#9-11).
+- **README.md:** Documented incident lifecycle (Detect → Hunt → Investigate → Respond → Report) with tool references at each stage. Added Tool Chain diagram (KQL Builder → Advanced Hunting → Sentinel API → Workbook). Restructured Pre-Loaded Skills table to show Core vs Phase 2-3 columns. Added `.secops/` to environment assumptions.

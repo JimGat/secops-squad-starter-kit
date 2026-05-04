@@ -57,6 +57,27 @@ After installation, everything lives in `.squad/` and is yours to edit:
 - **Tune ceremonies** — change review frequency, add a sprint planning ceremony, modify templates.
 - **Swap skills** — add custom skills for your detection patterns, remove ones you don't use.
 
+## Phase 2-3 Capabilities
+
+This persona now includes API integration and tooling skills from Phases 2-3:
+
+| Capability | Skill | Used By |
+|-----------|-------|---------|
+| Sentinel PowerShell API wrappers (20+ functions) | `sentinel-api-wrapper` | All agents |
+| Azure MCP Server integration | `sentinel-mcp-server` | All agents |
+| Sentinel REST API reference | `sentinel-api-reference` | All agents |
+| Table data tiering management | `data-tiering-commands` | Daniels |
+| Workbook lifecycle automation | `workbook-automation` | Daniels |
+| Log Analytics API wrapper | `log-analytics/api-wrapper` | Lester |
+| Cross-workspace query patterns | `log-analytics/query-patterns` | Lester |
+| KQL builder utility | `kql/query-builder` | Lester |
+
+### Tool Selection
+
+- **Agents** use MCP (`sentinel-mcp-server`) for interactive Sentinel operations
+- **Pipelines** use PowerShell wrappers (`sentinel-api-wrapper`) for automation and bulk CRUD
+- **Fallback** to REST API directly using `sentinel-api-reference` when MCP/PS unavailable
+
 ## Environment Assumptions
 
 This persona assumes a Microsoft Security stack:
@@ -64,3 +85,5 @@ This persona assumes a Microsoft Security stack:
 - **Microsoft Defender XDR** for custom detection rules and advanced hunting
 - **MITRE ATT&CK** as the coverage framework for gap analysis and prioritization
 - **KQL CI/CD** pipeline for syntax validation and automated testing
+- **Azure MCP Server** for agent-driven Sentinel operations (Phase 4+)
+- **Az.SecurityInsights** PowerShell module for pipeline automation

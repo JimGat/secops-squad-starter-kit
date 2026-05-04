@@ -39,6 +39,24 @@ Intel/Gap → Omar (hypothesis) → Bubbles (research) → Slim Charles (queries
 | Omar → Incident Response | Hunt uncovers active compromise — route to incident-response persona |
 | Omar → Detection Engineering | Hunt confirms detection gap — route to detection-engineering persona |
 
+## API & Tool Routing
+
+| Operation | Skill / Tool | Agent |
+|-----------|-------------|-------|
+| Execute hunt KQL queries via agent | `sentinel-mcp-server` (MCP) | Slim Charles |
+| Cross-workspace hunt query execution | `log-analytics/api-wrapper` + `log-analytics/query-patterns` | Slim Charles |
+| Build parameterized hunt queries | `kql/query-builder` | Slim Charles |
+| Sentinel incident context retrieval | `sentinel-api-wrapper` (PowerShell) | Omar |
+| Check table data tiers before hunting | `data-tiering-commands` | Omar |
+| Create hunt findings workbooks | `workbook-automation` | Rhonda |
+| REST API reference lookup | `sentinel-api-reference` | Any agent |
+
+### Tool Selection Priority
+
+1. **MCP-first** — agents use `sentinel-mcp-server` for interactive KQL execution during hunts
+2. **PowerShell wrappers** — use `sentinel-api-wrapper` for incident context and bulk data retrieval
+3. **REST direct** — fallback via `sentinel-api-reference` when MCP/PS unavailable
+
 ## Rules
 
 1. **Omar owns every hunt** — no hunt starts without a documented hypothesis and Omar's go-ahead.
@@ -48,3 +66,5 @@ Intel/Gap → Omar (hypothesis) → Bubbles (research) → Slim Charles (queries
 5. **Active threats escalate immediately** — if a hunt finds live attacker activity, Omar routes to incident response. Don't keep hunting during an active compromise.
 6. **Findings feed detections** — confirmed threat patterns route to the detection-engineering persona for rule development.
 7. **Hunt time is protected** — don't pull hunters into incident response triage. That's what the SOC persona is for.
+8. **MCP for interactive hunts** — Slim Charles uses MCP for live query execution; batch sweeps use PowerShell wrappers.
+9. **Check data tiers first** — Omar verifies table tiers via `data-tiering-commands` before scoping hunts to avoid querying Archive-tier tables.

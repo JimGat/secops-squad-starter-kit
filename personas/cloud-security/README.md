@@ -55,6 +55,26 @@ After installation, everything lives in `.squad/` and is yours to edit:
 - **Tune ceremonies** — change posture review frequency, add a monthly compliance report, modify templates.
 - **Swap skills** — add custom skills for your compliance frameworks, remove ones you don't use.
 
+## Phase 2-3 Capabilities
+
+This persona now includes Defender API integration and tooling skills from Phases 2-3:
+
+| Capability | Skill | Used By |
+|-----------|-------|---------|
+| Defender PowerShell API wrappers (20+ functions) | `defender-api-wrapper` | All agents |
+| Defender MCP integration | `defender-mcp-server` | All agents |
+| Permission matrices and least-privilege | `defender-api-permissions` | All agents |
+| Advanced Hunting API | `advanced-hunting-api` | Avon |
+| Copilot for Security integration | `copilot-for-security` | Avon, D'Angelo |
+| Defender for Cloud Apps (MDCA) | `defender-cloud-apps` | Stringer |
+
+### Tool Selection
+
+- **Agents** use MCP (`defender-mcp-server`) for interactive Defender operations
+- **Pipelines** use PowerShell wrappers (`defender-api-wrapper`) for machine actions and bulk operations
+- **Copilot** use `copilot-for-security` for incident summarization and guided investigation
+- **Fallback** to REST API directly; consult `defender-api-permissions` for required scopes
+
 ## Environment Assumptions
 
 This persona assumes a Microsoft Security stack:
@@ -62,4 +82,6 @@ This persona assumes a Microsoft Security stack:
 - **Azure Policy** for governance, compliance, and enforcement
 - **Microsoft Entra ID** for RBAC and identity governance
 - **Microsoft Defender XDR** for unified alert integration
+- **Defender for Cloud Apps (MDCA)** for CASB, OAuth governance, and session controls
+- **Copilot for Security** for AI-assisted investigation and response
 - **Compliance Frameworks:** CIS Azure Benchmarks, NIST 800-53, PCI-DSS, SOC 2, ISO 27001
