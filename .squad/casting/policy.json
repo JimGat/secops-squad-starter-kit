@@ -17,7 +17,12 @@
     "Lost",
     "Marvel Cinematic Universe",
     "DC Universe",
-    "Futurama"
+    "Futurama",
+    "Star Trek: TOS",
+    "Star Trek: TNG",
+    "Star Trek: DS9",
+    "Star Trek: Voyager",
+    "Star Trek: Strange New Worlds"
   ],
   "universe_capacity": {
     "The Wire": 10,
@@ -35,6 +40,11 @@
     "Lost": 18,
     "Marvel Cinematic Universe": 25,
     "DC Universe": 18,
-    "Futurama": 12
+    "Futurama": 12,
+    "Star Trek: TOS": 12,
+    "Star Trek: TNG": 15,
+    "Star Trek: DS9": 15,
+    "Star Trek: Voyager": 13,
+    "Star Trek: Strange New Worlds": 10
   }
 }

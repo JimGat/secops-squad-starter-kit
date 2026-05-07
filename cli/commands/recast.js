@@ -34,6 +34,11 @@ const CHARACTER_BANKS = {
   "Marvel Cinematic Universe": ["Stark", "Rogers", "Romanoff", "Banner", "Barton", "Thor", "Fury", "Coulson", "Danvers", "Okoye", "Shuri", "Parker", "Strange", "Wanda", "Vision", "Rhodes", "Nebula", "Rocket", "Groot", "Gamora", "Quill", "Drax", "Mantis", "Loki", "Valkyrie"],
   "DC Universe": ["Wayne", "Kent", "Diana", "Barry", "Arthur", "Cyborg", "Gordon", "Alfred", "Quinn", "Zatanna", "Constantine", "Canary", "Arrow", "Martian", "Hawkgirl", "Oracle", "Nightwing", "Batgirl"],
   "Futurama": ["Fry", "Leela", "Bender", "Professor", "Amy", "Hermes", "Zoidberg", "Kif", "Nibbler", "Scruffy", "Calculon", "Flexo"],
+  "Star Trek: TOS": ["Kirk", "Spock", "McCoy", "Scotty", "Uhura", "Sulu", "Chekov", "Chapel", "Rand", "Pike", "Number One", "M'Benga"],
+  "Star Trek: TNG": ["Picard", "Riker", "Data", "Worf", "LaForge", "Troi", "Crusher", "Wesley", "Ro", "Guinan", "Q", "O'Brien", "Pulaski", "Yar", "Barclay"],
+  "Star Trek: DS9": ["Sisko", "Kira", "Odo", "Dax", "Bashir", "O'Brien", "Worf", "Quark", "Jake", "Garak", "Martok", "Nog", "Rom", "Winn", "Dukat"],
+  "Star Trek: Voyager": ["Janeway", "Chakotay", "Tuvok", "Paris", "Torres", "Kim", "Seven", "Doctor", "Neelix", "Kes", "Ayala", "Carey", "Naomi"],
+  "Star Trek: Strange New Worlds": ["Pike", "Spock", "Uhura", "La'an", "Ortegas", "Chapel", "M'Benga", "Hemmer", "Una", "Kyle"],
 };
 
 const SQUAD_DIR = ".squad";
