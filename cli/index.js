@@ -55,6 +55,11 @@ const COMMANDS = {
     usage: "secops-squad plugin [install <source>|list|remove <name>]",
     module: "./commands/plugin.js",
   },
+  recast: {
+    description: "Re-theme your squad with a different TV/Movie universe",
+    usage: "secops-squad recast [--universe \"Name\"] [--no-interactive] [--dry-run]",
+    module: "./commands/recast.js",
+  },
 };
 
 function getVersion() {
