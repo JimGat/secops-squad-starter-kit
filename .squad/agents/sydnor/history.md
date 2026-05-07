@@ -17,6 +17,13 @@
 📌 **Agent Integration** — `.copilot/skills/secops-environment-context.md` teaches all agents the 7-step discovery flow. All 6 agent charters updated with environment context requirement.
 
 
+🔷 **Install Directory Rename** (2026-05-07T12:45:11.843-05:00)
+- Default install directory changed from `~/secops-squad-starter-kit` to `~/secops-squad` in both install.ps1 and install.sh.
+- Banner text, status messages, and git init commit message updated to drop "-starter-kit" suffix.
+- README.md and docs/getting-started.md updated for new install path.
+- GitHub repo URL (`x3nc0n/secops-squad-starter-kit`) intentionally preserved — only the local folder name changed.
+- `SECOPS_SQUAD_DIR` env var override in install.sh still works as before.
+
 🔷 **CLI Readiness Fixes — 8 issues resolved** (2026-05-04T16:45:02.077-05:00)
 - **FIX 1:** `cli/commands/init.js` — corrected post-init message from broken `secops-squad workspace connect` to `secops-squad env validate`.
 - **FIX 2:** Created `cli/commands/workspace.js` — full `connect` / `status` / `disconnect` implementation. `connect` prompts for workspace name, resource group, subscription; writes `.secops/workspaces/{name}.yaml` and updates `environment.yaml` default_workspace. `status` reads config and optionally verifies `az account show`. `disconnect` clears default_workspace while preserving the workspace file. Wired into `cli/index.js` with `module:` field.
