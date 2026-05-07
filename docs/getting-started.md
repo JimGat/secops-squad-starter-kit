@@ -31,8 +31,8 @@ npx secops-squad init
 ### Option 2: Clone and set up
 
 ```bash
-git clone https://github.com/x3nc0n/secops-squad-starter-kit.git
-cd secops-squad-starter-kit
+git clone https://github.com/x3nc0n/secops-squad-starter-kit.git ~/secops-squad
+cd secops-squad
 npm install
 node cli/index.js init
 ```

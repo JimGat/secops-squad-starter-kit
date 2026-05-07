@@ -45,9 +45,9 @@ irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/inst
 curl -fsSL "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh" | bash
 ```
 
-The installer clones the repo, installs dependencies, runs persona selection, and scaffolds a working SecOps project in `~/secops-squad-starter-kit`. Total time: ~3 minutes.
+The installer clones the repo, installs dependencies, runs persona selection, and scaffolds a working SecOps project in `~/secops-squad`. Total time: ~3 minutes.
 
-**✓ Validate:** Run `cd ~/secops-squad-starter-kit && ls .squad/team.md` — you should see the team roster file.
+**✓ Validate:** Run `cd ~/secops-squad && ls .squad/team.md` — you should see the team roster file.
 
 > **Execution policy error on Windows?** Run this first, then retry:
 > ```powershell

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# secops-squad-starter-kit installer
+# secops-squad installer
 # Usage: curl -fsSL https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh | bash
 # ============================================================================
 
@@ -16,12 +16,12 @@ DIM='\033[2m'
 RESET='\033[0m'
 
 REPO_URL="https://github.com/x3nc0n/secops-squad-starter-kit.git"
-INSTALL_DIR="${SECOPS_SQUAD_DIR:-$HOME/secops-squad-starter-kit}"
+INSTALL_DIR="${SECOPS_SQUAD_DIR:-$HOME/secops-squad}"
 
 print_banner() {
   echo ""
   echo -e "${CYAN}${BOLD}  ┌─────────────────────────────────────┐"
-  echo -e "  │  secops-squad-starter-kit installer   │"
+  echo -e "  │  secops-squad installer               │"
   echo -e "  │  AI SecOps team for Microsoft        │"
   echo -e "  │  Security stack                      │"
   echo -e "  └─────────────────────────────────────┘${RESET}"
@@ -103,17 +103,17 @@ main() {
   fi
 
   # Download the repo content (shallow clone), then create a standalone repo
-  echo -e "${CYAN}Downloading secops-squad-starter-kit...${RESET}"
+  echo -e "${CYAN}Downloading secops-squad...${RESET}"
   local temp_dir
   temp_dir=$(mktemp -d)
   if ! git clone --depth 1 "$REPO_URL" "$temp_dir" 2>/dev/null; then
-    echo -e "${RED}Failed to download secops-squad-starter-kit.${RESET}"
+    echo -e "${RED}Failed to download secops-squad.${RESET}"
     rm -rf "$temp_dir"
     exit 1
   fi
 
   # Copy content (without .git) to create a standalone project
-  echo -e "${CYAN}Creating your secops-squad-starter-kit project...${RESET}"
+  echo -e "${CYAN}Creating your secops-squad project...${RESET}"
   cp -r "$temp_dir" "$INSTALL_DIR"
   rm -rf "$INSTALL_DIR/.git"
 
@@ -121,7 +121,7 @@ main() {
   cd "$INSTALL_DIR"
   git init --quiet
   git add .
-  git commit --quiet -m "Initialize secops-squad-starter-kit project"
+  git commit --quiet -m "Initialize secops-squad project"
 
   # Clean up temp download
   rm -rf "$temp_dir"
@@ -135,7 +135,7 @@ main() {
 
   # Add to PATH hint
   echo ""
-  echo -e "${GREEN}${BOLD}✅ secops-squad-starter-kit installed!${RESET}"
+  echo -e "${GREEN}${BOLD}✅ secops-squad installed!${RESET}"
   echo ""
   echo -e "${BOLD}To use the CLI, either:${RESET}"
   echo ""
