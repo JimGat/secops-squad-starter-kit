@@ -33,3 +33,7 @@
 - **Key design:** Both skills complement existing defender-cloud-apps.md (CASB fundamentals) without duplication; attack-simulation-api.md fills detection validation gap; cloud-app-discovery-api.md provides API-level automation for shadow IT workflows
 - **Key insight:** Attack simulation results should correlate with Sentinel detections to measure detection pipeline effectiveness; gap reports identify techniques with no corresponding alerts
 - **All wrappers:** Follow structured result pattern {ok/error} per team decision
+
+## 2026-05-08 — CLI Dependency Updates
+
+Azure CLI demoted to optional at install-time. **Your code must detect when az is not authenticated** and **offer to prompt users for login** during the session. Check credentials before Azure operations.

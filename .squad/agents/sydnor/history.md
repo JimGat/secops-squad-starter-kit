@@ -4,6 +4,15 @@
 
 ## Learnings
 
+[CMD] **Install & Onboarding Overhaul** (2026-05-08T16:41:19.514-05:00)
+- Removed `Ensure-GhCopilotExtension` from `install.ps1` entirely — gh-copilot is no longer an extension, `copilot` CLI is standalone.
+- Demoted `gh` CLI from required to optional in `install.ps1`; install no longer fails when gh is absent.
+- New next-steps message: `cd $InstallDir` + `copilot --agent secops-squad --yolo`. Two commands, no auth prerequisite.
+- `install.sh` simplified: removed PATH export block and `node cli/index.js` instructions; same two-command flow.
+- `README.md` prerequisites table now lists `copilot` CLI as required, `gh`/`az` as optional (connected during use). `--yolo` is promoted to primary command.
+- `cli/commands/doctor.js` — added `checkCopilotCli()` (required; runs `copilot --version`); reordered checks: Node → Git → copilot CLI → config → team → gh → az → azure-login → secops → skills → KQL.
+- Key pattern: gh CLI and az CLI are deferred to agent-assisted interactive setup, not install-time blockers.
+
 [CMD] **Full Dependency Bootstrap** (2026-05-08T16:21:48.253-05:00)
 - Rewrote `install.ps1` from partial prereq checker to full bootstrap for fresh Windows installs.
 - Dependency chain: winget (detect) -> Git -> Node.js 18+ -> GitHub CLI -> gh-copilot extension -> Azure CLI (optional).

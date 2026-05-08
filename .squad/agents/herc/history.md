@@ -115,3 +115,7 @@
   - Added 6 cross-functional routing scenarios (compliance checks, legal holds, data classification, dashboards, threat feed onboarding, MCP self-serve)
   - Added 5 new rules (compliance before closure, legal holds, automated dashboards, automated threat feeds, MCP self-serve)
   - Documented full Phase 2-3 skill portfolio in README with categorized breakdown
+
+## 2026-05-08 — CLI Dependency Updates
+
+Azure CLI demoted to optional at install-time. **Your code must detect when az is not authenticated** and **offer to prompt users for login** during the session. Check credentials before Azure operations.

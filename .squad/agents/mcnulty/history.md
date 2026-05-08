@@ -45,3 +45,7 @@
 - `secops-squad env` command IS implemented (env.js has a module) — this works for reading `.secops/` state. It's not a connectivity tester but it's functional.
 
 **Key pattern observed:** The CLI has several stub commands registered in `index.js` that fall through to "not yet implemented" — `workspace`, `status`, `playbook`, `plugin`. These need to be either implemented or clearly marked as coming soon in user output rather than silently printing a generic stub message after being advertised in init output.
+
+## 2026-05-08 — CLI Dependency Updates
+
+GH CLI demoted to optional at install-time. **Your code must detect when gh is not available** (e.g., before issue routing) and **offer to help users connect it interactively** during the session. Same pattern as before but now user-guided rather than pre-required.
