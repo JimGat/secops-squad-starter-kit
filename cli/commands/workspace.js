@@ -21,12 +21,20 @@ function fatal(msg) {
   process.exit(1);
 }
 
-function execSafe(cmd) {
+function execAz(cmd, opts = {}) {
+  const timeout = opts.timeout || 30000;
+  const stdio = opts.inherit ? "inherit" : ["pipe", "pipe", "pipe"];
   try {
-    return execSync(cmd, { encoding: "utf8", timeout: 10000, stdio: ["pipe", "pipe", "pipe"] }).trim();
-  } catch {
-    return null;
+    const result = execSync(cmd, { encoding: "utf8", timeout, stdio });
+    return typeof result === "string" ? result.trim() : "";
+  } catch (err) {
+    if (opts.allowFail) return null;
+    throw err;
   }
+}
+
+function execSafe(cmd) {
+  return execAz(cmd, { allowFail: true, timeout: 10000 });
 }
 
 function prompt(rl, question) {
@@ -61,72 +69,241 @@ function saveEnvironment(rootDir, envData) {
 }
 
 /**
- * workspace connect — verify Azure login, gather workspace details, write config
+ * workspace connect — auto-discover Sentinel workspaces from Azure, write config
  */
 async function connect(rootDir) {
   console.log(`\n${c.cyan}${c.bold}secops-squad workspace connect${c.reset}\n`);
 
-  // Verify Azure login
-  const azResult = execSafe("az account show --output json");
-  if (!azResult) {
-    console.log(`${c.yellow}⚠️  Azure not logged in. Run ${c.cyan}az login${c.reset}${c.yellow} first.${c.reset}`);
-    console.log(`${c.dim}You can still configure workspace details and connect Azure later.${c.reset}\n`);
-  } else {
+  // ── Step 1: Check az CLI is installed ──
+  const azVersion = execSafe("az version --output json");
+  if (!azVersion) {
+    fatal(
+      `Azure CLI (az) is not installed or not on PATH.\n` +
+      `  Install it from: https://aka.ms/installazurecli\n` +
+      `  Then re-run: secops-squad workspace connect`
+    );
+  }
+
+  // ── Step 2: Ensure user is logged in ──
+  let accountJson = execSafe("az account show --output json");
+  if (!accountJson) {
+    console.log(`${c.yellow}⚠️  Not logged in to Azure. Launching browser login...${c.reset}\n`);
     try {
-      const account = JSON.parse(azResult);
-      console.log(`${c.green}✅ Azure logged in${c.reset}`);
-      console.log(`   ${c.bold}Subscription:${c.reset} ${account.name || "(unknown)"} (${account.id || ""})`);
-      console.log(`   ${c.bold}Tenant:${c.reset}       ${account.tenantId || "(unknown)"}\n`);
+      execAz("az login", { inherit: true, timeout: 120000 });
     } catch {
-      console.log(`${c.yellow}⚠️  Azure CLI returned unexpected output.${c.reset}\n`);
+      fatal("Azure login failed or was cancelled. Please run 'az login' manually and retry.");
+    }
+    accountJson = execSafe("az account show --output json");
+    if (!accountJson) {
+      fatal("Still not logged in after az login. Please check your credentials.");
     }
   }
 
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const currentAccount = JSON.parse(accountJson);
+  console.log(`${c.green}✅ Azure logged in${c.reset}`);
+  console.log(`   ${c.bold}Tenant:${c.reset} ${currentAccount.tenantId || "(unknown)"}\n`);
 
-  let workspaceName, resourceGroup, subscriptionId;
+  // ── Step 3: List subscriptions and let user pick ──
+  let subsJson;
   try {
-    workspaceName = (await prompt(rl, `  ${c.bold}Workspace name${c.reset} (e.g. my-sentinel-workspace): `)).trim();
-    if (!workspaceName) fatal("Workspace name is required.");
-
-    resourceGroup = (await prompt(rl, `  ${c.bold}Resource group${c.reset}: `)).trim();
-    if (!resourceGroup) fatal("Resource group is required.");
-
-    subscriptionId = (await prompt(rl, `  ${c.bold}Subscription ID${c.reset} (leave blank to use current): `)).trim();
-  } finally {
-    rl.close();
+    subsJson = execAz("az account list --output json --all");
+  } catch {
+    fatal("Failed to list Azure subscriptions. Check your Azure CLI installation.");
   }
 
-  // If no subscription provided, try to get it from az account
-  if (!subscriptionId && azResult) {
-    try {
-      const account = JSON.parse(azResult);
-      subscriptionId = account.id || "";
-    } catch {
-      subscriptionId = "";
+  const allSubs = JSON.parse(subsJson).filter((s) => s.state === "Enabled");
+  if (allSubs.length === 0) {
+    fatal("No enabled Azure subscriptions found for this account.");
+  }
+
+  let selectedSub;
+  if (allSubs.length === 1) {
+    selectedSub = allSubs[0];
+    console.log(`${c.cyan}Using subscription:${c.reset} ${selectedSub.name} (${selectedSub.id})\n`);
+  } else {
+    console.log(`${c.bold}Available subscriptions:${c.reset}\n`);
+    for (let i = 0; i < allSubs.length; i++) {
+      const marker = allSubs[i].isDefault ? ` ${c.green}(current)${c.reset}` : "";
+      console.log(`  ${c.cyan}${i + 1}.${c.reset} ${allSubs[i].name} ${c.dim}(${allSubs[i].id})${c.reset}${marker}`);
     }
+
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    let choice;
+    try {
+      const defaultIdx = allSubs.findIndex((s) => s.isDefault);
+      const defaultLabel = defaultIdx >= 0 ? ` [${defaultIdx + 1}]` : "";
+      choice = (await prompt(rl, `\n  ${c.bold}Select subscription${c.reset}${defaultLabel}: `)).trim();
+    } finally {
+      rl.close();
+    }
+
+    if (!choice) {
+      const defaultIdx = allSubs.findIndex((s) => s.isDefault);
+      selectedSub = defaultIdx >= 0 ? allSubs[defaultIdx] : allSubs[0];
+    } else {
+      const idx = parseInt(choice, 10);
+      if (isNaN(idx) || idx < 1 || idx > allSubs.length) {
+        fatal(`Invalid selection: ${choice}. Enter a number between 1 and ${allSubs.length}.`);
+      }
+      selectedSub = allSubs[idx - 1];
+    }
+    console.log(`\n${c.cyan}Selected:${c.reset} ${selectedSub.name}\n`);
   }
 
+  // ── Step 4: Set active subscription ──
+  try {
+    execAz(`az account set --subscription "${selectedSub.id}"`);
+  } catch {
+    fatal(`Failed to set subscription to ${selectedSub.name} (${selectedSub.id}).`);
+  }
+
+  // ── Step 5: List Log Analytics workspaces ──
+  console.log(`${c.dim}Discovering Log Analytics workspaces...${c.reset}`);
+
+  let workspacesJson;
+  try {
+    workspacesJson = execAz(
+      `az monitor log-analytics workspace list --subscription "${selectedSub.id}" --output json`
+    );
+  } catch {
+    fatal(
+      `Failed to list Log Analytics workspaces in subscription "${selectedSub.name}".\n` +
+      `  Ensure you have Reader permissions on the subscription.`
+    );
+  }
+
+  const laWorkspaces = JSON.parse(workspacesJson);
+  if (laWorkspaces.length === 0) {
+    fatal(
+      `No Log Analytics workspaces found in subscription "${selectedSub.name}".\n` +
+      `  Try a different subscription or create a workspace in the Azure portal first.`
+    );
+  }
+
+  // ── Step 6: Check Sentinel (SecurityInsights solution) on each workspace ──
+  console.log(`${c.dim}Checking Sentinel status on ${laWorkspaces.length} workspace(s)...${c.reset}\n`);
+
+  const workspaceCandidates = [];
+  for (const ws of laWorkspaces) {
+    const wsName = ws.name;
+    // Extract resource group from the resource ID: /subscriptions/.../resourceGroups/<rg>/...
+    const rgMatch = (ws.id || "").match(/\/resourceGroups\/([^/]+)/i);
+    const rg = rgMatch ? rgMatch[1] : "";
+
+    let sentinelEnabled = false;
+    const sentinelUrl =
+      `https://management.azure.com/subscriptions/${selectedSub.id}` +
+      `/resourceGroups/${rg}` +
+      `/providers/Microsoft.OperationsManagement/solutions/SecurityInsights(${wsName})` +
+      `?api-version=2015-11-01-preview`;
+
+    const sentinelResult = execAz(
+      `az rest --method get --url "${sentinelUrl}" --output json`,
+      { allowFail: true }
+    );
+    if (sentinelResult) {
+      sentinelEnabled = true;
+    }
+
+    workspaceCandidates.push({
+      name: wsName,
+      resourceGroup: rg,
+      customerId: ws.customerId || "",
+      location: ws.location || "",
+      sku: (ws.sku && ws.sku.name) || "",
+      sentinelEnabled,
+    });
+  }
+
+  // ── Step 7: Present workspaces to user ──
+  const sentinelWorkspaces = workspaceCandidates.filter((w) => w.sentinelEnabled);
+  const nonSentinelWorkspaces = workspaceCandidates.filter((w) => !w.sentinelEnabled);
+
+  let pickList;
+  if (sentinelWorkspaces.length > 0) {
+    pickList = sentinelWorkspaces;
+    console.log(`${c.green}✅ Found ${sentinelWorkspaces.length} Sentinel-enabled workspace(s):${c.reset}\n`);
+  } else {
+    pickList = workspaceCandidates;
+    console.log(
+      `${c.yellow}⚠️  No Sentinel-enabled workspaces found. ` +
+      `Listing all ${workspaceCandidates.length} Log Analytics workspace(s):${c.reset}\n`
+    );
+  }
+
+  for (let i = 0; i < pickList.length; i++) {
+    const w = pickList[i];
+    const sentinel = w.sentinelEnabled ? `${c.green}Sentinel${c.reset}` : `${c.dim}no Sentinel${c.reset}`;
+    console.log(
+      `  ${c.cyan}${i + 1}.${c.reset} ${c.bold}${w.name}${c.reset}` +
+      `  ${c.dim}rg:${c.reset}${w.resourceGroup}` +
+      `  ${c.dim}region:${c.reset}${w.location}` +
+      `  [${sentinel}]`
+    );
+  }
+
+  if (nonSentinelWorkspaces.length > 0 && sentinelWorkspaces.length > 0) {
+    console.log(
+      `\n  ${c.dim}(${nonSentinelWorkspaces.length} workspace(s) without Sentinel omitted)${c.reset}`
+    );
+  }
+
+  let selectedWs;
+  if (pickList.length === 1) {
+    selectedWs = pickList[0];
+    console.log(`\n${c.cyan}Auto-selected:${c.reset} ${selectedWs.name}\n`);
+  } else {
+    const rl2 = readline.createInterface({ input: process.stdin, output: process.stdout });
+    let wsChoice;
+    try {
+      wsChoice = (await prompt(rl2, `\n  ${c.bold}Select workspace${c.reset} [1]: `)).trim();
+    } finally {
+      rl2.close();
+    }
+
+    if (!wsChoice) {
+      selectedWs = pickList[0];
+    } else {
+      const idx = parseInt(wsChoice, 10);
+      if (isNaN(idx) || idx < 1 || idx > pickList.length) {
+        fatal(`Invalid selection: ${wsChoice}. Enter a number between 1 and ${pickList.length}.`);
+      }
+      selectedWs = pickList[idx - 1];
+    }
+    console.log(`\n${c.cyan}Selected:${c.reset} ${selectedWs.name}\n`);
+  }
+
+  // ── Step 8: Write workspace YAML ──
   ensureSecopsDirs(rootDir);
 
-  // Write workspace YAML
   const workspaceData = {
     schema_version: "1.0",
-    name: workspaceName,
-    resource_group: resourceGroup,
-    subscription_id: subscriptionId || null,
-    connected_at: new Date().toISOString(),
+    name: selectedWs.name,
+    workspace_id: selectedWs.customerId,
+    resource_group: selectedWs.resourceGroup,
+    subscription: selectedSub.id,
+    region: selectedWs.location,
+    sentinel_enabled: selectedWs.sentinelEnabled,
+    tier: selectedWs.sku || null,
   };
 
-  const workspacePath = path.join(rootDir, ".secops", "workspaces", `${workspaceName}.yaml`);
+  const workspacePath = path.join(rootDir, ".secops", "workspaces", `${selectedWs.name}.yaml`);
   fs.writeFileSync(workspacePath, yaml.dump(workspaceData, { lineWidth: 120 }), "utf8");
-  console.log(`\n${c.green}✅ Workspace config written:${c.reset} .secops/workspaces/${workspaceName}.yaml`);
+  console.log(`${c.green}✅ Workspace config written:${c.reset} .secops/workspaces/${selectedWs.name}.yaml`);
 
-  // Update environment.yaml default_workspace
+  // ── Step 9: Update environment.yaml default_workspace ──
   let envData = loadEnvironment(rootDir) || { schema_version: "1.0" };
-  envData.default_workspace = workspaceName;
+  envData.default_workspace = selectedWs.name;
   saveEnvironment(rootDir, envData);
-  console.log(`${c.green}✅ Default workspace set to:${c.reset} ${c.cyan}${workspaceName}${c.reset}\n`);
+  console.log(`${c.green}✅ Default workspace set to:${c.reset} ${c.cyan}${selectedWs.name}${c.reset}\n`);
+
+  // Summary
+  console.log(`${c.dim}  Workspace ID:    ${selectedWs.customerId}${c.reset}`);
+  console.log(`${c.dim}  Resource group:   ${selectedWs.resourceGroup}${c.reset}`);
+  console.log(`${c.dim}  Subscription:     ${selectedSub.name} (${selectedSub.id})${c.reset}`);
+  console.log(`${c.dim}  Region:           ${selectedWs.location}${c.reset}`);
+  console.log(`${c.dim}  Sentinel:         ${selectedWs.sentinelEnabled ? "enabled" : "not detected"}${c.reset}`);
+  console.log(`${c.dim}  Tier:             ${selectedWs.sku || "unknown"}${c.reset}\n`);
   console.log(`${c.dim}Run ${c.cyan}secops-squad workspace status${c.reset}${c.dim} to verify.${c.reset}\n`);
 }
 

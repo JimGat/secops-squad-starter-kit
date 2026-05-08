@@ -4,7 +4,17 @@
 
 ## Learnings
 
-[CMD] **CLI Shim + PATH Auto-Setup** (2026-05-08T16:08:28.643-05:00)
+[CMD] **Workspace Connect Auto-Discovery** (2026-05-08T16:09:41.073-05:00)
+- Rewrote `cli/commands/workspace.js` `connect()` from manual prompts to Azure auto-discovery flow.
+- New flow: check az CLI → auto-login → pick subscription → discover Log Analytics workspaces → check Sentinel via SecurityInsights solution REST call → user picks → write `.secops/workspaces/<name>.yaml` + update `environment.yaml`.
+- Sentinel detection: `az rest --method get` against `Microsoft.OperationsManagement/solutions/SecurityInsights({workspaceName})` — 200 = enabled, error = not.
+- `execAz()` helper replaces `execSafe()` with configurable timeout (30s default, 120s for login), `inherit` stdio for interactive `az login`, and `allowFail` for non-fatal checks.
+- Workspace YAML now uses `subscription` (not `subscription_id`) and `workspace_id` (customerId GUID) to match example-workspace.yaml schema.
+- Resource group extracted from workspace ARM resource ID via regex on `/resourceGroups/([^/]+)/`.
+- If no Sentinel workspaces found, falls back to showing all LA workspaces with a warning.
+- `status()` and `disconnect()` functions unchanged.
+
+[CMD]**CLI Shim + PATH Auto-Setup** (2026-05-08T16:08:28.643-05:00)
 - Created `secops-squad.cmd` in project root: `@echo off / node "%~dp0cli\index.js" %*`. Standard Windows batch wrapper pattern.
 - `install.ps1` now adds `$InstallDir` to both session PATH (`$env:Path`) and persistent user PATH (`[Environment]::SetEnvironmentVariable`). Both are idempotent (checks `-notlike "*$InstallDir*"` before adding).
 - Post-install message simplified: tells users to run `secops-squad init` directly, mentions restarting other terminals for PATH propagation.
