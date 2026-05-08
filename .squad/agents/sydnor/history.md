@@ -4,6 +4,17 @@
 
 ## Learnings
 
+[CMD] **Full Dependency Bootstrap** (2026-05-08T16:21:48.253-05:00)
+- Rewrote `install.ps1` from partial prereq checker to full bootstrap for fresh Windows installs.
+- Dependency chain: winget (detect) -> Git -> Node.js 18+ -> GitHub CLI -> gh-copilot extension -> Azure CLI (optional).
+- `Refresh-Path` helper reloads `$env:Path` from Machine+User registry after winget installs so tools are immediately available in the current session.
+- `Ensure-Command` pattern: check command -> if missing + winget available, auto-install -> verify again -> fall back to manual URL. Keeps idempotent behavior.
+- `Ensure-GhCopilotExtension` uses `gh extension list` to detect, `gh extension install github/gh-copilot` to install. Skipped if gh itself not available.
+- GitHub CLI promoted from optional to required (needed for squad issue mode, copilot extension).
+- Post-install message now shows: `gh auth login` -> `secops-squad workspace connect` -> `copilot --agent secops-squad`.
+- README prerequisites simplified to "install script handles everything" -- removed manual Node.js/Git install instructions and `node --version` validate step.
+- All strings remain ASCII-only, UTF-8 BOM preserved, zero parse errors under PS5.1.
+
 [CMD] **Workspace Connect Auto-Discovery** (2026-05-08T16:09:41.073-05:00)
 - Rewrote `cli/commands/workspace.js` `connect()` from manual prompts to Azure auto-discovery flow.
 - New flow: check az CLI → auto-login → pick subscription → discover Log Analytics workspaces → check Sentinel via SecurityInsights solution REST call → user picks → write `.secops/workspaces/<name>.yaml` + update `environment.yaml`.
