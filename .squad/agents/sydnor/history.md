@@ -4,6 +4,12 @@
 
 ## Learnings
 
+🔷 **PS5 Encoding Fix** (2026-05-08T15:50:14.020-05:00)
+- PowerShell 5.1 reads UTF-8 files without a BOM as ANSI (Windows-1252). Multi-byte Unicode characters (emoji, box-drawing) become garbled, breaking string parsing and causing cascading `UnexpectedToken` errors.
+- Fix: replaced all non-ASCII characters in `install.ps1` with ASCII equivalents (`[OK]`, `[FAIL]`, `[WARN]`, `+---+`/`|` box) and re-saved with UTF-8 BOM (`EF BB BF`).
+- Both fixes applied together for maximum robustness: ASCII content survives any encoding interpretation, and the BOM ensures PS5 reads UTF-8 correctly if Unicode is ever reintroduced.
+- Verified with `[System.Management.Automation.Language.Parser]::ParseFile()` — zero parse errors.
+
 🔷 **Update Command** (2026-05-08T15:06:07.002-05:00)
 - Created `cli/commands/update.js` — adds `starter-kit` git remote, fetches, and merges `starter-kit/main` with `--allow-unrelated-histories`.
 - Registered in `cli/index.js` as the `update` command with module path `./commands/update.js`.
