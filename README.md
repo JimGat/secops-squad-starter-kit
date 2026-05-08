@@ -81,6 +81,15 @@ I need to hunt for suspicious sign-ins across our Entra logs from the last 7 day
 
 **✓ Validate:** The agent responds with KQL queries tailored to your workspace configuration.
 
+> [!TIP]
+> You can also run with `--yolo` to skip confirmation prompts and let the agent execute autonomously:
+> ```bash
+> copilot --agent secops-squad --yolo
+> ```
+
+> [!CAUTION]
+> `--yolo` mode bypasses safety confirmations, so the agent can make changes without asking first. This is fine for trusted environments or when you know exactly what you're asking for — but it's not recommended for production workspaces or when running destructive operations for the first time.
+
 ---
 
 ## All Commands
