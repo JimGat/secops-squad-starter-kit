@@ -1,3 +1,5 @@
+
+
 # Squad Decisions
 
 ## Active Decisions
@@ -267,35 +269,6 @@ Created `skills/platform/cross-cloud-connectors.md` (509 lines) — a comprehens
 - **`.secops/`:** data-source-map.yaml examples for `source_cloud: aws/gcp` entries established as templates
 
 
-# Decision: Advanced Hunting API & KQL Query Builder Skills
-
-**Date:** 2026-04-30T17:40:42-05:00
-**By:** Freamon (KQL Engineer)
-**Status:** Implemented
-**Requested by:** Jose
-
-## What
-
-Created two new skill documents:
-
-1. **`skills/detection/advanced-hunting-api.md`** (336 lines) — Comprehensive API reference for MDE, XDR, and Graph Advanced Hunting endpoints, including Live Response session management, custom detection rule creation, query packs, and MITRE ATT&CK–mapped hunting patterns (Initial Access through Exfiltration).
-
-2. **`skills/kql/query-builder.md`** (408 lines) — KQL template engine with `{{parameter}}` substitution, conditional/iteration blocks, pre-built SecOps templates, 4-tier validation (syntax via `lib/kql-validator/`, schema via `data-source-map.yaml`, performance pattern detection, injection prevention), optimization guidance (filter-first, materialize, partition, string operator hierarchy), and cross-platform differences.
-
-## Key Design Choices
-
-1. **API skill in `detection/`, not `kql/`** — The API endpoints, Live Response, and custom detections are detection infrastructure, not query authoring. KQL patterns stay in `kql/`.
-2. **Template syntax uses `{{...}}`** — Lightweight, Handlebars-inspired syntax that doesn't conflict with KQL's `{ }` braces.
-3. **4-tier validation** — Syntax → Schema → Performance → Security, from cheapest to most expensive check.
-4. **Cross-references, not duplication** — Both skills link to `defender-xdr-hunting.md`, `defender-api-wrapper.md`, `threat-hunting-foundations.md` for existing coverage.
-5. **GCC-High awareness** — PowerShell wrappers check `environment.yaml` cloud field and swap endpoints for government clouds.
-
-## Impact
-
-- **Kima:** Can reference `advanced-hunting-api.md` for custom detection rule API patterns
-- **Herc:** Live Response forensic collection patterns complement SOAR playbook triggers
-- **Carver:** `Test-SecOpsKqlPerformance` rules can feed into CI validation pipeline
-- **All agents:** `Get-SecOpsQueryTarget` auto-routes queries to correct API surface based on `.secops/` data-source-map
 
 
 # Decision: MSSP Workflow Patterns and `.secops/mssp-config.yaml` Schema
@@ -394,42 +367,6 @@ The SOC analyst persona referenced Phase 1 skills only. Phase 2-3 delivered 9 ne
 - **Kima:** Confirm Kima's skill assignments are appropriate for L2 workflows
 
 
-# Decision: Compliance & Workbook Automation Skill Architecture
-
-**Date:** 2026-04-30T17:40:42-05:00
-**By:** Herc (Automation/SOAR)
-**Status:** Implemented
-
-## What
-
-Created two new SOAR skills establishing compliance automation and workbook lifecycle management:
-
-1. **`skills/soar/compliance-framework-mappings.md`** — Maps Microsoft controls (Defender for Cloud, Secure Score, Sentinel analytics, Purview DLP) to 6 regulatory frameworks (NIST 800-53 R5, CIS v8, PCI-DSS v4, HIPAA, SOC 2, ISO 27001:2022). Includes automated assessment pipelines, gap analysis, and evidence collection.
-
-2. **`skills/soar/workbook-automation.md`** — Programmatic workbook CRUD via Azure REST API, ARM/Bicep deployment templates, CI/CD pipeline patterns, multi-workspace deployment from `.secops/` config.
-
-## Key Choices
-
-1. **Defender for Cloud as compliance source of truth** — All frameworks map to `Get-AzSecurityRegulatoryComplianceStandard` API. This is the only Microsoft API that natively provides framework-to-control mappings.
-
-2. **`.secops/compliance/requirements.yaml` drives assessment scope** — Only frameworks listed in `.secops/` get assessed. No hardcoded framework lists.
-
-3. **Structured result pattern for workbook CRUD** — All `New-`/`Get-`/`Update-`/`Remove-SentinelWorkbook` functions return `@{ ok = $true/false; data/error }` per Sydnor's decision.
-
-4. **CI/CD via GitHub Actions** — Workbook JSON stored in repo, deployed on merge via `azure/powershell@v2`. Idempotent PUT operations.
-
-5. **Multi-workspace deployment reads `.secops/workspaces/`** — Workbooks deploy to all configured workspaces with data residency checks against `prohibited_regions`.
-
-## Impact
-
-- **Kima:** Detection rules can reference compliance control IDs from the mapping tables
-- **Freamon:** KQL queries in workbook items follow same syntax as standalone hunting queries
-- **Carver:** Can validate workbook JSON structure and compliance report outputs
-- **Sydnor:** CI/CD pipeline pattern can be added to `secops-squad` CLI as `secops-squad workbook deploy`
-
-## Why
-
-SOC teams need compliance dashboards and audit evidence on demand, not after weeks of manual work. These skills make compliance posture visible in real-time and workbook deployment a one-command operation.
 
 
 # Decision: Persona Configuration Updates for Phases 2-3
@@ -480,83 +417,8 @@ Phase 2-3 produced 30+ new skills across powershell/, msft-security/, soar/, det
 - **Other personas** (soc-analyst, detection-engineering, threat-hunting, cloud-security): Should be updated similarly in a follow-up task
 
 
-# Decision: Copilot for Security + Defender for Cloud Apps Skill Architecture
-
-**Date:** 2026-04-30T17:40:42-05:00
-**Author:** Kima (SecOps Engineer)
-**Requested by:** Jose
-**Status:** Proposed
-
-## What
-
-Created two new skills in `skills/msft-security/`:
-
-1. **`copilot-for-security.md`** — Copilot for Security integration covering SCU capacity, plugins, custom plugins, promptbooks, REST API, and agent integration patterns
-2. **`defender-cloud-apps.md`** — MDCA CASB coverage including Cloud Discovery, OAuth app governance, 6 policy types, full REST API reference, Conditional Access App Control, and SIEM integration
-
-## Key Design Decisions
-
-### 1. Copilot API Session Reuse Pattern
-Sessions preserve conversation context. Agents should create one session per investigation and reuse it across multiple prompts rather than creating new sessions per prompt. This saves SCU consumption and improves response quality through accumulated context.
-
-### 2. MDCA API Token Authentication (Not OAuth)
-MDCA's REST API uses portal-generated API tokens (`Authorization: Token <value>`), not OAuth2 flows. This is a different auth pattern from all other Defender APIs. Agents must handle this distinction when building multi-product workflows.
-
-### 3. Structured Result Pattern Applied
-Both skills' PowerShell wrappers (`Invoke-CopilotWithRetry`, `Invoke-MdcaApiWithRetry`) follow Sydnor's structured result pattern (`{ok: true/false, data/error}`), consistent with all other API-wrapping code in the project.
-
-### 4. New MITRE Techniques Added to Coverage
-These skills introduce 5 MITRE techniques not previously covered: T1071 (Application Layer Protocol), T1199 (Trusted Relationship), T1537 (Transfer Data to Cloud Account), T1550 (Use Alternate Authentication Material), T1567 (Exfiltration Over Web Service). The MITRE coverage map should be updated.
-
-## Impact
-
-- **Freamon:** Can reference MDCA tables (`McasShadowItReporting`, `CloudAppEvents`) in KQL skills
-- **Herc:** SOAR playbooks can call Copilot API for incident enrichment and MDCA API for governance actions
-- **Carver:** Should validate MITRE coverage map update with new techniques
-- **All agents:** Can use Copilot for Security as enrichment layer in investigation workflows
-
-## Why
-
-These two products were identified in the platform coverage gap analysis as critical gaps: Copilot for Security is the AI augmentation layer for all SOC operations, and MDCA covers the CASB/Shadow IT domain that no existing skill addresses.
 
 
-# Decision: eDiscovery & Purview API Wrapper Skills
-
-**Date:** 2026-04-30T17:40:42-05:00
-**Author:** Kima (SecOps Engineer)
-**Requested by:** Jose
-**Status:** Implemented
-
-## What
-
-Created two new comprehensive skill documents in `skills/msft-security/`:
-
-1. **`ediscovery-api-wrapper.md`** — Full eDiscovery API integration covering Graph `/security/cases/ediscoveryCases` hierarchy, case CRUD, custodian management, legal hold, KQL-based content search, review sets, export operations, and production PowerShell wrappers.
-
-2. **`purview-api-wrapper.md`** — Purview API surface covering information protection (sensitivity labels), DLP alerts/policies, data classification (SITs, EDM, trainable classifiers), records management, insider risk alerts, Unified Audit Log (3 access methods), Compliance Manager, and production PowerShell wrappers.
-
-## Key Design Decisions
-
-1. **Scope separation from purview-dlp-patterns.md** — The existing skill covers DLP policy *design* (taxonomy, endpoint config, SIT patterns). The new purview-api-wrapper covers programmatic *API access* for agent automation. No content duplication.
-
-2. **Structured result pattern** — All wrapper functions return `{ok, data}` / `{ok: false, error}` per Sydnor's decision on structured result objects.
-
-3. **Multi-API auth awareness** — Documented that Purview's API surface is fragmented across Graph, IPPSSession, EXO, and Management API. Agents must manage multiple authentication contexts.
-
-4. **`.secops/` integration** — Both skills reference `compliance/requirements.yaml` for retention constraints and `identity/tenants.yaml` for multi-tenant topology.
-
-## Why
-
-- No programmatic eDiscovery coverage existed in the skills library
-- Existing Purview skill (purview-dlp-patterns.md) was design-only, no API wrappers
-- Incident response workflows (phishing, insider threat, compliance) require eDiscovery automation
-- Data governance lifecycle (classify → label → protect → audit) needs API-driven agent support
-
-## Impact
-
-- **Freamon:** Can reference audit log query patterns when building KQL for compliance-related detection rules
-- **Herc:** SOAR playbooks can call eDiscovery wrapper functions for automated evidence collection
-- **All agents:** Purview API wrapper provides compliance posture monitoring for weekly agent-driven checks
 
 
 # Decision: Gov Cloud Support + Copilot Workflow Skills
@@ -907,3 +769,100 @@ Replaced unreachable `if [ $? -ne 0 ]` block (dead code under `set -euo pipefail
 - No breaking changes to existing commands or schemas
 
 
+# Decision: CLI Shim and PATH Auto-Setup
+
+**Date:** 2026-05-08T16:08:28.643-05:00
+**By:** Sydnor (Platform Dev)
+**Status:** Implemented
+
+## What
+
+Added `secops-squad.cmd` batch wrapper in the project root and updated `install.ps1` to automatically add the install directory to the user's PATH (both session and persistent). Users can now run `secops-squad init` directly after installation instead of `node cli\index.js init`.
+
+## Why
+
+The previous post-install experience required users to either manually modify PATH or use the verbose `node cli\index.js` invocation. This created friction for new users and made the CLI feel unpolished.
+
+## Impact
+
+- **All agents:** Documentation and instructions can now reference `secops-squad <command>` instead of `node cli\index.js <command>`.
+- **README / docs:** Any getting-started guides should use the short form.
+- **install.sh (Linux/macOS):** Should get a similar treatment (symlink or shell wrapper) for parity.
+
+## Files Changed
+
+- `secops-squad.cmd` (new) -- batch wrapper forwarding to `node cli\index.js`
+- `install.ps1` -- PATH setup + simplified post-install message
+
+# Decision: ASCII-Only Policy for PowerShell Scripts
+
+**Date:** 2026-05-08T15:50:14.020-05:00
+**Author:** Sydnor (Platform Dev)
+**Status:** Proposed
+
+## Context
+
+A user on PowerShell 5.1 hit a `ParseException` (`UnexpectedToken`) when running `install.ps1`. The root cause: PS5 reads UTF-8 files without a BOM as ANSI (Windows-1252). Emoji characters (✅, ❌, ⚠️) and Unicode box-drawing characters (┌─┐│└─┘) became garbled multi-byte sequences under ANSI interpretation, breaking string parsing.
+
+## Decision
+
+All PowerShell scripts in this repository (`.ps1`, `.psm1`, `.psd1`) must:
+
+1. **Use only ASCII characters (U+0000–U+007F) in source code.** No emoji, no box-drawing, no em-dashes, no smart quotes. Use ASCII equivalents: `[OK]`, `[FAIL]`, `[WARN]`, `+---+`/`|` for boxes, `--` for dashes.
+2. **Be saved with UTF-8 BOM encoding** (`EF BB BF` byte prefix). This tells PS5 to interpret the file as UTF-8 rather than ANSI.
+
+Both measures together provide defense in depth — ASCII content survives any encoding interpretation, and the BOM provides correct decoding if Unicode is ever reintroduced accidentally.
+
+## Consequences
+
+- PowerShell scripts will look slightly less pretty in terminals that support Unicode, but they will work everywhere.
+- Contributors adding Unicode characters to PS scripts will need to be corrected in review.
+- A CI lint step could enforce this in the future (e.g., `grep -P '[^\x00-\x7F]'` on `.ps1` files).
+
+# Decision: Update Command Uses Git Remote Merge Strategy
+
+**Date:** 2026-05-08T15:06:07.002-05:00
+**By:** Sydnor (Platform Dev)
+**Status:** Implemented
+
+## What
+
+Added `secops-squad update` CLI command that pulls latest starter-kit changes via a git remote named `starter-kit`. Uses `git merge --allow-unrelated-histories` since installed projects have no shared git history with the template repo.
+
+## Why
+
+The install flow (install.ps1/install.sh) shallow-clones the starter-kit, deletes `.git`, and inits a fresh repo. Users had no way to get upstream improvements. A git-remote-based merge is the simplest approach that preserves local customizations while pulling new files.
+
+## Impact
+
+- **All agents:** The `starter-kit` remote may appear in `.git/config` after users run `update`. Don't treat it as the project's origin.
+- **Sydnor:** Owns this command going forward. Any starter-kit structural changes (new top-level dirs, renamed files) should be tested against the merge path.
+- **Kima/Freamon/Herc:** New skills or templates added to the starter-kit will flow to users via this command automatically.
+
+### 2026-05-08T16:09:41.073-05:00: Workspace Connect — Azure Auto-Discovery
+
+**By:** Sydnor (Platform Dev)
+
+**Status:** Implemented
+
+**What:** Rewrote `cli/commands/workspace.js` `connect()` to auto-discover Microsoft Sentinel workspaces from Azure instead of manually prompting for workspace name, resource group, and subscription ID.
+
+**New flow:**
+1. Verify `az` CLI installed, auto-run `az login` if not authenticated (uses `stdio: 'inherit'` for browser flow)
+2. List enabled subscriptions, present numbered picker if multiple
+3. Discover all Log Analytics workspaces via `az monitor log-analytics workspace list`
+4. Check Sentinel on each workspace via `az rest` against `SecurityInsights({name})` solution endpoint
+5. Present Sentinel-enabled workspaces (or all workspaces if none have Sentinel) as numbered list
+6. Write `.secops/workspaces/<name>.yaml` with auto-populated fields matching schema v1.0
+7. Update `.secops/environment.yaml` default_workspace
+
+**Key design choices:**
+- `execAz()` helper with configurable timeout (30s default, 120s for login), `inherit` stdio, and `allowFail` options — replaces single-purpose `execSafe()`
+- Resource group parsed from ARM resource ID regex, not from a separate API call
+- Sentinel detection via `Microsoft.OperationsManagement/solutions` REST API (simpler than querying alert rules)
+- Graceful fallback: if no Sentinel workspaces found, show all LA workspaces with warning
+
+**Impact:**
+- All agents: `workspace connect` now produces richer YAML (includes `workspace_id`, `region`, `sentinel_enabled`, `tier`)
+- Kima/Freamon: Can rely on `sentinel_enabled: true` in workspace config for conditional logic
+- Users: Zero manual typing of GUIDs or resource group names
