@@ -1,9 +1,9 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
     secops-squad installer for Windows
 .DESCRIPTION
-    Installs secops-squad — AI SecOps team for Microsoft Security stack.
+    Installs secops-squad -- AI SecOps team for Microsoft Security stack.
     Checks prerequisites, clones the repository, installs dependencies.
 .EXAMPLE
     irm https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.ps1 | iex
@@ -22,11 +22,11 @@ $RepoUrl = "https://github.com/x3nc0n/secops-squad-starter-kit.git"
 
 function Write-Banner {
     Write-Host ""
-    Write-Host "  ┌─────────────────────────────────────┐" -ForegroundColor Cyan
-    Write-Host "  │  secops-squad installer               │" -ForegroundColor Cyan
-    Write-Host "  │  AI SecOps team for Microsoft        │" -ForegroundColor Cyan
-    Write-Host "  │  Security stack                      │" -ForegroundColor Cyan
-    Write-Host "  └─────────────────────────────────────┘" -ForegroundColor Cyan
+    Write-Host "  +-------------------------------------+" -ForegroundColor Cyan
+    Write-Host "  |  secops-squad installer               |" -ForegroundColor Cyan
+    Write-Host "  |  AI SecOps team for Microsoft        |" -ForegroundColor Cyan
+    Write-Host "  |  Security stack                      |" -ForegroundColor Cyan
+    Write-Host "  +-------------------------------------+" -ForegroundColor Cyan
     Write-Host ""
 }
 
@@ -45,15 +45,15 @@ function Test-CommandAvailable {
         } catch {
             $version = "installed"
         }
-        Write-Host "  ✅ ${DisplayName}: $version" -ForegroundColor Green
+        Write-Host "  [OK] ${DisplayName}: $version" -ForegroundColor Green
         return $true
     } else {
         if ($Required) {
-            Write-Host "  ❌ ${DisplayName} not found" -ForegroundColor Red
+            Write-Host "  [FAIL] ${DisplayName} not found" -ForegroundColor Red
             Write-Host "     Install: $InstallUrl" -ForegroundColor DarkGray
             return $false
         } else {
-            Write-Host "  ⚠️  ${DisplayName} not found (optional)" -ForegroundColor Yellow
+            Write-Host "  [WARN] ${DisplayName} not found (optional)" -ForegroundColor Yellow
             Write-Host "     Install: $InstallUrl" -ForegroundColor DarkGray
             return $true
         }
@@ -63,7 +63,7 @@ function Test-CommandAvailable {
 function Test-NodeVersion {
     $nodeCmd = Get-Command "node" -ErrorAction SilentlyContinue
     if (-not $nodeCmd) {
-        Write-Host "  ❌ Node.js not found" -ForegroundColor Red
+        Write-Host "  [FAIL] Node.js not found" -ForegroundColor Red
         Write-Host "     Install Node.js 18+: https://nodejs.org" -ForegroundColor DarkGray
         return $false
     }
@@ -72,10 +72,10 @@ function Test-NodeVersion {
     $major = [int]($version -replace "^v" -split "\." | Select-Object -First 1)
 
     if ($major -ge 18) {
-        Write-Host "  ✅ Node.js $version (>= 18 required)" -ForegroundColor Green
+        Write-Host "  [OK] Node.js $version (>= 18 required)" -ForegroundColor Green
         return $true
     } else {
-        Write-Host "  ❌ Node.js $version — version 18+ required" -ForegroundColor Red
+        Write-Host "  [FAIL] Node.js $version -- version 18+ required" -ForegroundColor Red
         Write-Host "     Upgrade: https://nodejs.org" -ForegroundColor DarkGray
         return $false
     }
@@ -103,7 +103,7 @@ function Install-SecOpsSquad {
         exit 1
     }
 
-    Write-Host "✅ All required prerequisites met." -ForegroundColor Green
+    Write-Host "[OK] All required prerequisites met." -ForegroundColor Green
     Write-Host ""
 
     if (Test-Path $InstallDir) {
@@ -148,7 +148,7 @@ function Install-SecOpsSquad {
     Pop-Location
 
     Write-Host ""
-    Write-Host "✅ secops-squad installed!" -ForegroundColor Green
+    Write-Host "[OK] secops-squad installed!" -ForegroundColor Green
     Write-Host ""
     Write-Host "To use the CLI, either:" -ForegroundColor White
     Write-Host ""
