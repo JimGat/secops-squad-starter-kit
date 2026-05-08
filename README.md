@@ -28,10 +28,9 @@ It's not a chatbot wearing a SOC badge. Each team member runs in its own context
 | Requirement | How to get it |
 |------------|---------------|
 | **GitHub Copilot license** | [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for Microsoft FTEs) |
-| **Node.js 18+** | [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
-| **Git** | [git-scm.com](https://git-scm.com/) or `winget install Git.Git` |
+| **Windows 10/11 with PowerShell** | The install script handles all other dependencies (Git, Node.js, GitHub CLI, Copilot extension) automatically via winget |
 
-**✓ Validate:** Run `node --version` — you should see `v18` or higher.
+The installer checks for and installs everything you need. If winget is not available on your system, it will print manual install links instead.
 
 > [!WARNING]
 > **Don't clone this repo directly.** Use the install scripts below — they set up a clean project with its own Git history. Cloning the starter kit directly will leave you working inside the template repo.

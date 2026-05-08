@@ -20,21 +20,60 @@ $ErrorActionPreference = "Stop"
 
 $RepoUrl = "https://github.com/x3nc0n/secops-squad-starter-kit.git"
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 function Write-Banner {
     Write-Host ""
     Write-Host "  +-------------------------------------+" -ForegroundColor Cyan
-    Write-Host "  |  secops-squad installer               |" -ForegroundColor Cyan
+    Write-Host "  |  secops-squad installer              |" -ForegroundColor Cyan
     Write-Host "  |  AI SecOps team for Microsoft        |" -ForegroundColor Cyan
     Write-Host "  |  Security stack                      |" -ForegroundColor Cyan
     Write-Host "  +-------------------------------------+" -ForegroundColor Cyan
     Write-Host ""
 }
 
-function Test-CommandAvailable {
+function Refresh-Path {
+    # Re-read PATH from the registry so tools installed by winget are visible
+    # in the current session without restarting the terminal.
+    $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+    $userPath    = [Environment]::GetEnvironmentVariable("Path", "User")
+    $env:Path    = "$machinePath;$userPath"
+}
+
+function Test-WingetAvailable {
+    $cmd = Get-Command "winget" -ErrorAction SilentlyContinue
+    return [bool]$cmd
+}
+
+function Install-WithWinget {
+    param(
+        [string]$PackageId,
+        [string]$DisplayName
+    )
+    Write-Host "  [....] Installing ${DisplayName} via winget..." -ForegroundColor Cyan
+    & winget install $PackageId --accept-source-agreements --accept-package-agreements --silent 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  [FAIL] winget install failed for ${DisplayName}" -ForegroundColor Red
+        return $false
+    }
+    Refresh-Path
+    Write-Host "  [OK] ${DisplayName} installed" -ForegroundColor Green
+    return $true
+}
+
+function Ensure-Command {
+    <#
+    .SYNOPSIS
+        Check for a command. If missing and winget is available, install it.
+        Returns $true if the command is available after the check.
+    #>
     param(
         [string]$Command,
         [string]$DisplayName,
-        [string]$InstallUrl,
+        [string]$WingetPackage,
+        [string]$ManualUrl,
         [bool]$Required = $true
     )
 
@@ -47,25 +86,61 @@ function Test-CommandAvailable {
         }
         Write-Host "  [OK] ${DisplayName}: $version" -ForegroundColor Green
         return $true
-    } else {
-        if ($Required) {
-            Write-Host "  [FAIL] ${DisplayName} not found" -ForegroundColor Red
-            Write-Host "     Install: $InstallUrl" -ForegroundColor DarkGray
-            return $false
-        } else {
-            Write-Host "  [WARN] ${DisplayName} not found (optional)" -ForegroundColor Yellow
-            Write-Host "     Install: $InstallUrl" -ForegroundColor DarkGray
-            return $true
-        }
     }
+
+    # Command not found
+    Write-Host "  [MISS] ${DisplayName} not found" -ForegroundColor Yellow
+
+    if ($script:HasWinget -and $WingetPackage) {
+        $installed = Install-WithWinget $WingetPackage $DisplayName
+        if ($installed) {
+            # Verify the command is now on PATH
+            $cmd = Get-Command $Command -ErrorAction SilentlyContinue
+            if ($cmd) { return $true }
+        }
+        Write-Host "  [FAIL] ${DisplayName} still not found after install" -ForegroundColor Red
+        Write-Host "     Install manually: $ManualUrl" -ForegroundColor DarkGray
+        if ($Required) { return $false } else { return $true }
+    }
+
+    # No winget -- fall back to manual instructions
+    if ($Required) {
+        Write-Host "  [FAIL] ${DisplayName} is required" -ForegroundColor Red
+    } else {
+        Write-Host "  [WARN] ${DisplayName} is optional" -ForegroundColor Yellow
+    }
+    Write-Host "     Install: $ManualUrl" -ForegroundColor DarkGray
+    if ($Required) { return $false } else { return $true }
 }
 
-function Test-NodeVersion {
+function Ensure-NodeVersion {
+    <#
+    .SYNOPSIS
+        Node.js requires extra version validation (>= 18).
+    #>
     $nodeCmd = Get-Command "node" -ErrorAction SilentlyContinue
+
     if (-not $nodeCmd) {
-        Write-Host "  [FAIL] Node.js not found" -ForegroundColor Red
-        Write-Host "     Install Node.js 18+: https://nodejs.org" -ForegroundColor DarkGray
-        return $false
+        Write-Host "  [MISS] Node.js not found" -ForegroundColor Yellow
+
+        if ($script:HasWinget) {
+            $installed = Install-WithWinget "OpenJS.NodeJS.LTS" "Node.js LTS"
+            if (-not $installed) {
+                Write-Host "  [FAIL] Node.js is required" -ForegroundColor Red
+                Write-Host "     Install manually: https://nodejs.org" -ForegroundColor DarkGray
+                return $false
+            }
+            $nodeCmd = Get-Command "node" -ErrorAction SilentlyContinue
+            if (-not $nodeCmd) {
+                Write-Host "  [FAIL] Node.js still not found after install" -ForegroundColor Red
+                Write-Host "     Install manually: https://nodejs.org" -ForegroundColor DarkGray
+                return $false
+            }
+        } else {
+            Write-Host "  [FAIL] Node.js 18+ is required" -ForegroundColor Red
+            Write-Host "     Install: https://nodejs.org" -ForegroundColor DarkGray
+            return $false
+        }
     }
 
     $version = & node -v 2>&1
@@ -81,18 +156,83 @@ function Test-NodeVersion {
     }
 }
 
+function Ensure-GhCopilotExtension {
+    <#
+    .SYNOPSIS
+        Check for the GitHub Copilot CLI extension (gh copilot).
+        Installs it via gh extension install if missing.
+    #>
+    $ghCmd = Get-Command "gh" -ErrorAction SilentlyContinue
+    if (-not $ghCmd) {
+        Write-Host "  [SKIP] Copilot CLI extension -- gh not available" -ForegroundColor DarkGray
+        return $false
+    }
+
+    # Check if the copilot extension is already installed
+    $extensions = & gh extension list 2>&1
+    if ($extensions -match "github/gh-copilot") {
+        Write-Host "  [OK] GitHub Copilot CLI extension" -ForegroundColor Green
+        return $true
+    }
+
+    Write-Host "  [MISS] GitHub Copilot CLI extension not found" -ForegroundColor Yellow
+    Write-Host "  [....] Installing gh-copilot extension..." -ForegroundColor Cyan
+    & gh extension install github/gh-copilot 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  [WARN] Could not install gh-copilot extension" -ForegroundColor Yellow
+        Write-Host "     You may need to run: gh auth login" -ForegroundColor DarkGray
+        Write-Host "     Then: gh extension install github/gh-copilot" -ForegroundColor DarkGray
+        return $false
+    }
+    Write-Host "  [OK] GitHub Copilot CLI extension installed" -ForegroundColor Green
+    return $true
+}
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 function Install-SecOpsSquad {
     Write-Banner
 
-    Write-Host "Checking prerequisites..." -ForegroundColor White
+    # --- winget availability ---
+    Write-Host "Checking package manager..." -ForegroundColor White
+    $script:HasWinget = Test-WingetAvailable
+    if ($script:HasWinget) {
+        Write-Host "  [OK] winget available -- missing tools will be installed automatically" -ForegroundColor Green
+    } else {
+        Write-Host "  [WARN] winget not found -- you may need to install tools manually" -ForegroundColor Yellow
+        Write-Host "     winget ships with Windows 10 (1709+) and Windows 11." -ForegroundColor DarkGray
+        Write-Host "     Get it: https://aka.ms/getwinget" -ForegroundColor DarkGray
+    }
+    Write-Host ""
+
+    # --- Required dependencies (order matters) ---
+    Write-Host "Checking dependencies..." -ForegroundColor White
     Write-Host ""
 
     $failed = $false
 
-    if (-not (Test-NodeVersion)) { $failed = $true }
-    if (-not (Test-CommandAvailable "git" "Git" "https://git-scm.com" $true)) { $failed = $true }
-    Test-CommandAvailable "gh" "GitHub CLI" "https://cli.github.com" $false | Out-Null
-    Test-CommandAvailable "az" "Azure CLI" "https://aka.ms/installazurecliwindows" $false | Out-Null
+    # 1. Git
+    if (-not (Ensure-Command "git" "Git" "Git.Git" "https://git-scm.com" $true)) {
+        $failed = $true
+    }
+
+    # 2. Node.js 18+
+    if (-not (Ensure-NodeVersion)) {
+        $failed = $true
+    }
+
+    # 3. GitHub CLI (required for squad issue mode, copilot extension)
+    if (-not (Ensure-Command "gh" "GitHub CLI" "GitHub.cli" "https://cli.github.com" $true)) {
+        $failed = $true
+    }
+
+    # 4. GitHub Copilot CLI extension
+    Ensure-GhCopilotExtension | Out-Null
+
+    # 5. Azure CLI (optional)
+    Ensure-Command "az" "Azure CLI" "Microsoft.AzureCLI" "https://aka.ms/installazurecliwindows" $false | Out-Null
 
     Write-Host ""
 
@@ -103,7 +243,7 @@ function Install-SecOpsSquad {
         exit 1
     }
 
-    Write-Host "[OK] All required prerequisites met." -ForegroundColor Green
+    Write-Host "[OK] All required dependencies met." -ForegroundColor Green
     Write-Host ""
 
     if (Test-Path $InstallDir) {
@@ -170,10 +310,10 @@ function Install-SecOpsSquad {
     Write-Host ""
     Write-Host "[OK] secops-squad installed!" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Getting started:" -ForegroundColor White
-    Write-Host "  cd $InstallDir" -ForegroundColor Cyan
-    Write-Host "  secops-squad init" -ForegroundColor Cyan
-    Write-Host "  secops-squad doctor" -ForegroundColor Cyan
+    Write-Host "Next steps:" -ForegroundColor White
+    Write-Host "  1. Authenticate with GitHub:    gh auth login" -ForegroundColor Cyan
+    Write-Host "  2. Connect to Azure (optional): cd $InstallDir && secops-squad workspace connect" -ForegroundColor Cyan
+    Write-Host "  3. Start SecOps Squad:           copilot --agent secops-squad" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Note: Other open terminals may need to be restarted" -ForegroundColor DarkGray
     Write-Host "for the PATH change to take effect." -ForegroundColor DarkGray
