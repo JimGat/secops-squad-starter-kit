@@ -4,6 +4,12 @@
 
 ## Learnings
 
+[CMD] **CLI Shim + PATH Auto-Setup** (2026-05-08T16:08:28.643-05:00)
+- Created `secops-squad.cmd` in project root: `@echo off / node "%~dp0cli\index.js" %*`. Standard Windows batch wrapper pattern.
+- `install.ps1` now adds `$InstallDir` to both session PATH (`$env:Path`) and persistent user PATH (`[Environment]::SetEnvironmentVariable`). Both are idempotent (checks `-notlike "*$InstallDir*"` before adding).
+- Post-install message simplified: tells users to run `secops-squad init` directly, mentions restarting other terminals for PATH propagation.
+- All strings are ASCII-only, no em-dashes or emoji in comments. Validated with PS5.1 parser.
+
 🔷 **PS5 Encoding Fix** (2026-05-08T15:50:14.020-05:00)
 - PowerShell 5.1 reads UTF-8 files without a BOM as ANSI (Windows-1252). Multi-byte Unicode characters (emoji, box-drawing) become garbled, breaking string parsing and causing cascading `UnexpectedToken` errors.
 - Fix: replaced all non-ASCII characters in `install.ps1` with ASCII equivalents (`[OK]`, `[FAIL]`, `[WARN]`, `+---+`/`|` box) and re-saved with UTF-8 BOM (`EF BB BF`).

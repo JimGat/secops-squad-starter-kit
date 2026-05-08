@@ -147,21 +147,36 @@ function Install-SecOpsSquad {
     }
     Pop-Location
 
+    # Add install directory to PATH (for the secops-squad.cmd shim)
+    # Session PATH - immediate effect in this terminal
+    if ($env:Path -notlike "*$InstallDir*") {
+        $env:Path = "$InstallDir;$env:Path"
+    }
+
+    # Persistent user-level PATH - survives terminal restarts
+    $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if (-not $userPath) { $userPath = "" }
+    if ($userPath -notlike "*$InstallDir*") {
+        if ($userPath -and -not $userPath.EndsWith(";")) {
+            $userPath = "$userPath;"
+        }
+        $userPath = "$userPath$InstallDir"
+        [Environment]::SetEnvironmentVariable("Path", $userPath, "User")
+        Write-Host "  [OK] Added $InstallDir to user PATH" -ForegroundColor Green
+    } else {
+        Write-Host "  [OK] $InstallDir already in user PATH" -ForegroundColor Green
+    }
+
     Write-Host ""
     Write-Host "[OK] secops-squad installed!" -ForegroundColor Green
     Write-Host ""
-    Write-Host "To use the CLI, either:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  1. Add to PATH:" -ForegroundColor Cyan
-    Write-Host "     `$env:Path += `";$InstallDir\cli`"" -ForegroundColor DarkGray
-    Write-Host ""
-    Write-Host "  2. Or run directly:" -ForegroundColor Cyan
-    Write-Host "     node $InstallDir\cli\index.js" -ForegroundColor DarkGray
-    Write-Host ""
     Write-Host "Getting started:" -ForegroundColor White
     Write-Host "  cd $InstallDir" -ForegroundColor Cyan
-    Write-Host "  node cli\index.js init" -ForegroundColor Cyan
-    Write-Host "  node cli\index.js doctor" -ForegroundColor Cyan
+    Write-Host "  secops-squad init" -ForegroundColor Cyan
+    Write-Host "  secops-squad doctor" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Note: Other open terminals may need to be restarted" -ForegroundColor DarkGray
+    Write-Host "for the PATH change to take effect." -ForegroundColor DarkGray
     Write-Host ""
 }
 
