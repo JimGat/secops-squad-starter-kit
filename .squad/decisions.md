@@ -113,3 +113,34 @@ far more gracefully than a shell script can.
 - **All agents:** Users may not have `gh` or `az` connected on first run — agents should check and offer to help connect them.
 - **McNulty:** Issue mode requires gh; should detect and prompt before attempting gh operations.
 - **Herc/Kima:** Azure operations require az login; should detect and prompt before az calls.
+
+# Decision: First-Run Onboarding Skill Design
+
+**Date:** 2026-05-08T16:48:55-05:00
+**By:** Kima (SecOps Engineer)
+**Status:** Implemented
+
+## What
+
+Created `.copilot/skills/first-run-onboarding/SKILL.md` — a copilot-level skill that teaches the agent to proactively detect first-run state and guide new users through environment setup.
+
+## Key Design Choices
+
+1. **Progressive disclosure over prerequisite dumps.** The skill guides one step at a time: Azure CLI → Workspace discovery → .secops/ init → GitHub CLI (optional). No walls of text listing everything the user needs.
+
+2. **Detection-first, not prompt-first.** The agent runs 5 silent checks at session start (`.secops/` exists, `az account show`, workspace count, `gh auth status`, template defaults) and uses a decision matrix to determine which step to start at. Users don't need to ask for help.
+
+3. **Re-entry without restart.** When a user returns to a partially-configured environment, the agent picks up at the first incomplete step. Token-expired sessions get a targeted `az login`, not a full re-onboarding.
+
+4. **Azure before GitHub.** Azure is required for all security work; GitHub is optional for PR workflows. The skill enforces this ordering and frames GitHub as "one more optional step."
+
+5. **Delegates deep setup.** Basic onboarding gets users to one working Sentinel workspace. Product-by-product connectivity (Defender XDR, MDI, MDE, etc.) is deferred to `skills/msft-security/connectivity-setup.md`. No duplication.
+
+6. **Leverages existing CLI.** The skill references `secops-squad workspace connect` (Sydnor's auto-discovery flow) and `secops-squad init --secops` rather than reimplementing workspace discovery. Falls back to manual guidance if CLI commands fail.
+
+## Impact
+
+- **All agents:** Should check first-run signals at session start. If signals detected, invoke this skill before doing security work.
+- **Sydnor:** The skill depends on `workspace connect` and `init --secops` CLI commands — changes to those commands should update this skill.
+- **Freamon/Herc:** Can assume `.secops/` exists after onboarding. No need to add their own first-run detection.
+- **Users:** New users get guided setup instead of "run these 5 commands first."

@@ -102,3 +102,8 @@
 - Verified all 20 local file links resolve to existing files
 - Badge updated: removed "Phase 3" (too internal), added "status: alpha" (matching Squad), kept skills-96 and Node.js badges
 - README expanded from 210 to 302 lines — no content dropped, structure improved
+
+[NEW SKILL] **First-Run Onboarding Skill** (2026-05-08T16:48:55-05:00)
+- Kima created `.copilot/skills/first-run-onboarding/SKILL.md` — detects first-run signals and guides progressive onboarding.
+- Skill depends on `workspace connect` (Sydnor's auto-discovery) and `init --secops` commands — changes to those CLIs should trigger skill updates.
+- Decision merged to `.squad/decisions.md` under "First-Run Onboarding Skill Design".
