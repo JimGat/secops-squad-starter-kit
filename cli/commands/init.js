@@ -25,6 +25,26 @@ const SQUAD_DIR = ".squad";
 
 const PERSONA_FILES = ["team.md", "routing.md", "skills.json", "ceremonies.md"];
 
+function isStarterKitRepo() {
+  try {
+    const gitConfigPath = path.join(process.cwd(), ".git", "config");
+    if (fs.existsSync(gitConfigPath)) {
+      const gitConfig = fs.readFileSync(gitConfigPath, "utf8");
+      if (gitConfig.includes("secops-squad-starter-kit")) return true;
+    }
+  } catch {}
+
+  try {
+    const pkgPath = path.join(process.cwd(), "package.json");
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+      if (pkg.name === "@secops-squad/secops-squad-starter-kit") return true;
+    }
+  } catch {}
+
+  return false;
+}
+
 function printBanner() {
   console.log(`
 ${c.cyan}${c.bold}  ┌─────────────────────────────────────────┐
@@ -193,6 +213,15 @@ async function run(args) {
   const presetPersona = personaIdx !== -1 ? args[personaIdx + 1] : null;
 
   printBanner();
+
+  // Warn if running inside the starter-kit template repo
+  if (isStarterKitRepo()) {
+    console.log(`${c.yellow}${c.bold}⚠️  It looks like you're inside the starter-kit repo itself.${c.reset}`);
+    console.log(`${c.yellow}   This repo is a template — don't develop directly in it.${c.reset}`);
+    console.log(`${c.yellow}   Use the install scripts instead:${c.reset}\n`);
+    console.log(`${c.cyan}   Windows:${c.reset}  irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.ps1" | iex`);
+    console.log(`${c.cyan}   macOS:${c.reset}    curl -fsSL "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh" | bash\n`);
+  }
 
   // Check for existing config
   const configPath = path.join(rootDir, CONFIG_FILE);

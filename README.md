@@ -33,6 +33,9 @@ It's not a chatbot wearing a SOC badge. Each team member runs in its own context
 
 **✓ Validate:** Run `node --version` — you should see `v18` or higher.
 
+> [!WARNING]
+> **Don't clone this repo directly.** Use the install scripts below — they set up a clean project with its own Git history. Cloning the starter kit directly will leave you working inside the template repo.
+
 ### 2. Install
 
 **Windows PowerShell:**
