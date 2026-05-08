@@ -4,7 +4,21 @@
 
 ## Learnings
 
-📌 **Framework Architecture Complete** — Skills-first architecture (domain-sorted .md files), persona-driven onboarding, CLI with plugin system, init wizard, environment context framework (.secops/).
+🔷 **Update Command** (2026-05-08T15:06:07.002-05:00)
+- Created `cli/commands/update.js` — adds `starter-kit` git remote, fetches, and merges `starter-kit/main` with `--allow-unrelated-histories`.
+- Registered in `cli/index.js` as the `update` command with module path `./commands/update.js`.
+- Pre-flight checks: verifies git repo, refuses to run with uncommitted changes, handles existing remote gracefully.
+- Merge conflict path: exits with instructions for manual resolution instead of crashing.
+- README.md updated: new "Updating" section after Quick Start, and row added to All Commands table.
+- Pattern: sync command using `child_process.execSync`, same ANSI color helpers as other commands, `run()` export.
+
+🔷 **Starter-Kit Clone Guard** (2026-05-08T11:39:37.415-05:00)
+- Added `[!WARNING]` callout in README.md Quick Start section (before "### 2. Install") telling users not to clone the repo directly.
+- Added `isStarterKitRepo()` detection in `cli/commands/init.js` — checks `.git/config` for "secops-squad-starter-kit" remote URL and `package.json` for `@secops-squad/secops-squad-starter-kit` name.
+- Warning prints after `printBanner()` but does NOT block execution — informational only.
+- Install URLs point to `x3nc0n/secops-squad-starter-kit` repo (the GitHub remote name, not the local folder).
+
+📌 **Framework Architecture Complete**— Skills-first architecture (domain-sorted .md files), persona-driven onboarding, CLI with plugin system, init wizard, environment context framework (.secops/).
 
 📌 **CLI Built** — `secops-squad` wraps @bradygaster/squad-cli. Commands: init (wizard), doctor (health check), skill (list/add), persona (list/switch), kql-validate, playbook (deploy), plugin (install/list/remove), env (validate/.secops/ tooling). Zero external deps except js-yaml for YAML parsing.
 

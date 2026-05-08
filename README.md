@@ -92,6 +92,23 @@ I need to hunt for suspicious sign-ins across our Entra logs from the last 7 day
 
 ---
 
+## Updating
+
+Keep your project in sync with the latest starter-kit improvements:
+
+```bash
+secops-squad update
+```
+
+This command adds the starter-kit as a git remote (if not already present), fetches the latest changes, and merges them into your project using `--allow-unrelated-histories`. Your local customizations in `.secops/`, `.squad/`, and any other files you've changed are preserved — the merge only adds or updates starter-kit files.
+
+If merge conflicts arise, the command will tell you which files need attention. Resolve the conflict markers, stage the files with `git add`, and run `git commit` to finish.
+
+> [!TIP]
+> Commit your local changes before running `secops-squad update` — the command will refuse to run with uncommitted changes to keep your work safe.
+
+---
+
 ## All Commands
 
 | Command | What it does |
@@ -106,6 +123,7 @@ I need to hunt for suspicious sign-ins across our Entra logs from the last 7 day
 | `secops-squad playbook [list\|deploy <name>]` | List or deploy SOAR playbooks |
 | `secops-squad plugin [install\|list\|remove]` | Manage CLI plugins |
 | `secops-squad workspace [connect\|status\|disconnect]` | Connect to a Sentinel workspace |
+| `secops-squad update` | Pull latest starter-kit changes into your project |
 
 See [CLI Reference](cli/README.md) for full details and flags.
 

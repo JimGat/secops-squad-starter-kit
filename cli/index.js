@@ -60,6 +60,11 @@ const COMMANDS = {
     usage: "secops-squad recast [--universe \"Name\"] [--no-interactive] [--dry-run]",
     module: "./commands/recast.js",
   },
+  update: {
+    description: "Pull latest starter-kit changes into your project",
+    usage: "secops-squad update",
+    module: "./commands/update.js",
+  },
 };
 
 function getVersion() {
