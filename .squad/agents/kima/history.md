@@ -37,3 +37,13 @@
 ## 2026-05-08 — CLI Dependency Updates
 
 Azure CLI demoted to optional at install-time. **Your code must detect when az is not authenticated** and **offer to prompt users for login** during the session. Check credentials before Azure operations.
+
+📌 **First-Run Onboarding Skill (2026-05-08)**
+- **`.copilot/skills/first-run-onboarding/SKILL.md`:** Copilot-level skill teaching the agent to detect first-run state and guide users through setup progressively.
+- **5 detection signals:** `.secops/` directory existence, `environment.yaml` template defaults check, workspace file count, `az account show` status, `gh auth status`.
+- **4-step flow:** Azure CLI login → Sentinel workspace discovery → `.secops/` initialization → GitHub CLI (optional). Each step checks if already done and skips accordingly.
+- **Re-entry pattern:** Decision matrix maps 6 environment states to the correct starting step — agents never restart onboarding from scratch on return visits.
+- **Progressive disclosure:** One step at a time, no prerequisite dumps. User can bail at any step with "I'll do this later."
+- **Delegates deep setup:** Basic onboarding gets to one working Sentinel workspace. Full product connectivity deferred to `skills/msft-security/connectivity-setup.md`.
+- **Depends on:** `secops-squad workspace connect` (Sydnor's auto-discovery), `secops-squad init --secops`, `doctor.js` check functions (`checkAzureCli`, `checkGitHubCli`, `checkSecopsConfig`).
+- **Anti-patterns documented:** 7 common onboarding mistakes (prerequisite dumps, repeating working checks, blocking on optional steps, raw command output, etc.).
