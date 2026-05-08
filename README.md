@@ -35,6 +35,8 @@ It's not a chatbot wearing a SOC badge. Each team member runs in its own context
 
 ### 2. Install
 
+> ⚠️ **Don't clone this repo directly.** Use the one-liner below — it creates a standalone project with a fresh git history. Cloning the starter kit and running `npm install` / `npx secops-squad init` manually will work, but you'll be inside the upstream repo with its full git history, which isn't what you want for your own project.
+
 **Windows PowerShell:**
 ```powershell
 irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.ps1" | iex

@@ -22,8 +22,37 @@ const GUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const CONFIG_FILE = "secops-squad.config.json";
 const SCHEMA_FILE = "secops-squad.config.schema.json";
 const SQUAD_DIR = ".squad";
+const STARTER_KIT_REPO = "secops-squad-starter-kit";
 
 const PERSONA_FILES = ["team.md", "routing.md", "skills.json", "ceremonies.md"];
+
+function isStarterKitRepo(rootDir) {
+  try {
+    // Check if this is a git repo with the starter-kit remote
+    const gitDir = path.join(rootDir, ".git");
+    if (!fs.existsSync(gitDir)) return false;
+
+    const configFile = path.join(gitDir, "config");
+    if (!fs.existsSync(configFile)) return false;
+
+    const gitConfig = fs.readFileSync(configFile, "utf8");
+    if (gitConfig.includes(STARTER_KIT_REPO)) return true;
+
+    // Also check if the directory name matches and has the starter-kit package.json
+    const dirName = path.basename(rootDir);
+    if (dirName.includes(STARTER_KIT_REPO)) {
+      const pkgFile = path.join(rootDir, "package.json");
+      if (fs.existsSync(pkgFile)) {
+        const pkg = JSON.parse(fs.readFileSync(pkgFile, "utf8"));
+        if (pkg.name && pkg.name.includes(STARTER_KIT_REPO)) return true;
+      }
+    }
+
+    return false;
+  } catch {
+    return false;
+  }
+}
 
 function printBanner() {
   console.log(`
@@ -193,6 +222,28 @@ async function run(args) {
   const presetPersona = personaIdx !== -1 ? args[personaIdx + 1] : null;
 
   printBanner();
+
+  // Warn if running inside the starter-kit repo instead of a standalone project
+  if (isStarterKitRepo(rootDir)) {
+    console.log(
+      `${c.yellow}⚠️  It looks like you cloned the starter kit repo directly.${c.reset}`
+    );
+    console.log(
+      `${c.yellow}   For a clean install, use the one-liner instead:${c.reset}\n`
+    );
+    console.log(
+      `${c.cyan}   Windows:  ${c.bold}irm "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.ps1" | iex${c.reset}`
+    );
+    console.log(
+      `${c.cyan}   macOS:    ${c.bold}curl -fsSL "https://raw.githubusercontent.com/x3nc0n/secops-squad-starter-kit/main/install.sh" | bash${c.reset}\n`
+    );
+    console.log(
+      `${c.dim}   This creates a standalone project with a fresh git history.${c.reset}`
+    );
+    console.log(
+      `${c.dim}   Continuing here will work, but you'll be inside the upstream repo.${c.reset}\n`
+    );
+  }
 
   // Check for existing config
   const configPath = path.join(rootDir, CONFIG_FILE);
