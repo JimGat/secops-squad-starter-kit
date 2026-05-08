@@ -56,29 +56,26 @@ The installer clones the repo, installs dependencies, runs persona selection, an
 > Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 > ```
 
-### 3. Connect your environment
+### 3. Open Copilot and go
 
 ```bash
-secops-squad env validate
-```
-
-If you have an Azure Sentinel workspace, connect it during init or later with `secops-squad workspace connect`. No Azure subscription? That's fine — detection engineering skills, threat model templates, and KQL learning work offline.
-
-**✓ Validate:** Run `secops-squad doctor` — all checks should pass.
-
-### 4. Open Copilot and go
-
-```bash
+cd ~/secops-squad
 copilot --agent secops-squad
 ```
 
-Then:
+Then tell the agent what you need:
 
 ```
-I need to hunt for suspicious sign-ins across our Entra logs from the last 7 days.
+Help me connect my Sentinel workspace.
 ```
 
-**✓ Validate:** The agent responds with KQL queries tailored to your workspace configuration.
+The agent walks you through Azure login, workspace discovery, and configuration interactively. No Azure subscription? That's fine — detection engineering skills, threat model templates, and KQL learning work offline.
+
+Once connected, try:
+
+```
+Hunt for suspicious sign-ins across our Entra logs from the last 7 days.
+```
 
 > [!TIP]
 > You can also run with `--yolo` to skip confirmation prompts and let the agent execute autonomously:
