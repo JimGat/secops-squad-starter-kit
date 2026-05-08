@@ -343,9 +343,11 @@ function status(rootDir) {
     return;
   }
 
+  console.log(`  ${c.bold}Workspace ID:${c.reset}      ${wsData.workspace_id || "(not set)"}`);
   console.log(`  ${c.bold}Resource group:${c.reset}    ${wsData.resource_group || "(not set)"}`);
-  console.log(`  ${c.bold}Subscription ID:${c.reset}   ${wsData.subscription_id || "(not set)"}`);
-  console.log(`  ${c.bold}Connected at:${c.reset}      ${wsData.connected_at || "(unknown)"}`);
+  console.log(`  ${c.bold}Subscription:${c.reset}      ${wsData.subscription || "(not set)"}`);
+  console.log(`  ${c.bold}Region:${c.reset}            ${wsData.region || "(not set)"}`);
+  console.log(`  ${c.bold}Sentinel:${c.reset}          ${wsData.sentinel_enabled ? "enabled" : "not detected"}`);
 
   // Optionally verify Azure login
   const azResult = execSafe("az account show --output json");
