@@ -28,9 +28,10 @@ It's not a chatbot wearing a SOC badge. Each team member runs in its own context
 | Requirement | How to get it |
 |------------|---------------|
 | **GitHub Copilot license** | [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for Microsoft FTEs) |
-| **Windows 10/11 with PowerShell** | The install script handles all other dependencies (Git, Node.js, GitHub CLI, Copilot extension) automatically via winget |
+| **GitHub Copilot CLI** (`copilot`) | Included with GitHub Copilot — run `copilot --version` to confirm |
+| **Windows 10/11 with PowerShell** | The install script handles Git and Node.js automatically via winget |
 
-The installer checks for and installs everything you need. If winget is not available on your system, it will print manual install links instead.
+The installer handles Git and Node.js. GitHub CLI (`gh`) and Azure CLI (`az`) are optional — the agent will walk you through connecting them when you need them.
 
 > [!WARNING]
 > **Don't clone this repo directly.** Use the install scripts below — they set up a clean project with its own Git history. Cloning the starter kit directly will leave you working inside the template repo.
@@ -60,16 +61,16 @@ The installer clones the repo, installs dependencies, runs persona selection, an
 
 ```bash
 cd ~/secops-squad
-copilot --agent secops-squad
+copilot --agent secops-squad --yolo
 ```
 
-Then tell the agent what you need:
+Tell the agent what you need:
 
 ```
 Help me connect my Sentinel workspace.
 ```
 
-The agent walks you through Azure login, workspace discovery, and configuration interactively. No Azure subscription? That's fine — detection engineering skills, threat model templates, and KQL learning work offline.
+The agent walks you through Azure login, workspace discovery, and GitHub CLI auth interactively — nothing needs to be set up in advance. No Azure subscription? That's fine — detection engineering skills, threat model templates, and KQL learning work offline.
 
 Once connected, try:
 
@@ -77,14 +78,8 @@ Once connected, try:
 Hunt for suspicious sign-ins across our Entra logs from the last 7 days.
 ```
 
-> [!TIP]
-> You can also run with `--yolo` to skip confirmation prompts and let the agent execute autonomously:
-> ```bash
-> copilot --agent secops-squad --yolo
-> ```
-
 > [!CAUTION]
-> `--yolo` mode bypasses safety confirmations, so the agent can make changes without asking first. This is fine for trusted environments or when you know exactly what you're asking for — but it's not recommended for production workspaces or when running destructive operations for the first time.
+> `--yolo` mode lets the agent execute without asking for confirmation at each step. It's recommended for everyday use — but avoid it when running destructive operations in a production workspace for the first time.
 
 ---
 

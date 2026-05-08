@@ -135,21 +135,14 @@ main() {
 
   # Add to PATH hint
   echo ""
-  echo -e "${GREEN}${BOLD}✅ secops-squad installed!${RESET}"
-  echo ""
-  echo -e "${BOLD}To use the CLI, either:${RESET}"
-  echo ""
-  echo -e "  ${CYAN}1.${RESET} Add to PATH:"
-  echo -e "     ${DIM}echo 'export PATH=\"${INSTALL_DIR}/cli:\$PATH\"' >> ~/.bashrc${RESET}"
-  echo -e "     ${DIM}source ~/.bashrc${RESET}"
-  echo ""
-  echo -e "  ${CYAN}2.${RESET} Or run directly:"
-  echo -e "     ${DIM}node ${INSTALL_DIR}/cli/index.js${RESET}"
+  echo -e "${GREEN}${BOLD}secops-squad installed!${RESET}"
   echo ""
   echo -e "${BOLD}Getting started:${RESET}"
   echo -e "  ${CYAN}cd ${INSTALL_DIR}${RESET}"
-  echo -e "  ${CYAN}node cli/index.js init${RESET}"
-  echo -e "  ${CYAN}node cli/index.js doctor${RESET}"
+  echo -e "  ${CYAN}copilot --agent secops-squad --yolo${RESET}"
+  echo ""
+  echo -e "${DIM}That's it! The agent will help you connect GitHub CLI"
+  echo -e "and Azure when you need them.${RESET}"
   echo ""
 }
 

@@ -230,6 +230,19 @@ function checkSecopsConfig(rootDir) {
   }
 }
 
+function checkCopilotCli() {
+  const version = execSafe("copilot --version");
+  if (!version) {
+    return {
+      status: "fail",
+      message: "copilot CLI not found — install GitHub Copilot CLI from https://githubnext.com/projects/copilot-cli",
+    };
+  }
+  const vMatch = version.match(/(\d+[\d.]+)/);
+  const vStr = vMatch ? vMatch[1] : "installed";
+  return { status: "pass", message: `copilot CLI ${vStr}` };
+}
+
 function checkGitHubCli() {
   const version = execSafe("gh --version");
   if (!version) {
@@ -398,12 +411,13 @@ function run() {
   const checks = [
     checkNodeVersion(),
     checkGit(),
+    checkCopilotCli(),
     checkConfig(rootDir),
     checkTeamRoster(rootDir),
+    checkGitHubCli(),
     checkAzureCli(),
     checkAzureConnectivity(),
     checkSecopsConfig(rootDir),
-    checkGitHubCli(),
     checkSkills(rootDir),
     checkKqlTemplates(rootDir),
   ];

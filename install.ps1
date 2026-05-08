@@ -156,37 +156,6 @@ function Ensure-NodeVersion {
     }
 }
 
-function Ensure-GhCopilotExtension {
-    <#
-    .SYNOPSIS
-        Check for the GitHub Copilot CLI extension (gh copilot).
-        Installs it via gh extension install if missing.
-    #>
-    $ghCmd = Get-Command "gh" -ErrorAction SilentlyContinue
-    if (-not $ghCmd) {
-        Write-Host "  [SKIP] Copilot CLI extension -- gh not available" -ForegroundColor DarkGray
-        return $false
-    }
-
-    # Check if the copilot extension is already installed
-    $extensions = & gh extension list 2>&1
-    if ($extensions -match "github/gh-copilot") {
-        Write-Host "  [OK] GitHub Copilot CLI extension" -ForegroundColor Green
-        return $true
-    }
-
-    Write-Host "  [MISS] GitHub Copilot CLI extension not found" -ForegroundColor Yellow
-    Write-Host "  [....] Installing gh-copilot extension..." -ForegroundColor Cyan
-    & gh extension install github/gh-copilot 2>$null
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  [WARN] Could not install gh-copilot extension" -ForegroundColor Yellow
-        Write-Host "     You may need to run: gh auth login" -ForegroundColor DarkGray
-        Write-Host "     Then: gh extension install github/gh-copilot" -ForegroundColor DarkGray
-        return $false
-    }
-    Write-Host "  [OK] GitHub Copilot CLI extension installed" -ForegroundColor Green
-    return $true
-}
 
 # ---------------------------------------------------------------------------
 # Main
@@ -223,15 +192,10 @@ function Install-SecOpsSquad {
         $failed = $true
     }
 
-    # 3. GitHub CLI (required for squad issue mode, copilot extension)
-    if (-not (Ensure-Command "gh" "GitHub CLI" "GitHub.cli" "https://cli.github.com" $true)) {
-        $failed = $true
-    }
+    # 3. GitHub CLI (optional -- connect later during copilot session)
+    Ensure-Command "gh" "GitHub CLI" "GitHub.cli" "https://cli.github.com" $false | Out-Null
 
-    # 4. GitHub Copilot CLI extension
-    Ensure-GhCopilotExtension | Out-Null
-
-    # 5. Azure CLI (optional)
+    # 4. Azure CLI (optional)
     Ensure-Command "az" "Azure CLI" "Microsoft.AzureCLI" "https://aka.ms/installazurecliwindows" $false | Out-Null
 
     Write-Host ""
@@ -311,9 +275,11 @@ function Install-SecOpsSquad {
     Write-Host "[OK] secops-squad installed!" -ForegroundColor Green
     Write-Host ""
     Write-Host "Next steps:" -ForegroundColor White
-    Write-Host "  1. Authenticate with GitHub:    gh auth login" -ForegroundColor Cyan
-    Write-Host "  2. Connect to Azure (optional): cd $InstallDir && secops-squad workspace connect" -ForegroundColor Cyan
-    Write-Host "  3. Start SecOps Squad:           copilot --agent secops-squad" -ForegroundColor Cyan
+    Write-Host "  1. cd $InstallDir" -ForegroundColor Cyan
+    Write-Host "  2. copilot --agent secops-squad --yolo" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "That's it! The agent will help you connect GitHub CLI" -ForegroundColor DarkGray
+    Write-Host "and Azure when you need them." -ForegroundColor DarkGray
     Write-Host ""
     Write-Host "Note: Other open terminals may need to be restarted" -ForegroundColor DarkGray
     Write-Host "for the PATH change to take effect." -ForegroundColor DarkGray
