@@ -43,7 +43,7 @@ tenants[].type           # primary | managed | lighthouse-delegated
 
 Read `.secops/data-sources/data-source-map.yaml` to understand WHERE data lives:
 - Which tables exist and their locations (`sentinel`, `adx`, `external`)
-- Data tiers (`Analytics`, `Basic`, `Auxiliary`, `Archive`)
+- Data tiers (`Analytics`, `Basic`, `Sentinel data lake`, `Archive`)
 - Workspace or ADX cluster assignments
 - Retention periods
 
@@ -136,7 +136,7 @@ When you discover a new fact about the customer's environment during normal oper
 | `workspace` | Workspace short name (references `.secops/workspaces/`) |
 | `cluster` | ADX cluster name |
 | `database` | ADX database name |
-| `tier` | Data tier: `Analytics`, `Basic`, `Auxiliary`, `Archive` |
+| `tier` | Data tier: `Analytics`, `Basic`, `Sentinel data lake`, `Archive` |
 | `tenant_id` | Entra ID tenant GUID |
 | `region` | Azure region |
 | `notes` | Additional context for the human reviewer |

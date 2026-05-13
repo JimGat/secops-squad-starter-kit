@@ -45,7 +45,7 @@ Before calling any Log Analytics API, consult the `.secops/` framework:
 
 1. **Workspace IDs** — Read from `.secops/workspaces/<name>.yaml` → `workspace_id` field. Never hardcode workspace GUIDs.
 2. **Data source locations** — Check `.secops/data-sources/data-source-map.yaml` to know which workspace holds each table.
-3. **Data tiers** — The `tier` field (Analytics, Basic, Auxiliary, Archive) determines which query operations are allowed.
+3. **Data tiers** — The `tier` field (Analytics, Basic, Sentinel data lake, Archive) determines which query operations are allowed.
 4. **Alert routing** — Check `.secops/alerting/routing.yaml` before creating alert rules to ensure correct action group binding.
 5. **Compliance** — Check `.secops/compliance/requirements.yaml` for data residency constraints before cross-workspace queries.
 
@@ -575,8 +575,8 @@ rule = monitor_client.scheduled_query_rules.create_or_update(
 Data Sources → DCR (Transform KQL) → Destinations (Log Analytics Tables)
      │                  │                          │
   AMA Agent        Ingestion-time             Analytics / Basic
-  REST API         filtering, parsing,        / Auxiliary tier
-  Event Hub        enrichment, routing        tables
+  REST API         filtering, parsing,        / Sentinel data lake
+  Event Hub        enrichment, routing        tier tables
 ```
 
 ### Creating a DCR via REST API

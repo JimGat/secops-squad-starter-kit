@@ -118,9 +118,9 @@ The `.secops/` customer knowledge framework (Part 2 of this document) was implem
 |------------|--------|-----------|
 | Basic Logs tier selection and query patterns | ⚠️ Partial (mentioned in cost-optimization) | 🔴 Critical |
 | Analytics Logs vs. Basic Logs decision framework | ⚠️ Partial | 🔴 Critical |
-| Auxiliary Logs (new low-cost tier) | ❌ Missing | 🟡 Important |
+| Sentinel data lake (low-cost retention tier) | ❌ Missing | 🟡 Important |
 | Summary Rules (scheduled aggregation) | ❌ Missing | 🔴 Critical |
-| Data tiering strategy (analytics → basic → auxiliary → archive) | ❌ Missing | 🔴 Critical |
+| Data tiering strategy (Analytics → Basic → Sentinel data lake → Archive) | ❌ Missing | 🔴 Critical |
 | Ingestion-time transformations (workspace transforms) | ⚠️ Partial (in custom-tables-dcr) | 🟡 Important |
 | Long-term data search (restored logs) | ⚠️ Partial (in retention-archive) | 🟡 Important |
 
@@ -304,7 +304,7 @@ The `.secops/` customer knowledge framework (Part 2 of this document) was implem
 
 #### 🟡 Important Gaps (25 items — should be in v1)
 
-eDiscovery, Hunting via Graph, Security Actions, Graph DLP alerts, Microsoft.Graph.Security PS, ExchangeOnlineManagement, Graph.Identity PS, Az.Monitor PS, Az.Kusto PS, Auxiliary Logs, Ingestion-time transforms detail, Logs Ingestion API detail, DCE patterns, DCR/DCE Bicep, Workbooks, MDE Custom Detection Rules API, MDE Machine Actions standalone, Defender for Cloud Apps, Defender for Cloud Regulatory Compliance, Insider Risk, eDiscovery Premium, Purview Audit Premium, Access Reviews, Identity Governance, Named Locations, Authentication Methods, Service Principal risk, ARG change tracking, ARG cross-subscription, ARG policy compliance, MDTI full API, TI matching rules, Copilot for Security plugin dev (5 items)
+eDiscovery, Hunting via Graph, Security Actions, Graph DLP alerts, Microsoft.Graph.Security PS, ExchangeOnlineManagement, Graph.Identity PS, Az.Monitor PS, Az.Kusto PS, Sentinel data lake, Ingestion-time transforms detail, Logs Ingestion API detail, DCE patterns, DCR/DCE Bicep, Workbooks, MDE Custom Detection Rules API, MDE Machine Actions standalone, Defender for Cloud Apps, Defender for Cloud Regulatory Compliance, Insider Risk, eDiscovery Premium, Purview Audit Premium, Access Reviews, Identity Governance, Named Locations, Authentication Methods, Service Principal risk, ARG change tracking, ARG cross-subscription, ARG policy compliance, MDTI full API, TI matching rules, Copilot for Security plugin dev (5 items)
 
 #### 🟢 Nice-to-have Gaps (15 items — can wait for later phases)
 
@@ -334,7 +334,7 @@ The current 6 skill domains (`adx`, `detection`, `kql`, `log-analytics`, `msft-s
 Our skills are generic. They teach agents _how_ to do things but not _where_ to do them in a specific customer's environment. An agent writing a KQL query needs to know:
 - Is `SecurityEvent` in Sentinel or ADX?
 - What's the workspace ID? Is there more than one?
-- What tier is `NetFlowLogs` in — analytics, basic, or auxiliary?
+- What tier is `NetFlowLogs` in — Analytics, Basic, or Sentinel data lake?
 - Are they migrating anything right now?
 
 ### Proposed Framework: `.secops/` Directory
@@ -430,7 +430,7 @@ retention:
 
 custom_tables:
   - name: "NetFlowLogs_CL"
-    tier: "Basic"              # Analytics | Basic | Auxiliary
+    tier: "Basic"              # Analytics | Basic | Sentinel data lake
     daily_gb: 45
     notes: "High-volume network flow data, search-only queries"
   - name: "CustomThreatIntel_CL"
@@ -507,7 +507,7 @@ sources:
 migrations:
   - id: "mig-001"
     status: "in-progress"       # planned | in-progress | completed | cancelled
-    description: "Moving NetFlowLogs from ADX to Sentinel Auxiliary Logs tier"
+    description: "Moving NetFlowLogs from ADX to Sentinel data lake"
     source:
       location: "adx"
       cluster: "soc-adx-prod"
@@ -517,11 +517,11 @@ migrations:
       location: "sentinel"
       workspace: "prod-sentinel"
       table: "NetFlowLogs_CL"
-      tier: "Auxiliary"
+      tier: "Sentinel data lake"
     started: "2026-03-15"
     estimated_completion: "2026-06-01"
     owner: "jospaid"
-    notes: "Sentinel auxiliary logs now cheaper than ADX for this volume. Running parallel until validated."
+    notes: "Sentinel data lake now cheaper than ADX for this volume. Running parallel until validated."
 
   - id: "mig-002"
     status: "planned"
@@ -684,7 +684,7 @@ Kima is investigating a network anomaly.
 2. Checks .secops/workspaces/prod-sentinel.yaml → confirms Basic tier
 3. Rewrites query using search-compatible operators only
 4. Logs discovery: "NetFlowLogs_CL in Basic tier confirmed via query error"
-5. Notes in discovery-log: "Consider moving to Auxiliary tier if search pattern sufficient"
+5. Notes in discovery-log: "Consider moving to Sentinel data lake if search pattern sufficient"
 ```
 
 #### Scenario 3: "3 workspaces in different regions"

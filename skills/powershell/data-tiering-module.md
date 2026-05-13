@@ -21,7 +21,7 @@ last_updated: 2026-04-30
 The Data Tiering submodule manages Log Analytics table tiers, retention policies, and summary rules — the primary cost optimization levers for Sentinel deployments. It wraps the `Microsoft.OperationalInsights` resource provider to control where data lives, how long it's retained, and how to reduce costs while maintaining detection capability.
 
 Use this skill when:
-- Switching tables between Analytics, Basic, Auxiliary, and Archive tiers
+- Switching tables between Analytics, Basic, Sentinel data lake (formerly Auxiliary), and Archive tiers
 - Configuring per-table retention and archive policies
 - Creating summary rules for cost-effective long-term aggregation
 - Auditing current table configurations and costs
@@ -42,8 +42,10 @@ Use this skill when:
 |---|---|---|---|---|
 | **Analytics** | Full KQL (join, summarize, etc.) | Highest | 30-730 days interactive + 12yr archive | Active hunting, detection rules, dashboards |
 | **Basic** | Search, `_BilledSize`, time filters only | ~65% cheaper | 8 days interactive + 30 days search | High-volume, low-query data (firewall, proxy) |
-| **Auxiliary** | Search-only, very limited | ~85% cheaper | 30 days | Verbose telemetry, debug logs |
+| **Sentinel data lake** | Search-only, very limited | ~85% cheaper | 30 days | Verbose telemetry, debug logs |
 | **Archive** | Must restore before querying | Storage-only cost | Up to 12 years | Compliance, forensics, cold storage |
+
+> **Note:** The Azure API uses `Auxiliary` as the plan parameter value for the Sentinel data lake tier. In code, use `'Auxiliary'` in API calls; in documentation and conversation, use **Sentinel data lake**.
 
 ### Tier Decision Framework
 
@@ -56,7 +58,7 @@ Is the table used in analytics rules or frequent hunting?
     │   └── NO → Basic tier
     └── NO → Is the data needed for compliance retention?
         ├── YES → Archive tier (with summary rule for metrics)
-        └── NO → Auxiliary tier (or consider not ingesting)
+        └── NO → Sentinel data lake tier (or consider not ingesting)
 ```
 
 ## Key Functions
@@ -79,7 +81,7 @@ function Get-SecOpsTableInventory {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary', 'Archive')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary', 'Archive')]  # Auxiliary = Sentinel data lake
         [string]$Tier,
 
         [string]$WorkspaceName
@@ -109,7 +111,7 @@ function Get-SecOpsTableInventory {
 
         [PSCustomObject]@{
             TableName         = $tableName
-            Plan              = $_.properties.plan                          # Analytics | Basic | Auxiliary
+            Plan              = $_.properties.plan                          # Analytics | Basic | Auxiliary (Sentinel data lake)
             RetentionDays     = $_.properties.retentionInDays
             ArchiveRetention  = $_.properties.totalRetentionInDays
             ProvisioningState = $_.properties.provisioningState
@@ -135,8 +137,8 @@ function Set-SecOpsTableTier {
     .SYNOPSIS
         Changes the data plan (tier) of a Log Analytics table.
     .DESCRIPTION
-        Switches a table between Analytics, Basic, and Auxiliary tiers.
-        IMPORTANT: Changing to Basic/Auxiliary removes join/summarize capability.
+        Switches a table between Analytics, Basic, and Sentinel data lake (Auxiliary) tiers.
+        IMPORTANT: Changing to Basic/Sentinel data lake removes join/summarize capability.
         Verify no analytics rules depend on the table before downgrading.
     .EXAMPLE
         Set-SecOpsTableTier -TableName 'Syslog' -Tier 'Basic' -WorkspaceName 'sentinel-prod'
@@ -150,7 +152,7 @@ function Set-SecOpsTableTier {
         [string]$TableName,
 
         [Parameter(Mandatory)]
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]  # Auxiliary = Sentinel data lake
         [string]$Tier,
 
         [string]$WorkspaceName
@@ -159,7 +161,7 @@ function Set-SecOpsTableTier {
     $ctx = Get-SentinelContext -WorkspaceName $WorkspaceName
 
     # Safety check: warn if downgrading a table used in analytics rules
-    if ($Tier -in @('Basic', 'Auxiliary')) {
+    if ($Tier -in @('Basic', 'Auxiliary')) {  # Auxiliary = Sentinel data lake
         Write-Warning @"
 Changing '$TableName' to $Tier tier will disable join/summarize KQL operations.
 Verify no Sentinel analytics rules reference this table before proceeding.
@@ -282,7 +284,7 @@ function New-SecOpsSummaryRule {
     .DESCRIPTION
         Summary rules run a KQL query on a schedule and write results to a
         destination table. Use them to keep aggregated metrics from high-volume
-        tables after downgrading the source to Basic or Auxiliary tier.
+        tables after downgrading the source to Basic or Sentinel data lake tier.
     .EXAMPLE
         New-SecOpsSummaryRule -Name 'SyslogHourlySummary' `
             -Description 'Hourly summary of Syslog by facility and severity' `

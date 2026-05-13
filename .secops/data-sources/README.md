@@ -14,7 +14,7 @@ Maps data tables to their physical locations across Sentinel workspaces, ADX clu
 An agent writing a KQL query for `SecurityEvent` needs to know:
 - Is it in Sentinel or ADX?
 - What workspace/cluster/database?
-- What tier (Analytics, Basic, Auxiliary)?
+- What tier (Analytics, Basic, Sentinel data lake)?
 - Is it currently being migrated?
 
 Without this mapping, agents assume everything is in Sentinel, which breaks in real environments.

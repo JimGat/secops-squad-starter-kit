@@ -4,6 +4,15 @@
 
 ## Learnings
 
+[CMD] **Terminology Modernization — Auxiliary Logs → Sentinel data lake** (2026-05-13T07:58:33-05:00)
+- "Auxiliary Logs" / "Aux Logs" is now **Sentinel data lake** in modern Microsoft SecOps terminology.
+- Azure API still uses `'Auxiliary'` as the tier value — PowerShell `ValidateSet` parameters keep `'Auxiliary'` but add inline comments noting the modern name.
+- Modern data tiering order: Analytics Logs → Basic Logs → Sentinel data lake → Archive.
+- ADX is repositioned as a specialized option (extreme volume, full KQL on historical data, cross-team sharing). Sentinel data lake is the default for long-term retention.
+- `cli/commands/env.js` displays `Sentinel DL` badge for Auxiliary tier tables.
+- Key files touched: 30+ files across docs/, .secops/, samples/, skills/, templates/, cli/. Pattern: surgical find-and-replace, preserve Azure API values in code.
+- Contoso sample fully updated: migrations, data-source-map, workspaces, compliance, discovery-log all use "Sentinel data lake" terminology.
+
 [CMD] **Install & Onboarding Overhaul** (2026-05-08T16:41:19.514-05:00)
 - Removed `Ensure-GhCopilotExtension` from `install.ps1` entirely — gh-copilot is no longer an extension, `copilot` CLI is standalone.
 - Demoted `gh` CLI from required to optional in `install.ps1`; install no longer fails when gh is absent.

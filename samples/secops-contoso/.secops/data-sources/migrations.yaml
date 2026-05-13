@@ -15,14 +15,14 @@ schema_version: "1.0"
 migrations:
 
   # ---------------------------------------------------------------------------
-  # mig-001: NetFlowLogs ADX → Sentinel Auxiliary (IN PROGRESS)
+  # mig-001: NetFlowLogs ADX → Sentinel data lake (IN PROGRESS)
   # ---------------------------------------------------------------------------
-  # Sentinel Auxiliary tier became cost-competitive with ADX for this volume
+  # Sentinel data lake tier became cost-competitive with ADX for this volume
   # in early 2026. Migration enables unified Sentinel experience without
   # needing cross-cluster queries for network flow analysis.
   - id: "mig-001"
     status: "in-progress"
-    description: "Moving NetFlowLogs from ADX SecurityLake to Sentinel Auxiliary tier"
+    description: "Moving NetFlowLogs from ADX SecurityLake to Sentinel data lake tier"
 
     source:
       location: "adx"
@@ -34,7 +34,7 @@ migrations:
       location: "sentinel"
       workspace: "prod-sentinel"
       table: "NetFlowLogs_CL"
-      tier: "Auxiliary"
+      tier: "Sentinel data lake"
 
     started: "2026-03-15"
     estimated_completion: "2026-06-01"

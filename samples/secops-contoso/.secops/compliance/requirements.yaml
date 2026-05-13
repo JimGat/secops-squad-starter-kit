@@ -154,20 +154,20 @@ retention_requirements:
     - table: "NetFlowLogs_CL"
       interactive_days: 30
       archive_days: 90
-      tier: "Auxiliary"
+      tier: "Sentinel data lake"
       reason: "Highest volume (120 GB/day). Historical netflow in ADX covers long lookback."
 
     - table: "VPNConnectionLogs_CL"
       interactive_days: 90
       archive_days: 365
-      tier: "Auxiliary"
+      tier: "Sentinel data lake"
       reason: "VPN session data — 90d interactive for access auditing"
 
   agent_guidance:
     - "Check retention before writing queries with timespan > 90 days"
     - "Archive restore takes 1-5 minutes — factor into investigation timelines"
     - "Basic tier tables: use search operator, no join/summarize"
-    - "Auxiliary tier tables: search-only, plan queries accordingly"
+    - "Sentinel data lake tier tables: search-only, plan queries accordingly"
     - "For data older than workspace retention, check ADX Archive database"
     - "PCI-scoped tables (SecurityEvent, CommonSecurityLog) — do NOT reduce retention"
     - "Cross-reference migration status before assuming table availability"

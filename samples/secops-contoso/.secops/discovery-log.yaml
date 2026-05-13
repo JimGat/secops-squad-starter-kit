@@ -75,7 +75,7 @@ discoveries:
     data_source: "NetFlowLogs_CL"
     location: "sentinel"
     workspace: "prod-sentinel"
-    tier: "Auxiliary"
+    tier: "Sentinel data lake"
     notes: "Migration mig-001 parallel ingestion confirmed working. Volume matches ADX source. No data loss observed over 7-day window."
 
   # --- Discovery 6: Unexpected table found during investigation ---

@@ -63,7 +63,7 @@ Root configuration file. Agents read this **first** to understand tenant, subscr
 | `.workspace` | string | — | — | Workspace name (when `location: sentinel`) |
 | `.cluster` | string | — | — | ADX cluster name (when `location: adx`) |
 | `.database` | string | — | — | ADX database name (when `location: adx`) |
-| `.tier` | string | — | `Analytics` \| `Basic` \| `Auxiliary` \| `Archive` | Data tier (affects available KQL operators) |
+| `.tier` | string | — | `Analytics` \| `Basic` \| `Sentinel data lake` \| `Archive` | Data tier (affects available KQL operators) |
 | `.daily_gb` | number | — | — | Approximate daily ingestion volume in GB |
 | `.ingestion_method` | string | — | `ama-agent` \| `mma-agent` \| `api` \| `dcr` \| `connector` \| `s3-to-eventhub` | How data enters the table |
 | `.api_endpoint` | string | — | URL | API endpoint (when `location: external`) |
@@ -76,6 +76,8 @@ Root configuration file. Agents read this **first** to understand tenant, subscr
 | Analytics | ✅ | ✅ | ✅ | ✅ | $$$$ |
 | Basic | ❌ | ❌ | ❌ | ✅ | $$ |
 | Auxiliary | ❌ | ❌ | ❌ | ✅ | $ |
+
+> **Note:** "Auxiliary" is the modern **Sentinel data lake** tier — Microsoft's low-cost retention option.
 | Archive | ❌ | ❌ | ❌ | Restore first | $ |
 
 ---

@@ -409,7 +409,7 @@ function Start-DataTieringMigration {
         param($tbl)
         $tblUri = "https://management.azure.com/subscriptions/$sub/resourceGroups/$rg/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName/tables/$($tbl.name)?api-version=2023-09-01"
         # Check analytics rule dependencies before downgrading
-        if ($TargetTier -in @("Basic","Auxiliary")) {
+        if ($TargetTier -in @("Basic","Sentinel data lake")) {
             $rulesUri = "https://management.azure.com/subscriptions/$sub/resourceGroups/$rg/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName/providers/Microsoft.SecurityInsights/alertRules?api-version=2024-03-01"
             try {
                 $rules = Invoke-RestMethod -Uri $rulesUri -Headers $h

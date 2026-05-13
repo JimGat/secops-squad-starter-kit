@@ -481,7 +481,7 @@ for table_name, config in dsm.get("sources", {}).items():
     table_locations[table_name] = {
         "location": config.get("location"),      # sentinel | adx | external
         "workspace": config.get("workspace"),     # workspace config file name
-        "tier": config.get("tier"),               # Analytics | Basic | Auxiliary | Archive
+        "tier": config.get("tier"),               # Analytics | Basic | Sentinel data lake | Archive
     }
 
 # Check before building a query

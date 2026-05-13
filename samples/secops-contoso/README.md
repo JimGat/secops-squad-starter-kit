@@ -11,7 +11,7 @@ Contoso has a mature SOC with:
 - **3 Azure subscriptions** (SOC-Production, SOC-ADX, SOC-Dev)
 - **~500 GB/day** ingestion across Sentinel and ADX
 - **Cross-cloud monitoring** — AWS (acquired SaaS) + GCP (recent acquisition)
-- **Data tiering** — Analytics, Basic, and Auxiliary tiers to optimize cost
+- **Data tiering** — Analytics, Basic, and Sentinel data lake tiers to optimize cost
 - **Active migrations** — moving high-volume data between platforms
 - **Regulatory compliance** — NIST 800-53, PCI-DSS, SOC 2 Type II
 
@@ -70,7 +70,7 @@ These files are designed to be cross-referenced. For example:
 When an agent reads this `.secops/` setup, it understands:
 
 1. **Where to query** — `data-source-map.yaml` tells it exactly which workspace or ADX database holds each table
-2. **Query limitations** — Basic/Auxiliary tier tables can't use `join` or `summarize`
+2. **Query limitations** — Basic/Sentinel data lake tier tables can't use `join` or `summarize`
 3. **Active migrations** — query both source and target during `in-progress` migrations
 4. **Permission boundaries** — RBAC conventions and Lighthouse limitations
 5. **Compliance constraints** — never deploy to non-US regions, never reduce PCI-scoped retention

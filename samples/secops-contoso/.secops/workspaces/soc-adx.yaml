@@ -46,7 +46,7 @@ databases:
         daily_gb: 200
         ingestion: "streaming-ingestion"
         notes: >
-          Network flow data from Palo Alto. Being migrated to Sentinel Auxiliary
+          Network flow data from Palo Alto. Being migrated to Sentinel data lake
           (mig-001) — during migration, data exists in BOTH locations.
 
       - name: "FirewallSessionLogs"

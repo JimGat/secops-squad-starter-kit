@@ -200,7 +200,7 @@ function showDataSources(rootDir) {
           : t.tier === "Archive"
             ? `${c.dim}Archive${c.reset}`
             : t.tier === "Auxiliary"
-              ? `${c.dim}Auxiliary${c.reset}`
+              ? `${c.dim}Sentinel DL${c.reset}`
               : `${c.green}Analytics${c.reset}`;
 
       const vol = t.daily_gb != null ? `${t.daily_gb} GB/day` : "";

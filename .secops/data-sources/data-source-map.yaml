@@ -32,6 +32,7 @@ sources:
     #   Analytics — full KQL (join, summarize, etc.)
     #   Basic     — search-only, no join/summarize
     #   Auxiliary  — lowest cost, search-only, limited retention
+    #   NOTE: "Auxiliary" is now called "Sentinel data lake" in modern terminology
     #   Archive   — must restore before querying
     tier: "Analytics"
     # Approximate daily ingestion volume in GB

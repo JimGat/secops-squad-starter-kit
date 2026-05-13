@@ -3,7 +3,7 @@
 # =============================================================================
 # Contoso's primary SOC workspace. Handles ~500 GB/day across endpoints,
 # identity, cloud, network, and cross-cloud sources. Uses a mix of Analytics,
-# Basic, and Auxiliary tiers to optimize cost vs. query capability.
+# Basic, and Sentinel data lake tiers to optimize cost vs. query capability.
 #
 # Schema Version: 1.0
 # =============================================================================
@@ -80,15 +80,15 @@ custom_tables:
     daily_gb: 40
     notes: "DNS query logs from Infoblox — DGA detection and IOC lookups"
 
-  # --- Auxiliary Tier (lowest cost, search-only, limited retention) ---
+  # --- Sentinel data lake Tier (lowest cost, search-only, limited retention) ---
 
   - name: "NetFlowLogs_CL"
-    tier: "Auxiliary"
+    tier: "Sentinel data lake"
     daily_gb: 120
     notes: "Network flow data — migrating from ADX (mig-001). Lateral movement detection."
 
   - name: "VPNConnectionLogs_CL"
-    tier: "Auxiliary"
+    tier: "Sentinel data lake"
     daily_gb: 8
     notes: "GlobalProtect VPN connection logs — session metadata for remote access auditing"
 

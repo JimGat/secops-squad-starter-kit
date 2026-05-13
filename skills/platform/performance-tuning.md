@@ -298,14 +298,15 @@ Usage
     P50DailyGB >= 100, "100 GB/day", "Pay-as-you-go")
 ```
 
-### Basic vs Analytics Tier Migration
+### Data Tier Migration Candidates
 
-| Criteria | Analytics Tier | Basic Logs |
-|---|---|---|
-| Query frequency | Detection rules | Rarely queried |
-| Cost | ~$2.76/GB | ~$0.50/GB |
-| Query cost | Included | $0.006/GB scanned |
-| Examples | SecurityEvent, SigninLogs | ContainerLog, AppTraceEvents |
+| Criteria | Analytics Tier | Basic Logs | Sentinel data lake |
+|---|---|---|---|
+| Query frequency | Detection rules, active hunting | Occasionally queried | Rarely queried (search-only) |
+| Cost | ~$2.76/GB | ~$0.50/GB | ~$0.75/GB |
+| Query cost | Included | $0.006/GB scanned | $0.006/GB scanned |
+| KQL support | Full | Limited | Search-only |
+| Examples | SecurityEvent, SigninLogs | ContainerLog, AppTraceEvents | VPC Flow Logs, verbose telemetry, long-term compliance |
 
 ```powershell
 function Get-TierMigrationCandidates {
@@ -358,6 +359,6 @@ function Measure-KQLPerformance {
 | `Get-SecOpsHttpClient` | Reusable HTTP client pool |
 | `Invoke-GraphBatchRequest` | Graph API request batching |
 | `Get-CachedApiResponse` | TTL-based response cache |
-| `Get-TierMigrationCandidates` | Basic vs Analytics tier analysis |
+| `Get-TierMigrationCandidates` | Basic/Sentinel data lake vs Analytics tier analysis |
 | `Test-MCPConnectionHealth` | MCP connection diagnostics |
 | `Invoke-MCPToolWithCache` | MCP tool response caching |

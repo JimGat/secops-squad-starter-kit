@@ -1,6 +1,8 @@
 # Azure Data Explorer (ADX) Setup & Integration Guide
 
-**When to use ADX:** Long-term security data retention (beyond 30 days), time-series anomaly detection, and federated querying across multiple security data sources.
+> **Positioning note (2026-05):** Microsoft Sentinel now includes the **Sentinel data lake** tier (formerly "Auxiliary Logs") — a low-cost, search-only retention option that covers most long-term retention needs directly within Sentinel. ADX remains the right choice for extreme-volume workloads (multi-TB/day), advanced time-series analytics, or cross-team data sharing scenarios that exceed Sentinel data lake capabilities.
+
+**When to use ADX:** Extreme-volume ingestion (multi-TB/day), advanced time-series anomaly detection, cross-team data sharing, and scenarios requiring full KQL on historical data.
 
 ---
 
@@ -16,13 +18,14 @@
 | **Setup** | Minutes | 15–30 minutes (via Bicep) |
 
 **Choose ADX if:**
-- You need to hunt across 6+ months of data
-- You're doing forensic analysis on incidents
-- You want a security data lake for compliance
-- You have high ingestion volumes (multi-TB/day)
+- You have extreme ingestion volumes (multi-TB/day) that exceed Sentinel data lake cost efficiency
+- You need full KQL (join, summarize) on historical data — Sentinel data lake is search-only
+- You're doing advanced time-series anomaly detection across months of data
+- You want a shared data platform across security and non-security teams
 
-**Choose Log Analytics if:**
-- You only need recent alerts (30 days)
+**Choose Log Analytics + Sentinel data lake if:**
+- You want a unified Sentinel experience without managing a separate cluster
+- Search-only queries on historical data are sufficient
 - You're new to Azure security and want simplicity
 - You're using Sentinel as your primary tool
 

@@ -4,7 +4,7 @@
 # THE KEY FILE agents consult before writing queries. Maps every known data
 # table to its physical location, tier, and ingestion method.
 #
-# Contoso has 20+ sources across Sentinel (Analytics/Basic/Auxiliary), ADX,
+# Contoso has 20+ sources across Sentinel (Analytics/Basic/Sentinel data lake), ADX,
 # and external blob storage. Cross-cloud sources include AWS and GCP.
 #
 # Schema Version: 1.0
@@ -166,17 +166,17 @@ sources:
     notes: "Linux servers — auth.log, syslog. 1,200 servers via AMA."
 
   # ===========================================================================
-  # Sentinel Auxiliary Tier — Lowest cost, search-only
+  # Sentinel data lake Tier — Lowest cost, search-only
   # ===========================================================================
 
   NetFlowLogs_CL:
     location: "sentinel"
     workspace: "prod-sentinel"
-    tier: "Auxiliary"
+    tier: "Sentinel data lake"
     daily_gb: 120
     ingestion_method: "dcr"
     # MIGRATION: This table is being migrated from ADX (mig-001).
-    # Data currently exists in BOTH Sentinel Auxiliary and ADX SecurityLake.
+    # Data currently exists in BOTH Sentinel data lake and ADX SecurityLake.
     # Prefer this location for new queries. ADX still has historical data.
     migration_status: "in-progress"
     migration_ref: "mig-001"
@@ -185,7 +185,7 @@ sources:
   VPNConnectionLogs_CL:
     location: "sentinel"
     workspace: "prod-sentinel"
-    tier: "Auxiliary"
+    tier: "Sentinel data lake"
     daily_gb: 8
     ingestion_method: "dcr"
     notes: "GlobalProtect VPN sessions — remote access auditing"
@@ -201,7 +201,7 @@ sources:
     tier: "Analytics"           # ADX tables support full KQL
     daily_gb: 200
     ingestion_method: "streaming-ingestion"
-    # MIGRATION: Being migrated to Sentinel Auxiliary (mig-001)
+    # MIGRATION: Being migrated to Sentinel data lake (mig-001)
     migration_status: "in-progress"
     migration_ref: "mig-001"
     notes: "Historical netflow in ADX — will be decommissioned after mig-001 completes"

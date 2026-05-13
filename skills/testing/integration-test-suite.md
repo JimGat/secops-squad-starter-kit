@@ -153,7 +153,7 @@ function New-TestDataSourceMap {
         @{ name="SigninLogs"; workspace=$WorkspaceName; tier="Analytics"; retention_days=365 }
         @{ name="DeviceNetworkEvents"; workspace=$WorkspaceName; tier="Analytics"; retention_days=30 }
         @{ name="AzureActivity"; workspace=$WorkspaceName; tier="Basic"; retention_days=90 }
-        @{ name="ContainerLog"; workspace=$WorkspaceName; tier="Auxiliary"; retention_days=30 }
+        @{ name="ContainerLog"; workspace=$WorkspaceName; tier="Sentinel data lake"; retention_days=30 }
     )}
 }
 ```

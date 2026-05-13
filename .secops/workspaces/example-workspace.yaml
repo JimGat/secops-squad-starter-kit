@@ -72,10 +72,11 @@ retention:
 #   Analytics — Full KQL support (join, summarize, etc.)
 #   Basic     — Search-only queries, no join/summarize, lower cost
 #   Auxiliary  — Lowest cost, search-only, limited retention options
+#              NOTE: Now called "Sentinel data lake" in modern Microsoft terminology
 custom_tables:
   - name: "NetFlowLogs_CL"
     # Data tier affects which KQL operators are available
-    tier: "Basic"                 # Analytics | Basic | Auxiliary
+    tier: "Basic"                 # Analytics | Basic | Auxiliary (Sentinel data lake)
     # Approximate daily ingestion volume in GB
     daily_gb: 45
     notes: "High-volume network flow data, search-only queries"

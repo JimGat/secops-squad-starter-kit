@@ -1,5 +1,7 @@
 # ADX Security Data Lake — Bicep Templates
 
+> **When to use ADX vs Sentinel data lake:** Microsoft Sentinel now includes the **Sentinel data lake** tier for low-cost, long-term retention within Sentinel. Use ADX when you need multi-TB/day ingestion, full KQL on historical data, advanced time-series analytics, or cross-team data sharing. For most SOC retention needs, Sentinel data lake is the modern default.
+
 Production-ready Bicep templates for deploying an Azure Data Explorer cluster optimized for security data lake workloads. Provisions the cluster, database, pre-built security tables, and ingestion pipelines.
 
 ## Architecture

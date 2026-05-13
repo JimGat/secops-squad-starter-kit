@@ -140,7 +140,7 @@ sources:
   SecurityEvent:
     location: "sentinel"             # sentinel | adx | external
     workspace: "soc-sentinel-prod"
-    tier: "Analytics"                # Analytics | Basic | Auxiliary | Archive
+    tier: "Analytics"                # Analytics | Basic | Sentinel data lake | Archive
     daily_gb: 12
     ingestion_method: "ama-agent"
     notes: "Windows Security Events via Azure Monitor Agent"

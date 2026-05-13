@@ -89,7 +89,7 @@ aws events put-targets --rule sentinel-guardduty \
 ### Security Hub & VPC Flow Logs
 
 - **Security Hub:** Aggregate findings from GuardDuty/Inspector/Macie → EventBridge → S3 → Sentinel
-- **VPC Flow Logs:** Enable to S3 with custom log format → S3 connector. High volume — use Auxiliary tier.
+- **VPC Flow Logs:** Enable to S3 with custom log format → S3 connector. High volume — use Sentinel data lake tier.
 - **IAM Access Analyzer:** No native connector — use Azure Function to poll the API and push via DCE/DCR.
 
 ### KQL — AWS Field Normalization (ASIM)
@@ -180,7 +180,7 @@ Invoke-SecOpsRestMethod -Method PUT `
 ### Security Command Center & VPC Flow Logs
 
 - **SCC:** Create notification config → Pub/Sub → DCE custom ingestion → `GCPSCCFindings_CL`
-- **VPC Flow Logs:** Enable on subnet → log sink to Pub/Sub → DCE → `GCPVPCFlow_CL` (Auxiliary tier)
+- **VPC Flow Logs:** Enable on subnet → log sink to Pub/Sub → DCE → `GCPVPCFlow_CL` (Sentinel data lake tier)
 - **Chronicle → Sentinel migration:** Export YARA-L rules → translate to KQL analytics rules; map UDM → ASIM schemas; replicate reference lists → Watchlists
 
 ### KQL — GCP Field Normalization (ASIM)
@@ -385,7 +385,7 @@ AWSGuardDuty_CL:
 AWSVPCFlow_CL:
   location: "sentinel"
   workspace: "prod-sentinel"
-  tier: "Auxiliary"
+  tier: "Sentinel data lake"
   daily_gb: 50
   ingestion_method: "s3-to-dce"
   source_cloud: "aws"
@@ -432,9 +432,9 @@ GCPAuditLogs_CL:
 | CloudTrail | Basic | High volume, search-only sufficient |
 | GuardDuty | Analytics | Low volume, need join/summarize |
 | Security Hub | Analytics | Aggregated findings, full KQL needed |
-| AWS VPC Flow Logs | Auxiliary | Very high volume, basic search |
+| AWS VPC Flow Logs | Sentinel data lake | Very high volume, basic search |
 | GCP Audit Logs | Analytics | Core security, full correlation |
-| GCP VPC Flow Logs | Auxiliary | High volume |
+| GCP VPC Flow Logs | Sentinel data lake | High volume |
 
 ### Summary Rules & Archive
 

@@ -22,7 +22,7 @@ last_updated: 2026-04-30
 Production-ready PowerShell commands for managing Log Analytics data tiers, retention policies, summary rules, purge operations, and data migrations. This skill complements `data-tiering-module.md` (submodule overview) with deep, executable PowerShell wrappers that integrate with the `.secops/` customer knowledge framework.
 
 Use this skill when:
-- Changing table tiers (Analytics ↔ Basic ↔ Auxiliary) with safety checks
+- Changing table tiers (Analytics ↔ Basic ↔ Sentinel data lake) with safety checks
 - Auditing retention policies against compliance requirements
 - Creating summary rules for cost-effective aggregation before tier downgrades
 - Submitting GDPR/privacy data purge requests
@@ -44,9 +44,9 @@ Use this skill when:
 | **API Version** | Tables API: `2023-09-01`, Purge API: `2023-09-01`, Summary Rules: `2024-03-01` |
 | **`.secops/`** | `data-source-map.yaml`, `compliance/requirements.yaml`, `migrations.yaml` |
 
-## Tier Reference: Analytics vs Basic vs Auxiliary vs Archive
+## Tier Reference: Analytics vs Basic vs Sentinel data lake vs Archive
 
-| Attribute | Analytics | Basic | Auxiliary | Archive |
+| Attribute | Analytics | Basic | Sentinel data lake | Archive |
 |---|---|---|---|---|
 | **Ingestion cost** | ~$4.99/GB | ~$1.75/GB (65% less) | ~$0.75/GB (85% less) | N/A (storage only) |
 | **Query cost** | Included | $0.006/GB scanned | $0.006/GB scanned | Restore/search job cost |
@@ -58,7 +58,7 @@ Use this skill when:
 | **When to use** | Detection rules, active hunting, dashboards | High-volume, rarely-queried (firewall, proxy) | Verbose telemetry, debug | Compliance-only, cold forensics |
 
 **Key constraints when downgrading:**
-- Basic/Auxiliary tables **cannot** be used in Sentinel analytics rules
+- Basic/Sentinel data lake tables **cannot** be used in Sentinel analytics rules
 - `join`, `mv-expand`, `make-series` are **not available** on Basic tier
 - `summarize` works on Basic but with performance limitations
 - Tier changes take effect within minutes; the table is briefly unavailable during the switch
@@ -90,7 +90,7 @@ function Get-LogAnalyticsTablePlan {
     param(
         [string]$WorkspaceName,
 
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]  # Auxiliary = Sentinel data lake (API parameter name)
         [string]$Tier,
 
         [switch]$ShowMismatch
@@ -157,7 +157,7 @@ function Set-LogAnalyticsTablePlan {
         [string]$TableName,
 
         [Parameter(Mandatory)]
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]  # Auxiliary = Sentinel data lake (API parameter name)
         [string]$Tier,
 
         [string]$WorkspaceName,
@@ -185,7 +185,7 @@ function Set-LogAnalyticsTablePlan {
     }
 
     # --- Pre-flight: Check analytics rule dependencies (downgrade only) ---
-    $isDowngrade = $Tier -in @('Basic', 'Auxiliary')
+    $isDowngrade = $Tier -in @('Basic', 'Auxiliary')  # Auxiliary = Sentinel data lake
     if ($isDowngrade -and -not $SkipRuleCheck) {
         Write-Verbose "Checking Sentinel analytics rules for references to '$TableName'..."
         try {
@@ -254,7 +254,7 @@ function Get-TierRecommendation {
         - KQL operator usage (does it need full KQL or just search?)
         - Daily ingestion volume (is it worth optimizing?)
         - Current cost vs. projected cost at each tier
-        Returns a recommendation per table: keep, downgrade to Basic, downgrade to Auxiliary.
+        Returns a recommendation per table: keep, downgrade to Basic, downgrade to Sentinel data lake (Auxiliary).
     .EXAMPLE
         Get-TierRecommendation -WorkspaceName 'sentinel-prod' -LookbackDays 30
     .EXAMPLE
@@ -321,7 +321,7 @@ Usage
     $costPerGB = @{
         Analytics = 4.99
         Basic     = 1.75
-        Auxiliary = 0.75
+        Auxiliary = 0.75   # Sentinel data lake
     }
 
     $recommendations = foreach ($table in $volumeResult.Data.tables[0].rows) {
@@ -340,7 +340,7 @@ Usage
             'Basic'
         }
         elseif ($dailyGB -gt 0.5) {
-            'Auxiliary'
+            'Auxiliary'  # Sentinel data lake — search-only retention
         }
         else {
             'Analytics'  # Low volume — savings negligible
@@ -392,11 +392,11 @@ function Get-TierCostImpact {
         [string]$TableName,
 
         [Parameter(Mandatory)]
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]  # Auxiliary = Sentinel data lake
         [string]$FromTier,
 
         [Parameter(Mandatory)]
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]  # Auxiliary = Sentinel data lake
         [string]$ToTier,
 
         [double]$DailyGB,
@@ -418,8 +418,8 @@ function Get-TierCostImpact {
     }
 
     # Cost matrix (approximate USD, East US 2)
-    $ingestionCost = @{ Analytics = 4.99; Basic = 1.75; Auxiliary = 0.75 }
-    $queryScanCost = @{ Analytics = 0.00; Basic = 0.006; Auxiliary = 0.006 }
+    $ingestionCost = @{ Analytics = 4.99; Basic = 1.75; Auxiliary = 0.75 }  # Auxiliary = Sentinel data lake
+    $queryScanCost = @{ Analytics = 0.00; Basic = 0.006; Auxiliary = 0.006 }  # Auxiliary = Sentinel data lake
     $storageCostPerGBMonth = 0.023  # Archive/retention storage
 
     $monthlyIngestionFrom = $DailyGB * 30 * $ingestionCost[$FromTier]
@@ -449,7 +449,7 @@ function Get-TierCostImpact {
         TradeOffs              = if ($ToTier -ne 'Analytics') {
             @(
                 "No Sentinel analytics rules on $ToTier tier"
-                if ($ToTier -eq 'Auxiliary') { "Search-only queries — no summarize" }
+                if ($ToTier -eq 'Auxiliary') { "Search-only queries — no summarize (Sentinel data lake)" }
                 if ($ToTier -eq 'Basic') { "No join/mv-expand — limited KQL" }
             ) | Where-Object { $_ }
         } else { @() }
@@ -736,7 +736,7 @@ function Set-BulkRetentionPolicy {
 Summary rules execute a KQL aggregation on a schedule and write results to a destination table. They are the critical bridge between cost optimization and data retention — you keep the aggregated metrics in an Analytics-tier table while downgrading or archiving the raw source.
 
 **When to use summary rules:**
-- Before downgrading a high-volume table to Basic/Auxiliary tier
+- Before downgrading a high-volume table to Basic/Sentinel data lake tier
 - When you need long-term trend data but not raw events
 - To maintain dashboards after source table archival
 - To pre-compute expensive aggregations (reduce query cost)
@@ -1146,7 +1146,7 @@ function Get-PurgeStatus {
 START: Evaluate table for tier placement
 │
 ├── Is the table used in Sentinel analytics rules?
-│   └── YES → Analytics tier (REQUIRED — Basic/Auxiliary don't support rules)
+│   └── YES → Analytics tier (REQUIRED — Basic/Sentinel data lake don't support rules)
 │
 ├── Is the table queried daily with join/summarize/mv-expand?
 │   └── YES → Analytics tier
@@ -1164,7 +1164,7 @@ START: Evaluate table for tier placement
 │       └── Create summary rule for trend data
 │
 ├── Is the table verbose telemetry (debug, trace)?
-│   └── YES → Auxiliary tier
+│   └── YES → Sentinel data lake tier (Auxiliary)
 │       └── Shortest retention allowed by compliance
 │
 └── Default → Analytics tier (if volume < 1 GB/day, savings are negligible)
@@ -1178,7 +1178,7 @@ START: Evaluate table for tier placement
 | Weekly | < 5 GB/day | Analytics | $0 (savings negligible) |
 | Weekly | 5–50 GB/day | Basic | ~$58,500/yr at 50 GB |
 | Weekly | > 50 GB/day | Basic + Summary Rule | ~$58,500+ |
-| Monthly or less | Any | Auxiliary or Archive | ~$76,500/yr at 50 GB |
+| Monthly or less | Any | Sentinel data lake or Archive | ~$76,500/yr at 50 GB |
 | Never (compliance only) | Any | Archive | ~$89,100/yr at 50 GB |
 
 ### Cost Modeling Formulas
@@ -1188,9 +1188,9 @@ Monthly cost per tier (for a table ingesting D GB/day):
 
 Analytics:  D × 30 × $4.99 = D × $149.70/month
 Basic:      D × 30 × $1.75 = D × $52.50/month
-Auxiliary:  D × 30 × $0.75 = D × $22.50/month
+Sentinel data lake (API: 'Auxiliary'):  D × 30 × $0.75 = D × $22.50/month
 
-Query cost (Basic/Auxiliary only):
+Query cost (Basic/Sentinel data lake only):
   Queries/day × 30 × AvgScanGB × $0.006/GB
 
 Storage cost (archive beyond interactive retention):
@@ -1243,7 +1243,7 @@ function Start-DataMigration {
     .EXAMPLE
         Start-DataMigration -Type 'ADXToSentinel' -SourceTable 'NetFlowLogs' `
             -SourceCluster 'soc-adx-prod' -SourceDatabase 'SecurityLake' `
-            -TargetWorkspace 'sentinel-prod' -TargetTable 'NetFlowLogs_CL' -TargetTier 'Auxiliary'
+            -TargetWorkspace 'sentinel-prod' -TargetTable 'NetFlowLogs_CL' -TargetTier 'Auxiliary'  # Sentinel data lake
     .EXAMPLE
         Start-DataMigration -Type 'SentinelToADX' -SourceTable 'CommonSecurityLog' `
             -TargetCluster 'soc-adx-prod' -TargetDatabase 'SecurityLake'
@@ -1267,7 +1267,7 @@ function Start-DataMigration {
         [string]$TargetCluster,
         [string]$TargetDatabase,
 
-        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]
+        [ValidateSet('Analytics', 'Basic', 'Auxiliary')]  # Auxiliary = Sentinel data lake
         [string]$TargetTier = 'Analytics',
 
         [string]$Owner
@@ -1496,7 +1496,7 @@ Write-Warning "UPDATE: .secops/data-sources/data-source-map.yaml → Syslog tier
 7. **Monitor after changes** — Check `LAQueryLogs` for failed queries after tier downgrades
 8. **Purge audit trail** — Every purge must have a documented reason (GDPR DSR ticket, decommission ticket)
 9. **Migration overlap** — During migrations, query both source and target for 7–14 days
-10. **ADX for extreme volume** — Tables > 100 GB/day belong in ADX, not Basic/Auxiliary tier
+10. **ADX for extreme volume** — Tables > 100 GB/day may belong in ADX, not Basic/Sentinel data lake tier. For most long-term retention, Sentinel data lake is the modern default.
 
 ## Environment Context
 

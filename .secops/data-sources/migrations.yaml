@@ -25,7 +25,7 @@ migrations:
     #   completed    — migration done, source decommissioned
     #   cancelled    — migration abandoned
     status: "in-progress"
-    description: "Moving NetFlowLogs from ADX to Sentinel Auxiliary Logs tier"
+    description: "Moving NetFlowLogs from ADX to Sentinel data lake"
 
     # Source — where data currently lives
     source:
@@ -39,7 +39,7 @@ migrations:
       location: "sentinel"
       workspace: "example-workspace"
       table: "NetFlowLogs_CL"
-      tier: "Auxiliary"
+      tier: "Sentinel data lake"
 
     # Timeline
     started: "2026-03-15"
@@ -49,7 +49,7 @@ migrations:
     owner: "jospaid"
 
     notes: >
-      Sentinel auxiliary logs now cheaper than ADX for this volume.
+      Sentinel data lake now cheaper than ADX for this volume.
       Running parallel ingestion until validated. Agents should query
       BOTH locations during migration and prefer the target when available.
 
@@ -87,7 +87,7 @@ migrations:
   #     location: "sentinel"
   #     workspace: "target-ws"
   #     table: "TableName_CL"
-  #     tier: "Analytics"          # Analytics | Basic | Auxiliary
+  #     tier: "Analytics"          # Analytics | Basic | Sentinel data lake
   #   planned_start: "YYYY-MM-DD"
   #   estimated_completion: "YYYY-MM-DD"
   #   owner: "person-or-team"

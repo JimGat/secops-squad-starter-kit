@@ -17,7 +17,7 @@ The `default_workspace` field in `environment.yaml` references the filename (wit
 | `sentinel_enabled` | Whether Microsoft Sentinel is enabled |
 | `tier` | Pricing tier (PerGB2018, CapacityReservation) |
 | `retention` | Default, interactive, and archive retention days |
-| `custom_tables[]` | Tables with non-default tiers (Basic, Auxiliary) |
+| `custom_tables[]` | Tables with non-default tiers (Basic, Sentinel data lake) |
 | `data_connectors[]` | Connected data sources and their status |
 | `naming_conventions` | Patterns for analytics rules, watchlists, etc. |
 
