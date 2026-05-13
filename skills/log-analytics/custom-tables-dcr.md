@@ -304,7 +304,7 @@ Usage
 | Factor | Impact |
 |---|---|
 | DCR transform filtering | Directly reduces ingestion cost — filtered events are never billed |
-| Custom table plan (Analytics vs Basic) | Basic Logs is ~67% cheaper but limits query capabilities |
+| Custom table plan (Analytics vs Basic vs Sentinel data lake) | Basic Logs is ~67% cheaper; Sentinel data lake is ~73% cheaper but limits query capabilities further |
 | Schema bloat | Wide tables with many unused columns increase storage; use `dynamic` for sparse fields |
 | DCE costs | No cost for the DCE itself; you pay for data ingested through it |
 | Transform compute | No additional cost — KQL transforms are included in ingestion pricing |

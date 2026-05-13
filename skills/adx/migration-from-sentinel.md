@@ -18,13 +18,32 @@ last_updated: 2026-04-28
 
 ## Overview
 
-Not all security data belongs in Sentinel. Sentinel excels at real-time detection, incident management, and SOAR integration — but at $2.76/GB ingestion, storing high-volume or long-retention data there is cost-prohibitive. ADX offers 5–10x cheaper storage with the same KQL query language, making it the natural second tier for a mature security data lake. This skill covers when to migrate, how to run side-by-side, and the proxy functions that let analysts work seamlessly across both platforms.
+Not all security data belongs in Sentinel's Analytics tier. Sentinel excels at real-time detection, incident management, and SOAR integration — but at $2.76/GB ingestion, storing high-volume or long-retention data there is cost-prohibitive.
+
+> **⚠️ Modern guidance: Evaluate Sentinel data lake before ADX migration.**
+> The **Sentinel data lake** tier (formerly "Auxiliary Logs") provides low-cost, long-term retention natively within Sentinel — up to 12 years at ~$0.75/GB ingestion. For most organizations, this eliminates the need to migrate data to ADX solely for cost reasons. Migrate to ADX only when you need capabilities that Sentinel data lake cannot provide.
+
+**When Sentinel data lake is sufficient (no ADX needed):**
+- Long-term compliance retention (up to 12 years)
+- Infrequent, search-only queries on historical data
+- Data that doesn't require analytics rules or active hunting
+- Organizations that prefer managed Sentinel over operating an ADX cluster
+
+**When ADX migration is justified:**
+- Custom ML/anomaly detection over years of historical data
+- Cross-organization or cross-cluster data federation
+- Sub-second query performance over petabyte-scale datasets
+- Daily ingestion >500 GB/day with active analytical workloads
+- Existing ADX investments and operational expertise
+- Advanced features: materialized views, update policies, continuous export to custom formats
+
+This skill covers when to migrate to ADX (vs. using Sentinel data lake), how to run side-by-side, and the proxy functions that let analysts work seamlessly across both platforms.
 
 Use this skill when:
-- Your Sentinel bill is dominated by a few high-volume, low-alert-value data sources
-- You need to retain data beyond Log Analytics limits (or beyond what is affordable there)
-- You want to keep data in KQL-queryable form but do not need Sentinel analytics rules on it
-- You are building a side-by-side architecture where Sentinel handles detection and ADX handles investigation
+- Sentinel data lake tier does not meet your analytical requirements (see decision criteria above)
+- Your Sentinel bill is dominated by a few high-volume, low-alert-value data sources and you need active analytics on them (not just retention)
+- You need sub-second query performance over billions of rows for advanced ML or behavioral analytics
+- You are building a side-by-side architecture where Sentinel handles detection and ADX handles advanced investigation
 - You need a cost comparison framework to justify the migration to leadership
 
 ## Prerequisites
@@ -76,15 +95,18 @@ Usage
 
 **Migration decision matrix:**
 
-| Data Characteristic | Sentinel | ADX | Notes |
-|---|---|---|---|
-| Triggers analytics rules | ✅ Keep | ❌ Don't move | Rules need interactive retention |
-| Referenced by SOAR playbooks | ✅ Keep | ❌ Don't move | Logic Apps query Sentinel tables |
-| UEBA baseline data | ✅ Keep | ⚠️ After profiling | UEBA needs recent data in Sentinel |
-| > 5 GB/day, query-only | ❌ Expensive | ✅ Move | Biggest cost savings |
-| Network flow / DNS / DHCP | ❌ Very expensive | ✅ Move | Classic ADX candidates |
-| Compliance / audit (long retention) | ❌ Expensive at 7 years | ✅ Move | ADX + Archive storage |
-| Threat intelligence | ✅ Keep (for TI matching) | ✅ Also export (for historical) | Keep in both |
+| Data Characteristic | Sentinel (Analytics) | Sentinel data lake | ADX | Notes |
+|---|---|---|---|---|
+| Triggers analytics rules | ✅ Keep | ❌ | ❌ | Rules need Analytics tier |
+| Referenced by SOAR playbooks | ✅ Keep | ❌ | ❌ | Logic Apps query Analytics tables |
+| UEBA baseline data | ✅ Keep | ❌ | ⚠️ After profiling | UEBA needs recent data in Analytics |
+| > 5 GB/day, query-only, no ML | ❌ Expensive | ✅ Modern default | ⚠️ Only if ML needed | Sentinel data lake handles most cases |
+| > 5 GB/day, needs active analytics/ML | ❌ Expensive | ❌ Limited queries | ✅ Move | ADX justified for analytical workloads |
+| Network flow / DNS / DHCP | ❌ Very expensive | ✅ Use this | ⚠️ Only at extreme scale | Sentinel data lake is sufficient for most |
+| Compliance / audit (long retention) | ❌ Expensive at 7 years | ✅ Up to 12 years | ⚠️ Only if >12yr or ML needed | Sentinel data lake covers most compliance |
+| Threat intelligence | ✅ Keep (for TI matching) | ✅ Also for historical | ✅ Also if ML needed | Keep in Analytics + retention tier |
+| Cross-org data federation | ❌ | ❌ | ✅ Required | ADX cross-cluster queries |
+| Custom ML/anomaly detection | ❌ | ❌ | ✅ Required | ADX ML capabilities |
 
 ---
 
@@ -270,12 +292,13 @@ CommonSecurityLog
 
 ## Best Practices
 
-1. **Migrate query-only tables first** — tables with zero analytics rules are zero-risk migrations
-2. **Keep the data export running for at least 30 days** before stopping Sentinel ingestion — validates pipeline completeness
-3. **Create proxy functions** so analysts do not need to know where data lives
-4. **Do not migrate tables referenced by SOAR playbooks** until you have refactored the Logic Apps to query ADX
-5. **Monitor data completeness daily** — use a Logic App or Azure Function to alert on gaps > 2%
-6. **Keep Sentinel for detection, ADX for investigation** — this side-by-side model is the most common mature architecture
+1. **Evaluate Sentinel data lake first** — before setting up an ADX migration pipeline, confirm that Sentinel data lake tier doesn't meet the need (it handles up to 12 years retention at low cost)
+2. **Migrate query-only tables first** — tables with zero analytics rules are zero-risk migrations
+3. **Keep the data export running for at least 30 days** before stopping Sentinel ingestion — validates pipeline completeness
+4. **Create proxy functions** so analysts do not need to know where data lives
+5. **Do not migrate tables referenced by SOAR playbooks** until you have refactored the Logic Apps to query ADX
+6. **Monitor data completeness daily** — use a Logic App or Azure Function to alert on gaps > 2%
+7. **Keep Sentinel for detection, ADX for advanced investigation** — this side-by-side model is the most common mature architecture
 
 ## Cost Implications
 

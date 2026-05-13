@@ -98,19 +98,24 @@ union withsource=TableName *
 
 ---
 
-### Pattern 2 — Basic Logs vs. Analytics Logs
+### Pattern 2 — Data Tier Selection
 
-Basic Logs cost ~67% less than Analytics Logs but with significant query limitations. Use Basic Logs for high-volume tables that you rarely query interactively.
+Sentinel and Log Analytics offer four data tiers for balancing cost, query capability, and retention. Choose the right tier based on how frequently you query data and whether analytics rules reference it.
 
-| Feature | Analytics Logs | Basic Logs |
-|---|---|---|
-| **Ingestion cost** | Full price (~$2.76/GB with Sentinel) | ~$0.88/GB |
-| **Query cost** | Included in ingestion | $0.006/GB scanned per query |
-| **KQL support** | Full KQL | Limited: `where`, `extend`, `project`, `parse`, `summarize` only |
-| **Analytics rules** | ✅ Supported | ❌ Not supported |
-| **Retention** | 30–730 days interactive | 30 days interactive only |
-| **Archive** | ✅ Supported | ✅ Supported |
-| **Best for** | Security detection, active hunting | Verbose debug logs, network flow data, raw telemetry |
+| Feature | Analytics Logs | Basic Logs | Sentinel data lake | Archive |
+|---|---|---|---|---|
+| **Ingestion cost** | Full price (~$2.76/GB with Sentinel) | ~$0.88/GB | ~$0.75/GB | N/A (retention-only) |
+| **Query cost** | Included in ingestion | $0.006/GB scanned per query | $0.006/GB scanned per query | Per-GB search job or restore |
+| **KQL support** | Full KQL | Limited: `where`, `extend`, `project`, `parse`, `summarize` only | Search-only (very limited) | Search jobs or restore required |
+| **Analytics rules** | ✅ Supported | ❌ Not supported | ❌ Not supported | ❌ Not supported |
+| **Summary rules** | ✅ Source | ✅ Source | ❌ Not supported | ❌ Not supported |
+| **Retention** | 30–730 days interactive | 30 days interactive only | Up to 12 years | Up to 12 years |
+| **Archive** | ✅ Supported | ✅ Supported | Built-in (long-term by design) | — |
+| **Best for** | Security detection, active hunting | Verbose debug logs, network flow data | Long-term retention, compliance, rarely-queried telemetry | Cold-case forensics, compliance archives |
+
+**Tier selection order (modern):** Analytics Logs → Basic Logs → Sentinel data lake → Archive
+
+> **💡 Summary rules** — For high-volume tables (>10 GB/day), consider using Sentinel summary rules to aggregate data into a compact Analytics-tier table, then ingest the raw data into Basic Logs or Sentinel data lake tier for low-cost retention.
 
 ```bash
 # Convert a high-volume table to Basic Logs
@@ -135,10 +140,16 @@ az monitor log-analytics workspace table update \
 | `ContainerLogV2` | High volume, mostly used for troubleshooting, not detection |
 | `AppTraces` | Application trace logs — debug-level verbosity |
 | `StorageBlobLogs` | Very high volume data plane logs |
-| `AzureNetworkAnalytics_CL` | Network flow logs — massive volume |
-| `NWConnectionMonitorPathResult` | Network monitoring operational data |
 
-**Do NOT use Basic Logs for:**
+**Good candidates for Sentinel data lake:**
+
+| Table | Reason |
+|---|---|
+| `AzureNetworkAnalytics_CL` | Network flow logs — massive volume, rarely queried interactively |
+| `NWConnectionMonitorPathResult` | Network monitoring operational data — compliance retention only |
+| VPC flow logs, DNS logs | Very high volume, long retention requirements, infrequent queries |
+
+**Do NOT use Basic Logs or Sentinel data lake for:**
 - Any table used in Sentinel analytics rules (not supported)
 - Tables you actively hunt in (query costs add up fast with frequent queries)
 - Low-volume tables (savings are negligible, but you lose query flexibility)
@@ -311,6 +322,7 @@ Usage
 This entire skill is about cost. Key numbers to remember:
 - **Sentinel ingestion**: ~$2.76/GB pay-as-you-go (includes Log Analytics + Sentinel analytics)
 - **Basic Logs**: ~$0.88/GB ingestion + $0.006/GB per query scan
+- **Sentinel data lake**: ~$0.75/GB ingestion + $0.006/GB per query scan (long-term, low-cost tier)
 - **Archive storage**: ~$0.02/GB/month
 - **Interactive retention beyond 90 days**: ~$0.10/GB/month
 - **Commitment tier discount**: 23–53% depending on tier

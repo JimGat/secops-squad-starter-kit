@@ -208,19 +208,26 @@ az monitor log-analytics workspace table restore create \
 ### Pattern 6 — Data Lifecycle Management Strategy
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                     Data Lifecycle Timeline                       │
-├──────────┬──────────────┬────────────────┬───────────────────────┤
-│  Day 0   │  Day 90      │  Day 730       │  Day 2555 (7 years)   │
-│  Ingest  │  Free with   │  Interactive   │  Archive expires      │
-│          │  Sentinel    │  retention     │  (if configured)      │
-│          │  ends        │  max           │                       │
-├──────────┴──────────────┴────────────────┴───────────────────────┤
-│ ◄── Interactive (full KQL) ──► ◄── Archive (search/restore) ──► │
-│                                                                   │
-│ ADX export for >7 year retention ──────────────────────────────► │
-└──────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                        Data Lifecycle Timeline                           │
+├──────────┬──────────────┬────────────────┬───────────────────────────────┤
+│  Day 0   │  Day 90      │  Day 730       │  Day 2555 (7 years)           │
+│  Ingest  │  Free with   │  Interactive   │  Archive expires              │
+│          │  Sentinel    │  retention     │  (if configured)              │
+│          │  ends        │  max           │                               │
+├──────────┴──────────────┴────────────────┴───────────────────────────────┤
+│ ◄── Interactive (full KQL) ──► ◄─── Archive (search/restore) ────────► │
+│                                                                          │
+│ Sentinel data lake — low-cost tier for long-term retention ────────────►│
+│ (up to 12 years, search-only queries, ~$0.75/GB ingestion)              │
+│                                                                          │
+│ ADX export — specialized: custom ML, cross-org federation, >12yr ─────►│
+└──────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Modern data tiering order:** Analytics Logs → Basic Logs → Sentinel data lake → Archive
+
+> **💡 Sentinel data lake** is the modern default for low-cost, long-term retention within Sentinel. It replaces the need to export data to ADX for most retention scenarios. Use ADX only when you need custom ML/anomaly detection at massive scale, cross-organization data federation, or capabilities that exceed what Sentinel data lake offers.
 
 ```kql
 // Analyze data age distribution to inform retention policy
@@ -237,9 +244,10 @@ Usage
 1. **Match retention to compliance obligations** — Document which regulation requires which retention period for each data type
 2. **Use archive tier aggressively** — Data beyond your active hunting window (typically 90 days) belongs in archive
 3. **Test search jobs before you need them** — Run a search job during peacetime to understand latency and results format
-4. **Export to ADX for >7 year retention** — Log Analytics caps at ~12 years total; for longer requirements, export to Azure Data Explorer
+4. **Use Sentinel data lake for long-term retention** — The Sentinel data lake tier is the modern default for low-cost, long-term retention (up to 12 years). Export to ADX only for specialized needs (custom ML, cross-org federation, or scenarios exceeding Sentinel data lake capabilities)
 5. **Audit retention settings quarterly** — New tables from new connectors inherit workspace defaults, which may not match your policy
 6. **Sentinel's 90-day free retention** — Sentinel-enabled tables get 90 days free interactive retention; factor this into cost calculations
+7. **Consider summary rules** — For high-volume tables, Sentinel summary rules can aggregate data into compact Analytics-tier tables while raw data goes to lower-cost tiers
 
 ## Cost Implications
 
@@ -247,6 +255,7 @@ Usage
 |---|---|---|
 | Interactive (first 90 days with Sentinel) | Included in Sentinel per-GB price | Free for Sentinel analytics tables |
 | Interactive (beyond 90 days) | ~$0.10/GB/month | Varies by region |
+| Sentinel data lake | ~$0.75/GB ingestion + $0.006/GB query scan | Low-cost tier for long-term retention |
 | Archive | ~$0.02/GB/month | 5x cheaper than interactive |
 | Search job | Per GB scanned | Charged as data scan; results stored at interactive rate |
 | Restore | Per GB restored/day | Charged for restoration and then interactive storage |

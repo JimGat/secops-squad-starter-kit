@@ -19,13 +19,15 @@ last_updated: 2026-04-28
 
 ## Overview
 
-Azure Data Explorer (ADX) extends Sentinel and Log Analytics by providing long-term, cost-effective storage for security telemetry and high-performance queries over massive datasets. This skill covers querying ADX clusters from Log Analytics, federating across clusters, and designing data lake query patterns for historical investigation.
+Azure Data Explorer (ADX) extends Sentinel and Log Analytics by providing high-performance queries over massive datasets and advanced analytical capabilities. This skill covers querying ADX clusters from Log Analytics, federating across clusters, and designing data lake query patterns for historical investigation.
+
+> **⚠️ Modern positioning:** For long-term retention alone, the **Sentinel data lake** tier (up to 12 years, ~$0.75/GB) is the modern default. ADX is the right choice when you need sub-second query performance over petabyte-scale data, custom ML/anomaly detection, cross-organization federation, or capabilities that exceed Sentinel data lake's search-only query model.
 
 Use this skill when:
-- You need to query data beyond Log Analytics retention limits (default 90 days)
-- Your daily ingestion exceeds thresholds where Log Analytics becomes cost-prohibitive
-- You need sub-second query performance over billions of rows
-- You are building a security data lake for compliance or forensic readiness
+- You need sub-second query performance over billions of rows (beyond what Sentinel data lake search jobs provide)
+- You are running custom ML/anomaly detection that requires ADX analytical capabilities
+- Your organization has multiple ADX clusters requiring cross-cluster federation
+- You are building a security data lake for advanced forensic readiness with active analytical workloads
 - You need to join current Sentinel data with historical ADX data
 
 ## Prerequisites
@@ -108,15 +110,17 @@ Usage
 
 **Decision criteria:**
 
-| Factor | Log Analytics | Azure Data Explorer |
-|---|---|---|
-| Retention needed | ≤2 years | 2+ years, unlimited |
-| Query latency SLA | Seconds (small-medium data) | Sub-second (any data size) |
-| Daily ingestion | < 500 GB/day | 500 GB+ /day |
-| Cost model | Per-GB ingestion + retention | Cluster compute + storage |
-| Sentinel integration | Native | Via `adx()` proxy or data export |
-| Interactive hunting | ✓ (Sentinel workbooks) | ✓ (ADX dashboards, Grafana) |
-| Long-term forensics | Limited by retention | Primary use case |
+| Factor | Log Analytics (Analytics) | Sentinel data lake | Azure Data Explorer |
+|---|---|---|---|
+| Retention needed | ≤2 years interactive | Up to 12 years (low-cost) | Unlimited (with export) |
+| Query capability | Full KQL | Search-only ($0.006/GB scan) | Full KQL (sub-second) |
+| Daily ingestion | < 500 GB/day | Any volume | 500 GB+ /day (analytical) |
+| Cost model | Per-GB ingestion + retention | Per-GB ingestion (flat) | Cluster compute + storage |
+| Sentinel integration | Native | Native (same workspace) | Via `adx()` proxy or data export |
+| Analytics rules | ✅ Supported | ❌ Not supported | N/A — rules stay in Sentinel |
+| ML/anomaly detection | ❌ | ❌ | ✅ Native support |
+| Cross-org federation | ❌ | ❌ | ✅ Cross-cluster queries |
+| Best for | Active detection & hunting | Long-term retention, compliance | Advanced analytics at massive scale |
 
 ---
 

@@ -364,7 +364,7 @@ Heartbeat
 | Azure AD / Entra ID | Requires P1/P2 license for sign-in logs; non-interactive sign-ins can be high volume |
 | Office 365 | Exchange, SharePoint, Teams logs — SharePoint can be extremely high volume |
 | CEF/Syslog | Linux forwarder VM cost + ingestion; firewall logs often dominate workspace costs |
-| Custom Logs v2 | Pay per GB ingested; consider Basic Logs tier for high-volume, low-query tables |
+| Custom Logs v2 | Pay per GB ingested; consider Basic Logs or Sentinel data lake tier for high-volume, low-query tables |
 | AWS CloudTrail | S3 data events can be very high volume; management events are usually manageable |
 
 ## Related Skills

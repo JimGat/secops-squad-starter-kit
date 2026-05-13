@@ -10,11 +10,21 @@ last_updated: 2026-05-04
 
 ## Overview
 
-The `skills/adx/` domain teaches agents how to leverage Azure Data Explorer as a security data lake — ingesting, modeling, querying, and retaining security telemetry at scale. ADX provides petabyte-scale analytics with sub-second query performance, making it the ideal platform for long-term security data retention and advanced threat hunting beyond Sentinel's 90-day interactive window.
+The `skills/adx/` domain teaches agents how to leverage Azure Data Explorer as a **specialized** security analytics platform — for scenarios that exceed what Sentinel data lake and Log Analytics can deliver. ADX provides petabyte-scale analytics with sub-second query performance, custom ML/anomaly detection, and cross-organization data federation.
+
+> **⚠️ Important: Sentinel data lake is the modern default for long-term retention.**
+> Before recommending ADX, confirm the scenario genuinely requires it. The Sentinel data lake tier (formerly "Auxiliary Logs") provides low-cost, long-term retention natively within Sentinel — up to 12 years — without the operational overhead of managing an ADX cluster.
+>
+> **Use ADX when:**
+> - You need custom ML/anomaly detection at massive scale (`adx-ml-anomaly.md`)
+> - Cross-organization or cross-cluster data federation is required (`cross-cluster-queries.md`)
+> - Daily ingestion exceeds 500+ GB/day and you need sub-second query performance over years of data
+> - Existing ADX investments make it the natural choice
+> - Requirements genuinely exceed Sentinel data lake capabilities (e.g., >12 year retention, advanced materialized views, update policies)
 
 ## Why This Matters
 
-SOC teams face a tension between cost and visibility. Sentinel provides powerful real-time detection, but retaining years of security data there is prohibitively expensive. ADX bridges that gap — offering hot/warm/cold tiering, ML-powered anomaly detection, and cross-cluster federation at a fraction of the cost.
+SOC teams face a tension between cost and visibility. Sentinel provides powerful real-time detection, and the Sentinel data lake tier handles most long-term retention needs at low cost. ADX extends beyond that — offering hot/warm/cold tiering, ML-powered anomaly detection, and cross-cluster federation for organizations operating at massive scale or with specialized analytical requirements.
 
 ## Skill Files
 
@@ -49,11 +59,12 @@ If `.secops/` does not exist, suggest running `secops-squad init --secops` to sc
 
 ## How Agents Should Use These Skills
 
-1. **Check data location first** — consult `data-source-map.yaml` to determine if data is in ADX or Log Analytics
-2. **Right-size the cluster** — reference `cluster-architecture.md` before provisioning or scaling
-3. **Model before ingesting** — use `security-data-modeling.md` to design schemas before `data-ingestion.md`
-4. **Use cross-cluster for federation** — when data spans multiple clusters, apply `cross-cluster-queries.md` patterns
-5. **Apply ML on historical data** — leverage `adx-ml-anomaly.md` for long-term behavioral baselines
+1. **Evaluate Sentinel data lake first** — before recommending ADX, confirm the scenario exceeds Sentinel data lake capabilities
+2. **Check data location first** — consult `data-source-map.yaml` to determine if data is in ADX or Log Analytics
+3. **Right-size the cluster** — reference `cluster-architecture.md` before provisioning or scaling
+4. **Model before ingesting** — use `security-data-modeling.md` to design schemas before `data-ingestion.md`
+5. **Use cross-cluster for federation** — when data spans multiple clusters, apply `cross-cluster-queries.md` patterns
+6. **Apply ML on historical data** — leverage `adx-ml-anomaly.md` for long-term behavioral baselines
 
 ## Related Skills
 

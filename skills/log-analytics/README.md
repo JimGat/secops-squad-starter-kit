@@ -55,7 +55,7 @@ If `.secops/` does not exist, suggest running `secops-squad init --secops` to sc
 1. **Design before deploying** — use `workspace-architecture.md` to plan workspace topology
 2. **Connect data sources** — apply `data-connectors-setup.md` and `custom-tables-dcr.md` for ingestion
 3. **Configure retention** — set policies per `retention-archive.md` aligned with compliance requirements
-4. **Optimize costs** — review `cost-optimization.md` for commitment tiers, basic logs, and data tiering
+4. **Optimize costs** — review `cost-optimization.md` for commitment tiers, basic logs, Sentinel data lake tier, and data tiering
 5. **Secure access** — implement `workspace-rbac.md` for least-privilege workspace access
 6. **Monitor and maintain** — use `diagnostic-settings.md` and `purge-and-export.md` for operational hygiene
 

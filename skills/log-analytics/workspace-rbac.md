@@ -269,5 +269,5 @@ LAQueryLogs
 
 - **[Workspace Architecture](workspace-architecture.md)** — Workspace topology determines RBAC boundaries.
 - **[Entra Sign-in Analysis](../kql/entra-signin-analysis.md)** — Detect credential misuse that RBAC is designed to prevent.
-- **[Cost Optimization](cost-optimization.md)** — RBAC doesn't affect cost, but table-level access controls pair with Basic Logs tier decisions.
+- **[Cost Optimization](cost-optimization.md)** — RBAC doesn't affect cost, but table-level access controls pair with Basic Logs and Sentinel data lake tier decisions.
 - **[Custom Tables & DCR](custom-tables-dcr.md)** — Custom tables have specific RBAC considerations for resource-context access.

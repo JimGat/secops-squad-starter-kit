@@ -17,14 +17,18 @@ last_updated: 2026-04-28
 
 ## Overview
 
-Security regulations (SOX, HIPAA, PCI-DSS, NIST 800-53) require years of log retention. Log Analytics maxes out at 12 years and gets expensive fast; ADX handles multi-year retention natively with hot/warm/cold tiering, continuous export to Azure Storage for decades-long archival, and external tables for querying archived data without re-ingestion. This skill covers the full retention lifecycle — from real-time hot cache to cold storage to compliance archives.
+Security regulations (SOX, HIPAA, PCI-DSS, NIST 800-53) require years of log retention. For most organizations, the **Sentinel data lake** tier (formerly "Auxiliary Logs") is the modern default for long-term retention — providing up to 12 years of low-cost storage within Sentinel at ~$0.75/GB ingestion.
+
+ADX long-term retention is the **advanced option** for organizations that need capabilities beyond Sentinel data lake: custom ML/anomaly detection over historical data, cross-organization federation, sub-second queries over petabyte-scale datasets, or retention exceeding 12 years via continuous export to Azure Storage.
+
+> **💡 Decision guidance:** Start with Sentinel data lake for long-term retention. Move to ADX only when you confirm a concrete need that Sentinel data lake cannot satisfy.
 
 Use this skill when:
-- You need to retain security data for 1–10+ years for compliance
-- You want to reduce ADX cluster costs by moving old data to cheap storage
-- You need to query archived data without loading it back into the cluster
-- You are designing a retention lifecycle that meets both SOC and compliance needs
-- You are comparing ADX long-term retention costs against Log Analytics archive tier
+- Sentinel data lake's 12-year limit or search-only query model is insufficient
+- You need sub-second query performance over years of historical data (not just occasional search jobs)
+- You need custom ML/anomaly detection over long-term security data
+- You want hot/warm/cold tiering with continuous export to Azure Storage for decades-long archival
+- You are comparing ADX long-term retention costs against Sentinel data lake and Log Analytics archive tier
 
 ## Prerequisites
 
@@ -224,19 +228,22 @@ az storage account management-policy create \
 
 ---
 
-### Pattern 5 — Cost Comparison: ADX vs. Log Analytics Retention
+### Pattern 5 — Cost Comparison: ADX vs. Sentinel data lake vs. Log Analytics Retention
 
 ```markdown
-| Retention Tier | ADX Cost (approx.) | Log Analytics Cost (approx.) | Notes |
-|---|---|---|---|
-| Hot cache (< 30d) | Included in compute | Included in ingestion | Both included in base pricing |
-| Warm (30–90d) | Azure Storage ~$0.018/GB/mo | Included (Sentinel free 90d) | LA wins for Sentinel tables |
-| Cool (90d–2y) | Azure Storage ~$0.01/GB/mo | Archive tier ~$0.02/GB/mo | ADX wins at scale |
-| Cold archive (2–7y) | Azure Archive ~$0.002/GB/mo | Archive tier ~$0.02/GB/mo | ADX 10x cheaper |
-| Query (archive) | External table query (slow) | Search job (slow, per-GB scan) | Similar speed, ADX cheaper |
+| Retention Tier | ADX Cost (approx.) | Sentinel data lake (approx.) | Log Analytics Archive (approx.) | Notes |
+|---|---|---|---|---|
+| Hot cache (< 30d) | Included in compute | N/A | Included in ingestion | ADX: cluster cost; LA: per-GB price |
+| Warm (30–90d) | Azure Storage ~$0.018/GB/mo | ~$0.75/GB ingestion (flat) | Included (Sentinel free 90d) | Sentinel data lake: pay at ingestion |
+| Cool (90d–2y) | Azure Storage ~$0.01/GB/mo | Included (retention) | Archive tier ~$0.02/GB/mo | Sentinel data lake wins for simplicity |
+| Cold archive (2–7y) | Azure Archive ~$0.002/GB/mo | Included (up to 12yr) | Archive tier ~$0.02/GB/mo | Sentinel data lake: no extra storage cost |
+| Query (archive) | External table query (sub-second) | Search-only ($0.006/GB scanned) | Search job (slow, per-GB scan) | ADX wins for query performance |
 ```
 
-**Rule of thumb:** For data you rarely query but must retain for > 1 year, ADX continuous export to Azure Storage + Archive tier is 5–10x cheaper than Log Analytics archive tier.
+**Rule of thumb:**
+- **For retention-only (rare queries):** Sentinel data lake is the simplest and most cost-effective option — no cluster to manage, up to 12 years.
+- **For active analytics over historical data:** ADX continuous export to Azure Storage + Archive tier provides the best query performance at scale.
+- **ADX break-even:** ADX has a fixed compute cost (cluster nodes). The break-even vs. Sentinel data lake is typically around 50+ GB/day with active analytical workloads. Below that, Sentinel data lake is almost always cheaper.
 
 ## Best Practices
 
