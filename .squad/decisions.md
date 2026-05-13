@@ -144,3 +144,94 @@ Created `.copilot/skills/first-run-onboarding/SKILL.md` — a copilot-level skil
 - **Sydnor:** The skill depends on `workspace connect` and `init --secops` CLI commands — changes to those commands should update this skill.
 - **Freamon/Herc:** Can assume `.secops/` exists after onboarding. No need to add their own first-run detection.
 - **Users:** New users get guided setup instead of "run these 5 commands first."
+
+### 2026-05-13T07:58:33-05:00: User directive
+
+**By:** John Spaid (via Copilot)
+**Status:** Accepted
+
+**What:** Ground all agent personas on modern SecOps approaches. Specifically: use "Sentinel data lake" instead of "Auxiliary Logs" or "Aux Logs." ADX should only be recommended when there's a justifiable requirement. The modern default for long-term/low-cost data retention in Sentinel is the Sentinel data lake, not Aux Logs, not standalone ADX. All charters, skills, docs, and templates should reflect current Microsoft SecOps terminology and patterns.
+
+**Why:** User request — captured for team memory
+
+### 2026-05-13: Sentinel Data Lake Terminology Modernization
+
+**Date:** 2026-05-13
+**Author:** Freamon (KQL Engineer)
+**Status:** Accepted
+
+**Context:** Microsoft rebranded "Auxiliary Logs" to **Sentinel data lake** as the modern low-cost retention tier in Microsoft Sentinel. The secops-squad-starter-kit skills documentation used the legacy "Auxiliary Logs" terminology and positioned Azure Data Explorer (ADX) as the default recommendation for long-term retention.
+
+**Decision:**
+1. **Replace "Auxiliary Logs"/"Aux Logs" with "Sentinel data lake"** in all skills prose and documentation.
+2. **Keep `'Auxiliary'` in PowerShell `ValidateSet` parameters and API calls** — this is the Azure Log Analytics Tables API parameter value. Annotate with `# Auxiliary = Sentinel data lake` comments.
+3. **Reposition ADX as a specialized option**, not the default for long-term retention. Sentinel data lake is the modern default for most organizations.
+4. **Standard data tiering order:** Analytics → Basic → Sentinel data lake → Archive.
+5. **Standardize pricing at ~$0.75/GB ingestion** for the Sentinel data lake tier.
+
+**Scope:** 14 files updated across log-analytics, adx, kql, platform, and powershell skill domains.
+
+**Impact:** All squad members creating or updating skills that reference data tiers, retention strategies, or ADX migration should use "Sentinel data lake" in prose and follow the API-vs-product naming convention established here.
+
+### 2026-05-13T07:58:33-05:00: Modern SecOps Terminology Standards
+
+**By:** Kima (SecOps Engineer)
+**Status:** Accepted
+
+**What:** Standardized terminology across all `skills/msft-security/` and `skills/detection/` files to reflect Microsoft's modern SecOps platform:
+1. **"Sentinel data lake"** is the modern low-cost retention tier (replaces "Basic Logs" / "Auxiliary Logs" as the primary term in tiering discussions). "Basic Logs" remains valid as a Log Analytics concept but Sentinel-facing docs should lead with "Sentinel data lake."
+2. **Unified SOC platform** at security.microsoft.com — Sentinel + Defender XDR share a single portal experience. References to "the Sentinel portal" now acknowledge this unified option.
+3. **ADX repositioned** — Azure Data Explorer is a specialized option (custom ML, cross-org federation, massive scale). Sentinel data lake is the default for long-term retention within Sentinel.
+4. **Content Hub** — Portal references updated to use Content Hub as the modern deployment path for Sentinel solutions.
+5. **Summary rules** — Added as a modern cost-optimization pattern (aggregate Sentinel data lake tables into compact Analytics-tier tables).
+
+**Why:** John directed that all content reflect modern Microsoft SecOps approaches. The platform has evolved significantly — the unified SOC portal, Sentinel data lake tier, and summary rules are all GA features that should be the default guidance.
+
+**Impact:**
+- **All agents:** When referencing Sentinel portal, include the unified SOC platform at security.microsoft.com. When discussing data tiers, lead with Sentinel data lake as the modern low-cost tier.
+- **Freamon:** PowerShell scripts referencing Sentinel should note the unified portal URL.
+- **log-analytics skills:** Already correctly reference both "Basic Logs" and "Sentinel data lake" — no changes needed there.
+- **Future skills:** Should follow these terminology standards from the start.
+
+### 2026-05-13T07:58:33-05:00: Technology Grounding Sections in All Agent Charters
+
+**By:** McNulty (Lead)
+**Status:** Implemented
+
+**What:** Added a `## Technology Grounding` section to all 6 agent charters (McNulty, Kima, Freamon, Herc, Sydnor, Carver) with agent-specific guidance on modern Microsoft Sentinel and SecOps patterns. Updated `team.md` project context to reflect the modern platform.
+
+**Why:** An agent used "Aux Logs" and "ADX" as default long-term retention guidance. The modern (2025-2026) approach is **Sentinel data lake** — a low-cost, long-term retention tier within Sentinel itself. ADX remains valid but is an advanced option, not the default. The unified SOC platform (security.microsoft.com) is now the converged operational surface.
+
+**Key Terminology Changes:**
+- "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake**
+- ADX → advanced option requiring justification (custom ML, cross-org federation, existing investments)
+- Standalone Sentinel portal → **unified SOC platform** (security.microsoft.com)
+
+**Impact:**
+- **All agents:** Must use modern terminology and default to Sentinel data lake for long-term retention guidance.
+- **McNulty:** Reviews PRs for modern pattern compliance — rejects "Aux Logs" references and unjustified ADX usage.
+- **Kima:** References Content Hub, unified SOC platform, Microsoft Security Exposure Management.
+- **Freamon:** Aware of query differences across Analytics/Basic/Sentinel data lake tiers; uses Summary Rules for aggregation.
+- **Herc:** Targets unified SOC platform APIs; playbooks query Sentinel data lake, not ADX, by default.
+- **Sydnor:** IaC templates provision Sentinel data lake tables by default, ADX as optional add-on.
+- **Carver:** Validates queries target correct data tier; flags tier mismatches in test coverage.
+
+**Convention:** When the platform evolves again, apply the same pattern: update all charters' Technology Grounding sections, not just the one that triggered the issue.
+
+### 2026-05-13T07:58:33-05:00: Terminology Modernization — Auxiliary Logs → Sentinel data lake
+
+**By:** Sydnor (Platform Dev)
+**Status:** Implemented
+
+**What:** Updated all documentation, templates, samples, and skill files to use modern Microsoft SecOps terminology:
+- **"Auxiliary Logs" / "Aux Logs" → "Sentinel data lake"** across 30+ files
+- **Data tiering order** standardized to: Analytics Logs → Basic Logs → Sentinel data lake → Archive
+- **ADX positioning** changed from default long-term retention to specialized option (extreme volume, full KQL on historical data, cross-team sharing)
+
+**Key Design Choice:** PowerShell `ValidateSet` parameters and Azure API calls retain `'Auxiliary'` as the enum value (that's what the Azure REST API expects). Inline comments annotate the modern name. Display-facing strings (CLI badges, docs, YAML comments) use "Sentinel data lake".
+
+**Impact:**
+- **All agents:** Use "Sentinel data lake" in all output and recommendations. Never say "Auxiliary Logs" or "Aux Logs" in user-facing content.
+- **Freamon:** PowerShell data-tiering functions keep `'Auxiliary'` in `ValidateSet` — don't change the API enum, only the comments and prose.
+- **Kima/Herc:** Skills and charters already updated by McNulty's modernization pass. This completes the platform layer.
+- **Templates/Samples:** `.secops/` YAML files now reference "Sentinel data lake" in tier values and comments. Contoso sample fully aligned.
