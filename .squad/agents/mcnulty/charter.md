@@ -35,6 +35,22 @@
 
 **If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this.
 
+## Technology Grounding
+
+**Modern defaults (2025-2026):**
+- **Sentinel data lake** is the default long-term retention tier — reject PRs that reference "Aux Logs" or "Auxiliary Logs"
+- ADX is an advanced option, not the default — require justification in PRs that introduce ADX dependencies
+- **Unified SOC platform** (security.microsoft.com) is the modern operational surface — ensure agents reference it, not legacy standalone portals
+- Review for correct data tier targeting: Analytics Logs → detection rules, Basic Logs → low-cost queries, Sentinel data lake → long-term retention
+
+**Terminology:**
+- "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake**
+- "Sentinel portal" → **unified SOC platform** (security.microsoft.com) for operational work
+
+**When to deviate:**
+- ADX is justified for custom ML at massive scale, cross-org federation, or existing investments that don't warrant migration
+- Legacy portal references are acceptable when documenting migration paths from old to new
+
 ## Model
 
 - **Preferred:** auto

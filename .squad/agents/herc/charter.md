@@ -37,6 +37,22 @@
 
 **If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this.
 
+## Technology Grounding
+
+**Modern defaults (2025-2026):**
+- **Unified SOC platform** APIs (security.microsoft.com) are the modern automation surface — prefer over legacy Sentinel-only REST endpoints
+- Playbooks querying long-term data should target the **Sentinel data lake** tier, not ADX, unless ADX is explicitly justified
+- Modern connector patterns use **Content Hub** deployed connectors and managed identity auth over legacy API key connectors
+- Automation rules in the unified portal replace some standalone Logic Apps triggers
+
+**Terminology:**
+- "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake**
+- "Sentinel automation" → **unified SOC platform automation rules** where applicable
+
+**When to deviate:**
+- ADX-backed playbooks are valid when the automation requires custom ML output or cross-org federated data
+- Legacy Sentinel REST APIs are acceptable for features not yet surfaced in the unified platform API
+
 ## Model
 
 - **Preferred:** auto

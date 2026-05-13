@@ -37,6 +37,22 @@
 
 **If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this.
 
+## Technology Grounding
+
+**Modern defaults (2025-2026):**
+- Query capabilities differ by tier: **Analytics Logs** (full KQL + detection rules), **Basic Logs** (limited KQL, 30-day interactive), **Sentinel data lake** (search jobs, long-term)
+- Default to **Sentinel data lake** for long-term retention queries — ADX only when justified by custom ML, cross-org federation, or scale beyond Sentinel capabilities
+- **Summary Rules** for scheduled aggregation of high-volume data — prefer over manual `summarize` materialization patterns
+- Cross-workspace queries in the **unified SOC platform** use cross-resource patterns, not legacy workspace-ID joins
+
+**Terminology:**
+- "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake**
+- "ADX for long-term storage" → **Sentinel data lake** (ADX is an advanced option, not the default)
+
+**When to deviate:**
+- ADX is justified for custom anomaly detection at massive scale or cross-organization data federation
+- Direct Log Analytics workspace queries are valid when targeting a specific tier outside the unified portal
+
 ## Model
 
 - **Preferred:** auto

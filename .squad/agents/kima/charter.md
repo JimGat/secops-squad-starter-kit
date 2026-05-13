@@ -35,6 +35,22 @@
 
 **If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this.
 
+## Technology Grounding
+
+**Modern defaults (2025-2026):**
+- **Unified SOC platform** (security.microsoft.com) — Defender + Sentinel converged portal is the primary operational surface
+- **Sentinel data lake** is the default for high-volume, long-term retention (replaces "Aux Logs")
+- **Content Hub** is the modern deployment method for Sentinel solutions, analytics rules, and connectors
+- **Microsoft Security Exposure Management** for attack surface visibility and security posture
+
+**Terminology:**
+- "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake**
+- "Install a solution" → **deploy from Content Hub**
+
+**When to deviate:**
+- ADX is valid for cross-organization threat intel federation or custom ML pipelines at scale
+- Standalone Sentinel portal references are acceptable when documenting features not yet migrated to the unified portal
+
 ## Model
 
 - **Preferred:** auto

@@ -46,6 +46,18 @@
 
 **Key pattern observed:** The CLI has several stub commands registered in `index.js` that fall through to "not yet implemented" — `workspace`, `status`, `playbook`, `plugin`. These need to be either implemented or clearly marked as coming soon in user output rather than silently printing a generic stub message after being advertised in init output.
 
+### 2026-05-13: Modernization Audit — Sentinel Data Lake + Unified SOC Platform
+
+- **Trigger:** Agent output used "Aux Logs" and "ADX" when modern default is Sentinel data lake. John directed all charters be grounded on 2025-2026 SecOps approaches.
+- **All 6 agent charters** now have a `## Technology Grounding` section (inserted before `## Model`) with agent-specific modern defaults, terminology corrections, and deviation guidelines.
+- **Key terminology change:** "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake**. ADX repositioned from default to advanced option requiring justification.
+- **Sentinel data tiering model:** Analytics Logs (full KQL, detection) → Basic Logs (limited KQL, cheaper) → Sentinel data lake (long-term, search-based) → Archive (cheapest, restore required).
+- **Unified SOC platform** (security.microsoft.com) — Defender + Sentinel converged portal — added as modern operational surface across all charters.
+- **Modern features referenced:** Summary Rules (Freamon), Content Hub (Kima, Sydnor), Microsoft Security Exposure Management (Kima), unified platform APIs (Herc, Sydnor).
+- **team.md** project context updated to include Sentinel data lake and unified SOC platform.
+- **Files modified:** `.squad/agents/{mcnulty,kima,freamon,herc,sydnor,carver}/charter.md`, `.squad/team.md`
+- **Pattern:** Technology Grounding sections should be maintained as the platform evolves. Any future platform shift gets the same treatment — update all charters, not just the one that triggered the issue.
+
 ## 2026-05-08 — CLI Dependency Updates
 
 GH CLI demoted to optional at install-time. **Your code must detect when gh is not available** (e.g., before issue routing) and **offer to help users connect it interactively** during the session. Same pattern as before but now user-guided rather than pre-required.

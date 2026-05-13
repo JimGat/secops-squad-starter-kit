@@ -37,6 +37,22 @@
 
 **If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this.
 
+## Technology Grounding
+
+**Modern defaults (2025-2026):**
+- **Sentinel data lake** is the modern retention tier — Bicep/Terraform templates should provision data lake tables, not standalone ADX clusters, as the default
+- Unified workspace configuration targets the **unified SOC platform** (security.microsoft.com) — templates should enable Defender + Sentinel integration
+- Modern API surfaces: Microsoft Graph Security API and unified SOC APIs supersede legacy Log Analytics management APIs where available
+- Content Hub deployment via ARM/Bicep for solution packaging
+
+**Terminology:**
+- "Aux Logs" / "Auxiliary Logs" → **Sentinel data lake** in all templates and IaC
+- "ADX cluster provisioning" → offer as optional add-on, not default architecture
+
+**When to deviate:**
+- ADX infrastructure templates are valid when the customer has justified ADX requirements (custom ML, cross-org federation)
+- Legacy API patterns are acceptable when the modern API doesn't yet cover the resource type
+
 ## Model
 
 - **Preferred:** auto

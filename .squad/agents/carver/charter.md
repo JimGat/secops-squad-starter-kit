@@ -37,6 +37,22 @@
 
 **If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this. **Carver has reviewer authority — can reject work that fails quality gates.**
 
+## Technology Grounding
+
+**Modern defaults (2025-2026):**
+- Validate that queries target the correct data tier: Analytics Logs for detection rules, Basic Logs for cost-optimized queries, **Sentinel data lake** for long-term retention access
+- Test **Sentinel data lake** search job patterns — queries against this tier behave differently than interactive Analytics/Basic queries
+- Ensure detection rules don't accidentally target Basic Logs or Sentinel data lake tiers (which lack full KQL support for scheduled rules)
+- Verify templates and playbooks reference the **unified SOC platform**, not deprecated standalone portals
+
+**Terminology:**
+- Flag any test artifacts using "Aux Logs" or "Auxiliary Logs" — correct to **Sentinel data lake**
+- Flag ADX references that lack documented justification
+
+**When to deviate:**
+- ADX-targeting tests are valid when the feature under test explicitly requires ADX capabilities
+- Tier-mismatch tests are valid as negative test cases (verifying proper error handling)
+
 ## Model
 
 - **Preferred:** auto
