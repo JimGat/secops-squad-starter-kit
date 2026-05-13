@@ -323,7 +323,7 @@ SecurityAlert
 ```bicep
 @description('Configure DLP data connector for Sentinel')
 // DLP alerts flow via the Microsoft 365 Defender connector
-// Enable in Sentinel: Content Hub > Microsoft 365 Defender > Data connectors
+// Enable in Sentinel: Content Hub > Microsoft Defender XDR solution > Data connectors
 
 // Or via Purview audit log integration:
 // Sentinel > Data connectors > Office 365 > Enable SharePoint, Exchange, Teams

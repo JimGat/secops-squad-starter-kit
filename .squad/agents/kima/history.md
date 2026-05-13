@@ -4,6 +4,15 @@
 
 ## Learnings
 
+📌 **Modern SecOps Terminology Standardization (2026-05-13)**
+- **Sentinel data lake** is the modern term for the low-cost retention tier (formerly "Basic Logs" / "Auxiliary Logs" in Sentinel context). The `log-analytics/cost-optimization.md` skill already uses both terms correctly — it's the Sentinel-facing skills that needed alignment.
+- **Unified SOC platform** at security.microsoft.com — Sentinel and Defender XDR share one portal. Any reference to "the Sentinel portal" should acknowledge this. Added unified SOC callouts to `sentinel-workspace-setup.md`, `defender-xdr-configuration.md`, `watchlist-driven-detection.md`, and `mitre-attack-mapping.md`.
+- **ADX is specialized, not default** — Sentinel data lake is the default long-term retention within Sentinel. ADX is for cross-org federation, custom ML, or scale beyond Sentinel data lake. Updated integration points in `sentinel-workspace-setup.md`.
+- **Summary rules** — Modern Sentinel feature for scheduled aggregation of Sentinel data lake data into compact Analytics-tier tables. Added to cost optimization guidance in `sentinel-workspace-setup.md`.
+- **Content Hub** — Modern deployment path for Sentinel solutions. Updated portal references to point to Content Hub in the unified portal.
+- **Files updated:** `sentinel-workspace-setup.md`, `defender-xdr-configuration.md`, `purview-dlp-patterns.md` (msft-security); `detection-lifecycle.md`, `nrt-rule-pattern.md`, `scheduled-rule-pattern.md`, `watchlist-driven-detection.md`, `mitre-attack-mapping.md`, `threat-intel-enrichment.md` (detection).
+- **Key pattern:** Data tier references in Environment Context sections now distinguish "Analytics tier" vs "Sentinel data lake" explicitly. This helps agents make correct tier-aware decisions.
+
 📌 **Phase 8 Connectivity Setup Skill (2026-05-04)**
 - **connectivity-setup.md (~700 lines):** Definitive connectivity guide for all 6 Microsoft Security products — Microsoft Sentinel, Defender XDR, Defender for Cloud, Defender for Identity, Defender for Endpoint, Entra ID Protection.
 - **Quick Connectivity Test:** Single PowerShell block runs all 6 product checks in sequence and prints a color-coded summary. Acts as a "doctor command" for the entire security product stack.

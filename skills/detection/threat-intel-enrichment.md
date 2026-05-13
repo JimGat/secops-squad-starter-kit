@@ -170,7 +170,7 @@ function Import-OTXPulseIOCs {
 
 ### MISP Integration (TAXII/STIX)
 
-Sentinel consumes MISP feeds natively via TAXII 2.1 connector (Content Hub → Threat Intelligence TAXII). Configure with MISP's TAXII API root, collection UUID, and API key as username. For non-TAXII instances, use `Import-MISPEvents` — fetches `/events/restSearch` filtered by tags and `enforceWarninglist`, extracting attributes where `to_ids` is true.
+Sentinel consumes MISP feeds natively via TAXII 2.1 connector (Content Hub → Threat Intelligence TAXII solution → Data connectors). Configure with MISP's TAXII API root, collection UUID, and API key as username. For non-TAXII instances, use `Import-MISPEvents` — fetches `/events/restSearch` filtered by tags and `enforceWarninglist`, extracting attributes where `to_ids` is true.
 
 ## Sentinel TI Integration
 

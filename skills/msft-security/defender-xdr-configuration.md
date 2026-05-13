@@ -23,6 +23,8 @@ last_updated: 2026-04-28
 
 Microsoft Defender XDR (Extended Detection and Response) unifies signals from Defender for Endpoint, Defender for Office 365, Defender for Identity, Defender for Cloud Apps, and Microsoft Entra ID Protection into a single incident queue. This skill covers the unified portal configuration, custom detection rules, alert tuning, and cross-product correlation.
 
+> **Unified SOC platform:** Defender XDR and Microsoft Sentinel now share a unified experience at [security.microsoft.com](https://security.microsoft.com). SOC analysts can manage Sentinel analytics rules, incidents, and hunting alongside Defender XDR in one portal.
+
 Use this skill when:
 - Configuring the unified security operations portal (security.microsoft.com)
 - Building custom detection rules from Advanced Hunting queries
@@ -295,7 +297,7 @@ EmailEvents
 
 | Issue | Cause | Fix |
 |---|---|---|
-| Incidents not appearing in Sentinel | Connector not enabled | Enable Microsoft Defender XDR connector in Sentinel Content Hub |
+| Incidents not appearing in Sentinel | Connector not enabled | Enable Microsoft Defender XDR connector via Sentinel Content Hub solution, then configure the data connector |
 | Custom detection not firing | Query returns no results in hunting | Test query with explicit time range; verify table has data |
 | Alert suppression too broad | Scope not limited to device group | Add device group or user scope constraints |
 | Auto-investigation stuck | Pending actions queue full | Clear pending actions; review remediation backlog |

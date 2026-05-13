@@ -82,7 +82,7 @@ Use this skill when:
 3. **Audit data availability**
    - Verify required tables exist in your workspace
    - Check data freshness and ingestion latency
-   - Confirm retention covers your lookback needs
+   - Confirm retention covers your lookback needs (check whether data is in Analytics tier or Sentinel data lake — Sentinel data lake tables are queryable but have different performance characteristics)
 
 4. **Write the hypothesis**
    - One sentence: "We will detect [technique] by looking for [observable behavior] in [data source]."
@@ -160,7 +160,7 @@ Use this skill when:
 
 4. **Deploy to production**
    - Merge ARM/Bicep template to main branch
-   - Deploy via CI/CD pipeline or manual ARM deployment
+   - Deploy via CI/CD pipeline, Content Hub custom solution, or manual ARM deployment
    - Enable the rule in production workspace
 
 **Checklist — Phase 3 Exit (Gate 3):**

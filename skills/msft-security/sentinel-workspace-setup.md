@@ -20,6 +20,8 @@ last_updated: 2026-04-28
 
 Provisioning a Microsoft Sentinel workspace is the foundation of every security operations deployment. This skill covers end-to-end workspace creation, from the Log Analytics resource through Sentinel onboarding, Content Hub solution installation, data connector priority, and multi-tenant configuration for MSSPs.
 
+> **Unified SOC platform:** Microsoft Sentinel is now available in the unified security operations platform at [security.microsoft.com](https://security.microsoft.com) alongside Defender XDR. The unified portal provides a single incident queue, hunting experience, and investigation graph. While Sentinel can still be managed via the Azure portal, the unified experience at security.microsoft.com is the modern default for SOC analysts.
+
 Use this skill when:
 - Standing up a new Sentinel environment from scratch
 - Migrating from a legacy SIEM to Sentinel
@@ -35,7 +37,7 @@ Use this skill when:
 | **Resource Group** | Dedicated RG for security operations (e.g., `rg-sentinel-prod`) |
 | **Permissions** | `Microsoft.OperationalInsights/workspaces/write` and `Microsoft.SecurityInsights/onboardingStates/write` |
 | **Region** | Select the region closest to your data sources; Sentinel pricing varies by region |
-| **Retention** | Plan for 90-day interactive + 2-year archive (default: 90 days free with Sentinel) |
+| **Retention** | Plan for 90-day interactive + long-term via Sentinel data lake (default: 90 days free with Sentinel). The Sentinel data lake is the modern low-cost retention tier — see Cost Optimization below. |
 
 ## Configuration Patterns
 
@@ -161,8 +163,8 @@ $solutions += @(
 # Install each solution from Content Hub
 foreach ($solution in $solutions) {
     Write-Host "Installing: $solution" -ForegroundColor Cyan
-    # Content Hub solutions are installed via the catalog
-    # Use the Sentinel API or Portal: Sentinel > Content Hub > Search > Install
+    # Content Hub is the modern way to deploy Sentinel solutions
+    # Portal: security.microsoft.com > Sentinel > Content Hub > Search > Install
     $catalogItem = Get-AzSentinelContentPackage -ResourceGroupName $rgName `
         -WorkspaceName $workspaceName | Where-Object { $_.DisplayName -eq $solution }
     if ($catalogItem) {
@@ -268,17 +270,19 @@ resource assignment 'Microsoft.ManagedServices/registrationAssignments@2022-10-0
 
 **Cost optimization tactics:**
 - Use Commitment Tiers (100/200/300/400/500 GB/day) for 30–50% savings
-- Configure Basic Logs for high-volume, low-query tables (`ContainerLog`, `AppTraces`)
-- Set up Archive tier for data beyond 90 days (query via search jobs)
+- Configure **Sentinel data lake** (the modern low-cost retention tier, formerly "Basic Logs" / "Auxiliary Logs") for high-volume, low-query tables (`ContainerLog`, `AppTraces`, custom security telemetry). Data in the Sentinel data lake supports KQL queries, summary rules, and 12-year retention at significantly reduced cost.
+- Use **summary rules** to aggregate high-volume Sentinel data lake tables into compact Analytics-tier tables for dashboards and alerting
+- Set up Archive tier for data beyond interactive retention (query via search jobs or restore)
 - Use data collection rules (DCR) to filter noisy events before ingestion
 - Free data sources: Azure Activity, Office 365 audit logs (with E5), Sentinel health
 
 ## Integration Points
 
-- **Defender XDR** — Bi-directional incident sync via the unified portal (security.microsoft.com)
+- **Defender XDR (Unified SOC platform)** — Bi-directional incident sync via the unified portal at [security.microsoft.com](https://security.microsoft.com). Sentinel and Defender XDR share a single incident queue, hunting experience, and investigation graph in the unified SOC platform.
 - **Azure Lighthouse** — Multi-tenant workspace management for MSSPs
 - **Logic Apps** — Automated response playbooks triggered by analytics rules
-- **Azure Data Explorer** — Long-term retention and cross-cluster queries for historical hunting
+- **Sentinel data lake** — Modern long-term retention tier within Sentinel itself. Use for high-volume/low-query data with up to 12-year retention at reduced cost. Supports KQL queries and summary rules.
+- **Azure Data Explorer (ADX)** — Specialized option for cross-org federation, custom ML pipelines, or massive-scale retention needs beyond what the Sentinel data lake provides
 - **Microsoft Purview** — DLP alerts ingested via Sentinel connector
 
 ## Operational Procedures
@@ -338,7 +342,7 @@ BehaviorAnalytics
 
 Before executing this skill, check the customer's `.secops/` knowledge framework:
 
-1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel, ADX, or external sources
+1. **Data location:** Read `.secops/data-sources/data-source-map.yaml` — tables may be in Sentinel (Analytics tier or Sentinel data lake), ADX, or external sources
 2. **Active migrations:** Read `.secops/data-sources/migrations.yaml` — data may be moving between locations
 3. **Workspace config:** Read `.secops/workspaces/` — know the workspace ID, tier, retention, and naming conventions
 4. **Compliance:** Read `.secops/compliance/requirements.yaml` — respect data residency and regulatory constraints

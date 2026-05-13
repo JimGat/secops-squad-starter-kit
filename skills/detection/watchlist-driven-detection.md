@@ -40,7 +40,7 @@ Use this skill when:
 
 ### Creating a Watchlist
 
-**In the Sentinel portal:**
+**In the Sentinel portal (or the unified SOC platform at security.microsoft.com):**
 
 1. Navigate to **Microsoft Sentinel** → **Watchlist**
 2. Click **+ New**

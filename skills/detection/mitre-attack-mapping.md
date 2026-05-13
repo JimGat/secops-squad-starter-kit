@@ -102,7 +102,7 @@ SentinelHealth
 | order by SentinelResourceName asc
 ```
 
-> **Note:** This query assumes you maintain a `DetectionMITREMapping` watchlist. If you use Sentinel's built-in MITRE mapping on analytics rules, you can also review coverage directly in the **MITRE ATT&CK** blade in the Sentinel portal.
+> **Note:** This query assumes you maintain a `DetectionMITREMapping` watchlist. If you use Sentinel's built-in MITRE mapping on analytics rules, you can also review coverage directly in the **MITRE ATT&CK** blade in the unified SOC platform at [security.microsoft.com](https://security.microsoft.com) or in the Sentinel section of the Azure portal.
 
 ### Step 5 — Navigator Layer Export
 
