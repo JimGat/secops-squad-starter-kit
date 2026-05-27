@@ -116,3 +116,10 @@
 - Kima created `.copilot/skills/first-run-onboarding/SKILL.md` — detects first-run signals and guides progressive onboarding.
 - Skill depends on `workspace connect` (Sydnor's auto-discovery) and `init --secops` commands — changes to those CLIs should trigger skill updates.
 - Decision merged to `.squad/decisions.md` under "First-Run Onboarding Skill Design".
+
+[CMD] **Community Skill Bulk Import** (2026-05-27T09:32:50.930-05:00)
+- User preference: import all 754 Apache-2.0 skills from `mukul975/Anthropic-Cybersecurity-Skills` into `skills/community/` with no domain filtering; keep community provenance separate from curated skills.
+- Import pattern: flatten each source `skills/{skill-name}/SKILL.md` into `skills/community/{subdomain}/{skill-name}.md`, preserving the markdown body while transforming frontmatter into the hybrid schema.
+- `scripts/import-community-skills.js` is the canonical sync tool. It requires `--source`, `--commit`, and `--imported-at`, resets `skills/community/`, rewrites frontmatter with `js-yaml`, and regenerates `skills/community/NOTICE.md`.
+- Pinned source commit for this import: `0f429d0f96ee70d2a6c259c4ecc6c6e18e0d23ff`.
+- Key file paths: `scripts/import-community-skills.js`, `skills/community/NOTICE.md`, `skills/community/<subdomain>/*.md`, `.squad/decisions/inbox/sydnor-community-skill-full-import.md`.
