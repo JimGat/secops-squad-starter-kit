@@ -4,6 +4,15 @@
 
 ## Learnings
 
+📌 **Skill Relevance Analysis — Anthropic-Cybersecurity-Skills** (2026-05-27T14:32:50.930Z)
+- **Comprehensive analysis of 754 external skills across 26 domains completed:** Categorized as HIGH (8 domains, 311 skills), MEDIUM (11 domains, 225 skills), LOW (7 domains, 177 skills).
+- **Duplicate risk quantified:** ~74–102 skills likely overlap with our existing 92 curated skills. Highest overlap zones: Security Operations (15–20), Threat Intelligence (10–15), Incident Response (10–12), Cloud Security (12–18).
+- **Framework gaps identified:** MITRE ATT&CK (HIGH value, expands technique coverage), D3FEND (fills defensive vocabulary gap — we had zero coverage), NIST CSF (HIGH — aligns with IR lifecycle), ATLAS (MEDIUM — AI/ML-assisted workflows), AI RMF (LOW — governance-level, not SOC-actionable).
+- **D3FEND is the critical missing framework:** External repo has rich D3FEND mappings. Creating `detection/d3fend-countermeasure-mapping.md` skill is a priority gap-fill.
+- **Framework import priority:** MITRE ATT&CK first (immediate detection coverage metrics) → D3FEND (defensive vocabulary) → NIST CSF (IR lifecycle) → ATLAS (targeted).
+- **Net-new value by domain:** Threat Hunting (hypothesis frameworks, LOTL baselines), Threat Intel (MISP patterns, actor profiling), Cloud Security (cloud forensics, multi-cloud normalization), IAM (PAM patterns, service account governance), SOC Ops (metrics frameworks, shift handoff templates).
+- **Caveat: HIGH domains are our strong suits.** External HIGH pool has 74–102 duplicates with our curated skills; this is expected and healthy (validates our coverage breadth). The MEDIUM/LOW pool provides supplementary context.
+
 📌 **Modern SecOps Terminology Standardization (2026-05-13)**
 - **Sentinel data lake** is the modern term for the low-cost retention tier (formerly "Basic Logs" / "Auxiliary Logs" in Sentinel context). The `log-analytics/cost-optimization.md` skill already uses both terms correctly — it's the Sentinel-facing skills that needed alignment.
 - **Unified SOC platform** at security.microsoft.com — Sentinel and Defender XDR share one portal. Any reference to "the Sentinel portal" should acknowledge this. Added unified SOC callouts to `sentinel-workspace-setup.md`, `defender-xdr-configuration.md`, `watchlist-driven-detection.md`, and `mitre-attack-mapping.md`.

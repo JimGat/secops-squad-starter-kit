@@ -6,6 +6,14 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+📌 **External Skill Assimilation Orchestration** (2026-05-27T14:32:50.930Z)
+- **User directive overrode domain filtering:** McNulty proposed importing 14 Microsoft-adjacent domains (~390 skills) from mukul975/Anthropic-Cybersecurity-Skills. User directive expanded scope to ALL 754 skills across all 26 domains.
+- **Architecture survives scope expansion:** The `skills/community/` isolation boundary, hybrid frontmatter, deduplication rules, and vendor-at-commit model remain sound and adaptable to broader imports.
+- **Key downstream gates:** Carver's deduplication report (mapping community → curated skill overlaps), domain specialist spot-checks (D3FEND mappings, Threat Hunting KQL accuracy), and McNulty's format/attribution compliance review before merge.
+- **Framework coverage gains:** Full import brings D3FEND defensive vocabulary (previously absent), expanded MITRE ATT&CK technique mappings, NIST CSF alignment, and ATLAS coverage for AI/ML-assisted workflows.
+- **Deduplication hotspots identified:** Security Operations (15–20 overlaps), Threat Intelligence (10–15), Incident Response (10–12), Cloud Security (12–18) — highest-risk zones requiring careful review.
+- **Pattern for future large-scale imports:** When scope expands beyond initial design, preserve architecture boundaries, gate on quality reviews, and document the override decision for transparency.
+
 ### 2026-04-30: Platform Coverage Gap Analysis
 
 - **52 skills across 6 domains** is the current inventory. Good breadth but significant depth gaps.

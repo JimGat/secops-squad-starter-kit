@@ -4,6 +4,16 @@
 
 ## Learnings
 
+[CMD] **Community Skill Import — Full 754-Skill Batch** (2026-05-27T14:32:50.930Z)
+- **Executed full import of 754 skills from mukul975/Anthropic-Cybersecurity-Skills:** Created `scripts/import-community-skills.js` to fetch, filter, flatten, and transform upstream content into hybrid frontmatter.
+- **Hybrid frontmatter preserved all framework metadata:** MITRE ATT&CK, NIST CSF, NIST 800-53, CIS Controls, ATLAS mappings all retained in frontmatter for compliance/detection alignment.
+- **Attribution compliance (Apache-2.0):** Created `skills/community/NOTICE.md` with source commit SHA (pinned for reproducibility), original author roster, and license pointer. Per-skill `author:` fields untouched.
+- **Deduplication strategy activated:** Skills overlapping curated content marked with `superseded_by:` field; no deletion, enables reference. Curated skills remain single source of truth.
+- **Directory isolation confirmed:** All 754 skills landed in `skills/community/{subdomain}/` — curated domains untouched, clear provenance boundary.
+- **Commit f43f848:** Full import with 754 skills across 45 subdomains (more granular categorization than upstream 26 domains).
+- **Downstream sync path established:** `scripts/import-community-skills.js` is the canonical import tool. Future upstream refreshes: fetch new commit SHA, re-run script, diff results, open PR. Carver validates deduplication.
+- **Architecture resilience:** McNulty's strategy (vendor model, hybrid format, isolation, attribution) proved adaptable when user directive expanded scope from 14 to 26 domains.
+
 [CMD] **Terminology Modernization — Auxiliary Logs → Sentinel data lake** (2026-05-13T07:58:33-05:00)
 - "Auxiliary Logs" / "Aux Logs" is now **Sentinel data lake** in modern Microsoft SecOps terminology.
 - Azure API still uses `'Auxiliary'` as the tier value — PowerShell `ValidateSet` parameters keep `'Auxiliary'` but add inline comments noting the modern name.

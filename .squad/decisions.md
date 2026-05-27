@@ -218,6 +218,94 @@ Created `.copilot/skills/first-run-onboarding/SKILL.md` — a copilot-level skil
 
 **Convention:** When the platform evolves again, apply the same pattern: update all charters' Technology Grounding sections, not just the one that triggered the issue.
 
+### 2026-05-27T09:06:17.460-05:00: Skill Relevance Analysis — Anthropic-Cybersecurity-Skills
+
+**By:** Kima (SecOps Engineer)
+**Status:** Proposed
+
+**What:** Comprehensive analysis of 754 external skills from mukul975/Anthropic-Cybersecurity-Skills across 26 domains. Categorized domains as HIGH (8 domains, 311 skills), MEDIUM (11 domains, 225 skills), and LOW (7 domains, 177 skills) relevance. Identified ~74–102 likely duplicates with our existing 92 curated skills.
+
+**Key Framework Findings:**
+- **MITRE ATT&CK:** HIGH — adopt for expanded technique coverage
+- **D3FEND:** HIGH — fills our defensive vocabulary gap (we have no D3FEND coverage)
+- **NIST CSF:** HIGH — maps to our IR lifecycle
+- **ATLAS:** MEDIUM — selective import for AI/ML-assisted workflows
+- **AI RMF:** LOW — governance-level, not actionable for SOC operations
+
+**Recommended Import Priority:** HIGH domains first (Threat Hunting, Threat Intelligence) → D3FEND vocabulary → NIST CSF alignment → ATLAS for targeted AI workflows.
+
+**Impact:**
+- **All agents:** Community skill imports will bring structured hypothesis frameworks, MISP integration patterns, cloud forensics procedures, SOC metrics frameworks, PAM patterns, and D3FEND defensive countermeasure vocabulary.
+- **McNulty:** Use this analysis to guide deduplication review and feature gate decisions.
+- **Carver:** Validate D3FEND mapping skill for coverage completeness; vet Threat Hunting skills for KQL accuracy before import.
+- **Freamon:** KQL accuracy review for Threat Hunting domain skills.
+
+### 2026-05-27T09:06:17.460-05:00: External Skill Assimilation Strategy — Anthropic-Cybersecurity-Skills
+
+**By:** McNulty (Lead)
+**Status:** Proposed — Awaiting team adoption
+
+**What:** Defined comprehensive strategy for importing ~390 skills from 14 Microsoft-adjacent domains of mukul975/Anthropic-Cybersecurity-Skills. Created hybrid frontmatter schema preserving framework metadata (NIST CSF, MITRE ATT&CK, CIS Controls, etc.). Established `skills/community/` directory structure, deduplication rules, and vendor-at-commit maintenance model.
+
+**Key Decisions:**
+1. **Scope:** Import 14 curated domains (~390 skills); skip 12 red-team/adversary/non-Microsoft domains (~364 skills)
+2. **Format:** Hybrid frontmatter extending our current schema with `mitre_attack`, `nist_csf`, `nist_800_53`, `cis_controls`, `author`, `source_repo`, `license` fields
+3. **Directory:** New `skills/community/` isolation; curated skills remain unchanged and take precedence
+4. **Deduplication:** Add `superseded_by:` references to community skills overlapping curated content; never delete
+5. **Attribution:** Preserve `author:` fields (Apache-2.0 requirement); create `skills/community/NOTICE.md` with source commit SHA
+6. **Maintenance:** Vendor (copy in) at pinned commit; periodic sync script, not submodule
+
+**Recommended Implementation:**
+- Sydnor: Write import script (Node.js or PowerShell) with frontmatter transformation
+- Carver: Generate deduplication report (fuzzy title/tag overlap against curated skills)
+- Kima: Spot-check 10–15 skills across domains for quality
+- McNulty: Gate PR on deduplication report and format compliance
+
+**Impact:**
+- **All agents:** Will have access to 390+ new skills with rich framework mappings, enabling better technique coverage and compliance alignment
+- **Curated domains:** Unchanged; community skills provide supplementary reference material
+- **Framework coverage:** Gains D3FEND vocabulary, expanded MITRE ATT&CK technique mappings, NIST CSF alignment
+- **Scope isolation:** Clear provenance boundary between curated and community content
+
+### 2026-05-27T09:32:50.930-05:00: User directive — Import ALL skills
+
+**By:** User (via Copilot)
+**Status:** Accepted
+
+**What:** User directive explicitly overrides McNulty's 14-domain filter recommendation. Import ALL 754 skills from all 26 domains in mukul975/Anthropic-Cybersecurity-Skills with no exclusions.
+
+**Why:** User request — captured for team memory. Overrides the earlier domain filtering strategy.
+
+**Impact:**
+- **Sydnor:** Import scope now includes all 754 upstream skills; excluded domains (red-team, pentesting, malware analysis, etc.) are now included
+- **Carver:** Deduplication and validation apply across all imported subdomains, not just Microsoft-adjacent ones
+- **McNulty:** Previous filtered-domain list is superseded; review gates now apply to the full catalog
+- **Kima/Freamon/Herc:** Community skill discovery surfaces broader defensive and adjacent reference material; curated skills remain the quality bar
+- **All agents:** Greater breadth of defensive context available, though some imported skills may fall outside primary SOC operational scope
+
+### 2026-05-27T09:32:50.930-05:00: Community Skill Import Scope Override
+
+**By:** Sydnor (Platform Dev)
+**Status:** Implemented
+
+**What:** Executed full import of all 754 skills from mukul975/Anthropic-Cybersecurity-Skills into `skills/community/` tree across all 26 subdomains. Preserved McNulty's community-skill architecture (hybrid frontmatter, vendor model, attribution, NOTICE.md) while widening scope to entire upstream catalog per user directive.
+
+**Key Actions:**
+1. Wrote `scripts/import-community-skills.js` to fetch, filter, flatten, and transform upstream skills into hybrid frontmatter format
+2. Imported all 754 skills into `skills/community/{subdomain}/{name}.md`
+3. Generated `skills/community/NOTICE.md` with pinned upstream commit SHA and attribution roster
+4. Preserved all framework metadata (MITRE ATT&CK, NIST CSF, D3FEND, ATLAS, etc.) in frontmatter
+5. Created cross-references for skills overlapping curated content using `superseded_by:` field
+6. Committed as commit f43f848
+
+**Impact:**
+- **Squad members:** 754 community skills now discoverable across 45 subdomains (expanded from original 26 due to granular categorization)
+- **McNulty:** Future review applies to full import; filtered-domain strategy superseded
+- **Carver:** Deduplication report now maps all community skills against 102 curated skills for overlap detection
+- **Kima/Freamon/Herc:** Broader skill discovery available; agent logic can weight curated vs. community appropriately
+- **Users:** Expanded defensive reference library available during agent sessions
+- **Maintenance:** `scripts/import-community-skills.js` is the canonical sync path; future imports require new commit SHA and explicit timestamp
+
 ### 2026-05-13T07:58:33-05:00: Terminology Modernization — Auxiliary Logs → Sentinel data lake
 
 **By:** Sydnor (Platform Dev)
