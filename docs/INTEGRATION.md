@@ -10,7 +10,7 @@ This guide walks you through connecting the starter kit to your Microsoft Securi
 
 | Requirement | Details |
 |------------|---------|
-| **GitHub Copilot license** | [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for Microsoft FTEs) |
+| **GitHub Copilot license** | [github.com/features/copilot](https://github.com/features/copilot) |
 | **Node.js 18+** | [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
 | **Git** | [git-scm.com](https://git-scm.com/) or `winget install Git.Git` |
 | **Azure CLI** | `winget install Microsoft.AzureCLI` — required for workspace connections |

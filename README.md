@@ -27,7 +27,7 @@ It's not a chatbot wearing a SOC badge. Each team member runs in its own context
 
 | Requirement | How to get it |
 |------------|---------------|
-| **GitHub Copilot license** | [aka.ms/githubcopilot](https://aka.ms/githubcopilot) (free for Microsoft FTEs) |
+| **GitHub Copilot license** | [github.com/features/copilot](https://github.com/features/copilot) |
 | **GitHub Copilot CLI** (`copilot`) | Included with GitHub Copilot — run `copilot --version` to confirm |
 | **Windows 10/11 with PowerShell** | The install script handles Git and Node.js automatically via winget |
 
@@ -52,10 +52,28 @@ The installer clones the repo, installs dependencies, runs persona selection, an
 
 **✓ Validate:** Run `cd ~/secops-squad && ls .squad/team.md` — you should see the team roster file.
 
-> **Execution policy error on Windows?** Run this first, then retry:
+> **Script blocked on Windows?** If you downloaded the script file (instead of piping with `irm | iex`), Windows marks it as untrusted (Mark of the Web). Fix with either:
+> ```powershell
+> # Option 1: Remove the block on the downloaded file, then run it
+> Unblock-File .\install.ps1
+> .\install.ps1
+>
+> # Option 2: Bypass execution policy for this one run
+> powershell -ExecutionPolicy Bypass -File .\install.ps1
+> ```
+> If you still get an execution policy error, set RemoteSigned:
 > ```powershell
 > Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 > ```
+
+> **Script blocked on macOS?** If you downloaded the file via a browser, macOS adds a quarantine attribute. Remove it:
+> ```bash
+> # Remove quarantine flag, make executable, then run
+> xattr -d com.apple.quarantine install.sh
+> chmod +x install.sh
+> ./install.sh
+> ```
+> The `curl | bash` one-liner above avoids this entirely since the script never touches disk.
 
 ### 3. Open Copilot and go
 
