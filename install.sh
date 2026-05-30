@@ -36,7 +36,7 @@ check_command() {
 
   if command -v "$cmd" &>/dev/null; then
     local version
-    version=$($cmd --version 2>&1 | head -1)
+    version=$($cmd --version 2>&1 | grep -v "^WARNING" | head -1 || true)
     echo -e "  ${GREEN}✅ ${name}: ${version}${RESET}"
     return 0
   else
