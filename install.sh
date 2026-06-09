@@ -122,8 +122,11 @@ main() {
   echo -e "${CYAN}Downloading secops-squad...${RESET}"
   local temp_dir
   temp_dir=$(mktemp -d)
-  if ! git clone --depth 1 "$REPO_URL" "$temp_dir" 2>/dev/null; then
-    echo -e "${RED}Failed to download secops-squad.${RESET}"
+  local clone_output
+  clone_output=$(git clone --depth 1 "$REPO_URL" "$temp_dir" 2>&1)
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to download secops-squad:${RESET}"
+    echo -e "${DIM}${clone_output}${RESET}"
     rm -rf "$temp_dir"
     exit 1
   fi

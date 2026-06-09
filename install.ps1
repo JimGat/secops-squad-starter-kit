@@ -237,9 +237,10 @@ function Install-SecOpsSquad {
     # Download the repo content (shallow clone), then create a standalone repo
     Write-Host "Downloading secops-squad..." -ForegroundColor Cyan
     $TempDir = Join-Path $env:TEMP "secops-squad-download-$(Get-Random)"
-    & git clone --depth 1 $RepoUrl $TempDir 2>$null
+    $gitOutput = & git clone --depth 1 $RepoUrl $TempDir 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "  Failed to download secops-squad." -ForegroundColor Red
+        Write-Host "  Failed to download secops-squad (git clone exit code $LASTEXITCODE):" -ForegroundColor Red
+        Write-Host ($gitOutput -join "`n") -ForegroundColor DarkGray
         exit 1
     }
 
