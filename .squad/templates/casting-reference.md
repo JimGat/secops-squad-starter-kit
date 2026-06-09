@@ -21,12 +21,13 @@ On-demand reference for Squad's casting system. Loaded during Init Mode or when 
 | Marvel Cinematic Universe | 25 | large, action, ensemble | heroism, teamwork, powers, scale |
 | DC Universe | 18 | large, action, ensemble | justice, duality, powers, mythology |
 | Futurama | 12 | medium, sci-fi, comedy | future, robots, space, absurdity |
+| Disney Princesses | 14 | medium, musical, passive-aggressive | waiting for rescue, talking to animals instead of stakeholders, singing through blockers, magical thinking as architecture, hair-based load balancing |
 
-**Total: 15 universes** — capacity range 6–25.
+**Total: 16 universes** — capacity range 6–25.
 
 ## Selection Algorithm
 
-Universe selection is deterministic. Score each universe and pick the highest:
+Universe selection uses scoring with a tiebreak mechanism to ensure variety:
 
 ```
 score = size_fit + shape_fit + resonance_fit + LRU
@@ -39,7 +40,16 @@ score = size_fit + shape_fit + resonance_fit + LRU
 | `resonance_fit` | Match universe resonance signals against session and repo context signals. |
 | `LRU` | Least-recently-used bonus — prefer universes not used in recent assignments (from `history.json`). |
 
-Same inputs → same choice (unless LRU changes between assignments).
+### Tiebreak & Fresh Install Behavior
+
+When multiple universes score within 10% of the top score (common on fresh installs where LRU is empty), the coordinator MUST either:
+
+1. **Offer the user a choice** — present the top 3-5 scoring universes and let the user pick, OR
+2. **Randomize** — pick randomly from the tied candidates.
+
+**On fresh installs (empty `history.json`):** Since LRU provides no differentiation, ties are expected. Always offer the user a choice of 3-5 universes that fit the team size and project shape. Present them as themed options without revealing the full universe name mapping logic.
+
+**Never hard-code a default universe.** The `default_universe` field in `policy.json` is deprecated — if present, ignore it and use the scoring algorithm with tiebreak instead.
 
 ## Casting State File Schemas
 
