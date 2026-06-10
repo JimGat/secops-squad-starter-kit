@@ -1,0 +1,28 @@
+intent: detect.process-injection
+domain: endpoint
+description: >
+  Detect process injection techniques including DLL injection, process
+  hollowing, thread hijacking, and APC injection. These are common
+  defense evasion and privilege escalation methods used by malware and
+  APT actors.
+mitre_attack:
+  - T1055        # Process Injection
+  - T1055.001    # DLL Injection
+  - T1055.002    # Portable Executable Injection
+  - T1055.003    # Thread Hijacking
+  - T1055.004    # Asynchronous Procedure Call
+  - T1055.012    # Process Hollowing
+required_data:
+  - process_creation_events
+  - sysmon_events (optional but recommended)
+  - edr_alerts (optional)
+outputs:
+  - injection_alert
+  - source_and_target_processes
+  - technique_classification
+parameters:
+  sensitivity:
+    type: enum
+    values: [low, medium, high]
+    default: medium
+    description: Detection sensitivity -- high catches more but increases FPs

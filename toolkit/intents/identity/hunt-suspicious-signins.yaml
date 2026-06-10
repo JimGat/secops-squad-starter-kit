@@ -1,0 +1,36 @@
+intent: hunt.suspicious-signins
+domain: identity
+description: >
+  Hunt for suspicious authentication activity including impossible travel,
+  unfamiliar sign-in properties, brute-force patterns, credential stuffing,
+  and risky sign-ins from anomalous locations or devices.
+mitre_attack:
+  - T1110        # Brute Force
+  - T1110.001    # Password Guessing
+  - T1110.003    # Password Spraying
+  - T1078        # Valid Accounts
+  - T1078.002    # Domain Accounts
+  - T1110.004    # Credential Stuffing
+required_data:
+  - authentication_logs
+  - identity_provider_events
+  - geo_ip_lookup (optional)
+  - device_compliance_state (optional)
+outputs:
+  - suspicious_signin_events
+  - risk_scored_entities
+  - impossible_travel_pairs
+  - brute_force_candidates
+parameters:
+  lookback:
+    type: duration
+    default: 7d
+    description: How far back to search
+  failure_threshold:
+    type: integer
+    default: 10
+    description: Minimum failed attempts to flag as brute-force candidate
+  travel_speed_mph:
+    type: integer
+    default: 500
+    description: Maximum plausible travel speed (mph) for impossible travel detection

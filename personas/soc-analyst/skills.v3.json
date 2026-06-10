@@ -1,0 +1,129 @@
+{
+  "persona": "soc-analyst",
+  "version": "3.0.0",
+  "description": "Skills for L1/L2/L3 SOC analyst operations — tool-agnostic with adapter resolution",
+  
+  "toolkit_resolution": {
+    "_comment": "Skills reference universal intents. At runtime, the active adapter (from .secops/environment.yaml toolkit.primary_adapter) resolves each intent to a platform-specific skill file.",
+    "default_adapter": "sentinel",
+    "supported_adapters": ["sentinel", "splunk", "elastic", "qradar", "generic"]
+  },
+
+  "skills": {
+    "shared": [
+      {
+        "name": "incident-investigation",
+        "intent": "hunt.suspicious-activity",
+        "description": "Core incident investigation methodology — triage, scoping, evidence collection, timeline reconstruction, and documentation. Used by all tiers.",
+        "adapter_overrides": {
+          "sentinel": "skills/kql/incident-investigation.md",
+          "splunk": "adapters/splunk/skills/hunt-suspicious-signins.md",
+          "generic": "community/threat-hunting/detecting-privilege-escalation-attempts.md"
+        }
+      },
+      {
+        "name": "rate-limiting",
+        "path": "skills/powershell/rate-limiting.md",
+        "description": "API rate limiting patterns — exponential backoff, Retry-After handling, token bucket, circuit breaker. Required for all API calls across tiers.",
+        "adapter_overrides": {
+          "sentinel": "skills/powershell/rate-limiting.md",
+          "splunk": "skills/powershell/rate-limiting.md",
+          "generic": "skills/powershell/rate-limiting.md"
+        }
+      },
+      {
+        "name": "brute-force-detection",
+        "intent": "detect.brute-force",
+        "description": "Detect brute-force authentication attacks — password spraying, credential stuffing, and single-source brute force.",
+        "adapter_overrides": {
+          "sentinel": "skills/detection/nrt-rule-pattern.md",
+          "splunk": "toolkit/adapters/splunk/skills/detect-brute-force.md",
+          "elastic": "toolkit/adapters/elastic/skills/detect-brute-force.md",
+          "generic": "community/threat-hunting/detecting-privilege-escalation-attempts.md"
+        }
+      },
+      {
+        "name": "compromised-account-response",
+        "intent": "respond.compromised-account",
+        "description": "Respond to compromised accounts — revoke sessions, force password reset, assess blast radius, check persistence.",
+        "adapter_overrides": {
+          "sentinel": "skills/soar/compromised-account.md",
+          "splunk": "toolkit/adapters/splunk/skills/respond-compromised-account.md",
+          "generic": "community/threat-hunting/detecting-insider-threat-behaviors.md"
+        }
+      }
+    ],
+
+    "per_agent": {
+      "tier1_triage": [
+        {
+          "name": "phishing-response",
+          "intent": "respond.phishing",
+          "description": "Automated phishing response — email header analysis, URL/attachment detonation, mailbox search-and-purge, user notification, IOC extraction.",
+          "adapter_overrides": {
+            "sentinel": "skills/soar/phishing-response.md",
+            "splunk": "toolkit/adapters/splunk/skills/respond-phishing.md",
+            "generic": "community/threat-hunting/hunting-for-spearphishing-indicators.md"
+          }
+        },
+        {
+          "name": "auto-triage",
+          "intent": "triage.incoming-alert",
+          "description": "Automated alert triage — severity assessment, deduplication, enrichment, and routing.",
+          "adapter_overrides": {
+            "sentinel": "skills/soar/auto-triage.md",
+            "splunk": "toolkit/adapters/splunk/skills/triage-alerts.md",
+            "generic": "skills/soar/auto-triage.md"
+          }
+        }
+      ],
+
+      "tier2_investigation": [
+        {
+          "name": "suspicious-signins-hunt",
+          "intent": "hunt.suspicious-signins",
+          "description": "Hunt for suspicious authentication — impossible travel, brute-force, credential stuffing.",
+          "adapter_overrides": {
+            "sentinel": "skills/kql/entra-signin-analysis.md",
+            "splunk": "toolkit/adapters/splunk/skills/hunt-suspicious-signins.md",
+            "elastic": "toolkit/adapters/elastic/skills/hunt-suspicious-signins.md",
+            "generic": "community/threat-hunting/detecting-privilege-escalation-attempts.md"
+          }
+        },
+        {
+          "name": "lateral-movement-hunt",
+          "intent": "hunt.lateral-movement",
+          "description": "Hunt for lateral movement — WMI, PSExec, RDP anomalies, pass-the-hash.",
+          "adapter_overrides": {
+            "sentinel": "skills/kql/defender-xdr-hunting.md",
+            "splunk": "toolkit/adapters/splunk/skills/hunt-lateral-movement.md",
+            "generic": "community/threat-hunting/hunting-for-lateral-movement-via-wmi.md"
+          }
+        }
+      ],
+
+      "tier3_advanced": [
+        {
+          "name": "process-injection-detection",
+          "intent": "detect.process-injection",
+          "description": "Detect process injection — DLL injection, hollowing, thread hijacking, APC injection.",
+          "adapter_overrides": {
+            "sentinel": "skills/detection/detection-lifecycle.md",
+            "splunk": "toolkit/adapters/splunk/skills/detect-process-injection.md",
+            "generic": "community/threat-hunting/detecting-t1055-process-injection-with-sysmon.md"
+          }
+        },
+        {
+          "name": "malware-containment",
+          "intent": "respond.malware-containment",
+          "description": "Contain malware infection — isolate endpoint, kill processes, block C2, collect forensics.",
+          "adapter_overrides": {
+            "sentinel": "skills/soar/malware-containment.md",
+            "splunk": "toolkit/adapters/splunk/skills/respond-malware-containment.md",
+            "generic": "community/digital-forensics/performing-live-memory-acquisition-with-volatility.md"
+          }
+        }
+      ]
+    }
+  }
+}

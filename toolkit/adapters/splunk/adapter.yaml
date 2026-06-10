@@ -1,0 +1,116 @@
+adapter: splunk
+display_name: Splunk Enterprise / Splunk Cloud
+query_language: SPL
+soar_platform: Splunk SOAR (Phantom)
+api_style: REST (Splunk REST API + HEC)
+products:
+  - Splunk Enterprise
+  - Splunk Cloud
+  - Splunk SOAR
+  - Splunk Enterprise Security
+auth_method: splunk_token_or_http_basic
+api_endpoints:
+  search: "https://{host}:8089/services/search/jobs"
+  rest: "https://{host}:8089/services/"
+  hec: "https://{host}:8088/services/collector"
+intent_map:
+
+  # === IDENTITY DOMAIN ===
+  hunt.suspicious-signins:
+    skill: adapters/splunk/skills/hunt-suspicious-signins.md
+    query_template: |
+      index=* sourcetype IN (azure:aad:signin, o365:management:activity, wineventlog:security)
+      (EventCode=4625 OR status!="0" OR riskState="atRisk")
+      | eval failure=if(ResultType!=0 OR EventCode=4625, 1, 0)
+      | stats count as total, sum(failure) as failures by user, src_ip, app, Location
+      | where failures > {failure_threshold}
+      | sort -failures
+    notes: >
+      Adapts to Azure AD SigninLogs (sourcetype=azure:aad:signin),
+      O365 audit logs, or Windows Security Event 4625 depending on
+      what data sources are available in the Splunk deployment.
+
+  detect.brute-force:
+    skill: adapters/splunk/skills/detect-brute-force.md
+    query_template: |
+      index=auth (action=failure OR status=failed)
+      | bin _time span={window}
+      | stats dc(user) as unique_targets, count as failures by src_ip, _time
+      | where failures > {threshold} AND unique_targets > 3
+      | sort -failures
+    notes: >
+      Password spraying pattern: many targets, few passwords per target.
+      Tune unique_targets threshold for your environment.
+      For scheduled alert: save as Splunk correlation search.
+
+  respond.compromised-account:
+    skill: adapters/splunk/skills/respond-compromised-account.md
+    actions:
+      - name: revoke_sessions
+        type: soar_playbook
+        description: Revoke all active sessions for the compromised user
+      - name: force_password_reset
+        type: soar_playbook
+        description: Force password reset via identity provider API
+      - name: disable_account
+        type: soar_playbook
+        description: Disable the user account to prevent further access
+      - name: assess_blast_radius
+        type: splunk_query
+        query: |
+          index=* user={user}
+          | stats count as events, dc(dest) as touched_systems by sourcetype
+          | sort -events
+        description: Check what systems the user accessed recently
+    notes: >
+      Actions are Splunk SOAR playbooks that can be triggered via API.
+      The blast radius query runs in Splunk to assess scope.
+
+  # === ENDPOINT DOMAIN ===
+  hunt.lateral-movement:
+    skill: adapters/splunk/skills/hunt-lateral-movement.md
+    query_template: |
+      (index=winsec OR index=sysmon) (EventCode=4624 OR EventCode=4625)
+      LogonType IN (3, 10, 2)
+      {exclude_clause}
+      | stats count as logons, dc(Computer) as targets by user, src_ip, LogonType
+      | where targets > 5 AND logons > 20
+      | sort -targets
+    parameters:
+      exclude_clause:
+        type: string
+        default: "NOT src_ip IN (10.0.0.1, 192.168.1.1)"
+        description: Exclude known admin/management IPs
+    notes: >
+      Looks for RDP (type 10), network (type 3), and interactive (type 2)
+      logon patterns across many targets. Tune exclude_clause for admin hosts.
+
+  detect.process-injection:
+    skill: adapters/splunk/skills/detect-process-injection.md
+    query_template: |
+      index=sysmon (EventCode=8 OR EventCode=10)
+      (TargetImage="*\\svchost.exe" OR TargetImage="*\\lsass.exe" OR TargetImage="*\\explorer.exe")
+      | stats count by SourceImage, TargetImage, Computer, _time
+      | sort -_time
+    notes: >
+      Sysmon Event 8 (CreateRemoteThread) and Event 10 (ProcessAccess)
+      for injection into high-value processes. Requires Sysmon deployment.
+
+  respond.malware-containment:
+    skill: adapters/splunk/skills/respond-malware-containment.md
+    actions:
+      - name: isolate_endpoint
+        type: soar_playbook
+        description: Network-isolate the endpoint via EDR or firewall integration
+      - name: kill_process
+        type: soar_playbook
+        description: Kill the malicious process tree
+      - name: block_c2
+        type: soar_playbook
+        description: Block C2 domains/IPs at firewall or DNS sinkhole
+      - name: collect_forensics
+        type: soar_playbook
+        description: Trigger memory acquisition and triage package collection
+    notes: >
+      Containment actions are Splunk SOAR playbooks. EDR integration
+      (CrowdStrike, SentinelOne, etc.) handles endpoint isolation.

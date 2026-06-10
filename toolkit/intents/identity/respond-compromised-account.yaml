@@ -1,0 +1,34 @@
+intent: respond.compromised-account
+domain: identity
+description: >
+  Respond to a confirmed or suspected compromised user account.
+  Actions include: force password reset, revoke active sessions, disable
+  account, review sign-in logs, check MFA status, assess blast radius,
+  and notify the user and security team.
+mitre_attack:
+  - T1078        # Valid Accounts
+  - T1530        # Data from Cloud Storage
+  - T1087        # Account Discovery
+required_data:
+  - identity_provider_events
+  - authentication_logs
+  - user_directory (optional)
+outputs:
+  - remediation_actions_taken
+  - blast_radius_assessment
+  - session_revocation_status
+  - notification_sent
+parameters:
+  severity:
+    type: enum
+    values: [low, medium, high, critical]
+    default: high
+    description: Determines automation scope -- low/medium may require analyst confirmation
+  auto_revoke_sessions:
+    type: boolean
+    default: true
+    description: Automatically revoke all active sessions
+  auto_password_reset:
+    type: boolean
+    default: true
+    description: Automatically force password reset

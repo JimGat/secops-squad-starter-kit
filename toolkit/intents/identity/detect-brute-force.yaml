@@ -1,0 +1,32 @@
+intent: detect.brute-force
+domain: identity
+description: >
+  Detect brute-force authentication attacks -- both password spraying
+  (many accounts, few passwords) and credential stuffing (many passwords,
+  few accounts). Triggers an alert when failure counts exceed threshold
+  within a short time window.
+mitre_attack:
+  - T1110        # Brute Force
+  - T1110.001    # Password Guessing
+  - T1110.003    # Password Spraying
+  - T1110.004    # Credential Stuffing
+required_data:
+  - authentication_logs
+outputs:
+  - alert_event
+  - source_ips_flagged
+  - accounts_targeted
+parameters:
+  threshold:
+    type: integer
+    default: 10
+    description: Failed attempts threshold per window
+  window:
+    type: duration
+    default: 5m
+    description: Sliding window for counting failures
+  rule_type:
+    type: enum
+    values: [nrt, scheduled]
+    default: scheduled
+    description: Whether to use near-real-time or scheduled detection

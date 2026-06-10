@@ -1,0 +1,36 @@
+intent: hunt.lateral-movement
+domain: endpoint
+description: >
+  Hunt for lateral movement activity -- WMI execution, PSExec usage,
+  RDP sessions to unusual hosts, pass-the-hash patterns, DCOM abuse,
+  and SMB session anomalies that indicate an attacker pivoting through
+  the network.
+mitre_attack:
+  - T1021        # Remote Services
+  - T1021.001    # Remote Desktop Protocol
+  - T1021.002    # SMB/Windows Admin Shares
+  - T1047        # WMI
+  - T1055        # Process Injection
+  - T1547        # Boot or Logon Autostart Execution
+  - T1550        # Use Alternate Authentication Material
+  - T1550.002    # Pass the Hash
+  - T1558        # Steal or Forge Kerberos Tickets
+required_data:
+  - process_creation_events
+  - network_connection_events
+  - authentication_logs
+  - smb_session_logs (optional)
+  - rdp_logs (optional)
+outputs:
+  - lateral_movement_events
+  - pivot_hosts_identified
+  - technique_classification
+parameters:
+  lookback:
+    type: duration
+    default: 24h
+    description: How far back to search
+  exclude_admin_hosts:
+    type: boolean
+    default: true
+    description: Exclude known admin workstations from results
