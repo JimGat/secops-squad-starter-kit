@@ -1,6 +1,6 @@
 # 📚 SecOps Squad — Skills Catalog
 
-> **Last updated:** 2026-05-04 | **Total skills:** 96 | **Domains:** 11
+> **Last updated:** 2026-06-10 | **Total skills:** 847 (92 core + 755 community) | **Core domains:** 11 | **Community sub-domains:** 45
 
 Complete inventory of all skills in the SecOps Squad Starter Kit. Each skill is a Markdown knowledge file that teaches Copilot CLI agents how to perform specific security operations tasks.
 
@@ -9,17 +9,18 @@ Complete inventory of all skills in the SecOps Squad Starter Kit. Each skill is 
 | Domain | Count | Description |
 |--------|-------|-------------|
 | [**ADX (Azure Data Explorer)**](#adx-azure-data-explorer) | 8 | Security data lake, long-term retention, ML anomaly detection, dashboards |
-| [**Detection Engineering**](#detection-engineering) | 9 | Rule authoring, MITRE ATT&CK mapping, detection lifecycle, NRT/scheduled rules |
+| [**Detection Engineering**](#detection-engineering) | 10 | Rule authoring, MITRE ATT&CK mapping, detection lifecycle, NRT/scheduled rules |
 | [**KQL**](#kql) | 11 | Threat hunting, Sentinel analytics, UEBA, cross-workspace queries |
 | [**Log Analytics**](#log-analytics) | 10 | Workspace architecture, data connectors, retention, cost optimization |
-| [**Microsoft Security**](#microsoft-security) | 16 | Defender XDR, Sentinel, Entra ID, Purview, Graph Security API, MCP servers |
+| [**Microsoft Security**](#microsoft-security) | 19 | Defender XDR, Sentinel, Entra ID, Purview, Graph Security API, MCP servers |
 | [**Orchestration**](#orchestration) | 3 | Cross-skill workflows, Copilot for Security integration, MSSP patterns |
-| [**Platform**](#platform) | 3 | Multi-tenant, sovereign cloud (GCC/GCC-H/DoD), cross-cloud connectors |
+| [**Platform**](#platform) | 4 | Multi-tenant, sovereign cloud (GCC/GCC-H/DoD), cross-cloud, performance tuning |
 | [**PowerShell**](#powershell) | 14 | Module foundation, API wrappers, auth patterns, rate limiting |
 | [**SOAR/Automation**](#soarautomation) | 12 | Phishing response, auto-triage, compromised account, threat intel ingest |
 | [**Testing**](#testing) | 1 | Integration test suites for SecOps workflows |
-| [**Copilot Skills**](#copilot-skills) | 9 | Agent collaboration, git workflow, error recovery, squad conventions |
-| **Total** | **96** | |
+| [**Copilot Skills**](#copilot-skills) | 10 | Agent collaboration, git workflow, error recovery, squad conventions, onboarding |
+| [**Community Skills**](#community-skills) | 755 | 45 sub-domains covering threat hunting, cloud security, network security, malware analysis, digital forensics, and more |
+| **Total** | **847** | |
 
 ---
 
@@ -51,8 +52,9 @@ Skills for building, testing, deploying, and tuning security detections.
 | 5 | MITRE ATT&CK Mapping | `skills/detection/mitre-attack-mapping.md` | Mapping detections to MITRE ATT&CK techniques and tactics |
 | 6 | Near-Real-Time (NRT) Rule Pattern | `skills/detection/nrt-rule-pattern.md` | Authoring NRT analytics rules for low-latency detection |
 | 7 | Scheduled Analytics Rule Pattern | `skills/detection/scheduled-rule-pattern.md` | Authoring scheduled analytics rules with proper patterns |
-| 8 | Threat Model Template | `skills/detection/threat-model-template.md` | Threat model templates for detection engineering |
-| 9 | Watchlist-Driven Detection | `skills/detection/watchlist-driven-detection.md` | Using Sentinel watchlists to drive adaptive detections |
+| 8 | Threat Intel Enrichment | `skills/detection/threat-intel-enrichment.md` | External threat intelligence enrichment for detections |
+| 9 | Threat Model Template | `skills/detection/threat-model-template.md` | Threat model templates for detection engineering |
+| 10 | Watchlist-Driven Detection | `skills/detection/watchlist-driven-detection.md` | Using Sentinel watchlists to drive adaptive detections |
 
 ## KQL
 
@@ -95,22 +97,25 @@ Skills for the Microsoft Security product suite — Defender, Sentinel, Entra, P
 
 | # | Skill | Path | Description |
 |---|-------|------|-------------|
-| 1 | Microsoft Copilot for Security | `skills/msft-security/copilot-for-security.md` | Integrating with Microsoft Copilot for Security |
-| 2 | Defender API Permissions Reference | `skills/msft-security/defender-api-permissions.md` | Required API permissions for Defender operations |
-| 3 | Defender for Cloud Apps (MDCA) | `skills/msft-security/defender-cloud-apps.md` | Microsoft Defender for Cloud Apps configuration and queries |
-| 4 | Defender for Cloud Policies | `skills/msft-security/defender-for-cloud-policies.md` | Managing Defender for Cloud security policies |
-| 5 | Defender for Endpoint | `skills/msft-security/defender-for-endpoint.md` | Defender for Endpoint integration and hunting |
-| 6 | Defender for Identity | `skills/msft-security/defender-for-identity.md` | Defender for Identity configuration and detection |
-| 7 | Defender MCP Server | `skills/msft-security/defender-mcp-server.md` | MCP server integration for Defender XDR |
-| 8 | Defender XDR Configuration | `skills/msft-security/defender-xdr-configuration.md` | Configuring Defender XDR unified security operations |
-| 9 | eDiscovery API Wrapper | `skills/msft-security/ediscovery-api-wrapper.md` | REST API wrapper for eDiscovery operations |
-| 10 | Entra ID Protection | `skills/msft-security/entra-id-protection.md` | Entra ID Protection risk policies and investigation |
-| 11 | Microsoft Graph Security API | `skills/msft-security/microsoft-graph-security.md` | Graph Security API for alerts, incidents, and threat intel |
-| 12 | Purview API Wrapper | `skills/msft-security/purview-api-wrapper.md` | REST API wrapper for Microsoft Purview |
-| 13 | Purview DLP Patterns | `skills/msft-security/purview-dlp-patterns.md` | Data Loss Prevention patterns with Microsoft Purview |
-| 14 | Sentinel REST API Reference | `skills/msft-security/sentinel-api-reference.md` | Quick reference for the Sentinel REST API |
-| 15 | Sentinel MCP Server | `skills/msft-security/sentinel-mcp-server.md` | MCP server integration for Microsoft Sentinel |
-| 16 | Sentinel Workspace Setup | `skills/msft-security/sentinel-workspace-setup.md` | Sentinel workspace provisioning and configuration |
+| 1 | Attack Simulation Training API | `skills/msft-security/attack-simulation-api.md` | Attack simulation training via API |
+| 2 | Cloud App Discovery API | `skills/msft-security/cloud-app-discovery-api.md` | Defender for Cloud Apps Discovery API integration |
+| 3 | Connectivity Setup | `skills/msft-security/connectivity-setup.md` | Microsoft Security connectivity setup and prerequisites |
+| 4 | Microsoft Copilot for Security | `skills/msft-security/copilot-for-security.md` | Integrating with Microsoft Copilot for Security |
+| 5 | Defender API Permissions Reference | `skills/msft-security/defender-api-permissions.md` | Required API permissions for Defender operations |
+| 6 | Defender for Cloud Apps (MDCA) | `skills/msft-security/defender-cloud-apps.md` | Microsoft Defender for Cloud Apps configuration and queries |
+| 7 | Defender for Cloud Policies | `skills/msft-security/defender-for-cloud-policies.md` | Managing Defender for Cloud security policies |
+| 8 | Defender for Endpoint | `skills/msft-security/defender-for-endpoint.md` | Defender for Endpoint integration and hunting |
+| 9 | Defender for Identity | `skills/msft-security/defender-for-identity.md` | Defender for Identity configuration and detection |
+| 10 | Defender MCP Server | `skills/msft-security/defender-mcp-server.md` | MCP server integration for Defender XDR |
+| 11 | Defender XDR Configuration | `skills/msft-security/defender-xdr-configuration.md` | Configuring Defender XDR unified security operations |
+| 12 | eDiscovery API Wrapper | `skills/msft-security/ediscovery-api-wrapper.md` | REST API wrapper for eDiscovery operations |
+| 13 | Entra ID Protection | `skills/msft-security/entra-id-protection.md` | Entra ID Protection risk policies and investigation |
+| 14 | Microsoft Graph Security API | `skills/msft-security/microsoft-graph-security.md` | Graph Security API for alerts, incidents, and threat intel |
+| 15 | Purview API Wrapper | `skills/msft-security/purview-api-wrapper.md` | REST API wrapper for Microsoft Purview |
+| 16 | Purview DLP Patterns | `skills/msft-security/purview-dlp-patterns.md` | Data Loss Prevention patterns with Microsoft Purview |
+| 17 | Sentinel REST API Reference | `skills/msft-security/sentinel-api-reference.md` | Quick reference for the Sentinel REST API |
+| 18 | Sentinel MCP Server | `skills/msft-security/sentinel-mcp-server.md` | MCP server integration for Microsoft Sentinel |
+| 19 | Sentinel Workspace Setup | `skills/msft-security/sentinel-workspace-setup.md` | Sentinel workspace provisioning and configuration |
 
 ## Orchestration
 
@@ -131,6 +136,7 @@ Skills for multi-tenant, sovereign cloud, and cross-cloud security operations.
 | 1 | Cross-Cloud Security Data Connectors | `skills/platform/cross-cloud-connectors.md` | Connecting AWS, GCP, and multi-cloud data to Sentinel |
 | 2 | Sovereign Cloud Support (GCC/GCC-H/DoD) | `skills/platform/gov-cloud-support.md` | Operating in Azure Government and sovereign cloud environments |
 | 3 | Multi-Tenant SecOps Operations | `skills/platform/multi-tenant-support.md` | Managing security operations across multiple Azure AD tenants |
+| 4 | Performance Tuning & Optimization | `skills/platform/performance-tuning.md` | Performance tuning and optimization for security workloads |
 
 ## PowerShell
 
@@ -188,13 +194,68 @@ Agent-level skills that govern how Copilot CLI agents collaborate, recover, and 
 |---|-------|------|-------------|
 | 1 | Agent Collaboration | `.copilot/skills/agent-collaboration/SKILL.md` | Standard collaboration patterns — worktree awareness, cross-agent communication |
 | 2 | Error Recovery Patterns | `.copilot/skills/error-recovery/SKILL.md` | Recovery patterns for agent failures — adapt, don't just report |
-| 3 | Git Workflow | `.copilot/skills/git-workflow/SKILL.md` | Squad branching model: dev-first workflow with insiders preview |
-| 4 | Reviewer Protocol | `.copilot/skills/reviewer-protocol/SKILL.md` | Reviewer rejection workflow and strict lockout semantics |
-| 5 | SecOps Environment Context | `.copilot/skills/secops-environment-context.md` | Environment-aware context for SecOps operations |
-| 6 | Secret Handling | `.copilot/skills/secret-handling/SKILL.md` | Never read .env files or write secrets to committed files |
-| 7 | Session Recovery | `.copilot/skills/session-recovery/SKILL.md` | Find and resume interrupted Copilot CLI sessions |
-| 8 | Squad Conventions | `.copilot/skills/squad-conventions/SKILL.md` | Core conventions and patterns used in the Squad codebase |
-| 9 | Test Discipline | `.copilot/skills/test-discipline/SKILL.md` | Update tests when changing APIs — no exceptions |
+| 3 | First-Run Onboarding | `.copilot/skills/first-run-onboarding/SKILL.md` | Detects first-run state and guides new users through environment setup |
+| 4 | Git Workflow | `.copilot/skills/git-workflow/SKILL.md` | Squad branching model: dev-first workflow with insiders preview |
+| 5 | Reviewer Protocol | `.copilot/skills/reviewer-protocol/SKILL.md` | Reviewer rejection workflow and strict lockout semantics |
+| 6 | SecOps Environment Context | `.copilot/skills/secops-environment-context.md` | Environment-aware context for SecOps operations |
+| 7 | Secret Handling | `.copilot/skills/secret-handling/SKILL.md` | Never read .env files or write secrets to committed files |
+| 8 | Session Recovery | `.copilot/skills/session-recovery/SKILL.md` | Find and resume interrupted Copilot CLI sessions |
+| 9 | Squad Conventions | `.copilot/skills/squad-conventions/SKILL.md` | Core conventions and patterns used in the Squad codebase |
+| 10 | Test Discipline | `.copilot/skills/test-discipline/SKILL.md` | Update tests when changing APIs — no exceptions |
+
+---
+
+## Community Skills
+
+Community-contributed skills spanning 45 security sub-domains with 755 total skills. These cover extended security operations beyond the core Microsoft Security stack.
+
+| # | Sub-Domain | Count | Coverage |
+|---|-----------|-------|----------|
+| 1 | Threat Hunting | 56 | Advanced persistent threat detection, hypothesis-driven hunting, behavioral analysis |
+| 2 | Threat Intelligence | 50 | TI platforms, indicator management, attribution, dark web monitoring |
+| 3 | Cloud Security | 63 | Multi-cloud posture, CSPM, workload protection, cloud-native security |
+| 4 | Network Security | 43 | Network monitoring, IDS/IPS, traffic analysis, firewall management |
+| 5 | Web Application Security | 42 | OWASP, WAF, API security, secure development practices |
+| 6 | Malware Analysis | 39 | Static/dynamic analysis, reverse engineering, sandbox techniques |
+| 7 | Digital Forensics | 37 | Disk forensics, memory analysis, timeline reconstruction, evidence handling |
+| 8 | Identity & Access Management | 33 | IAM policies, privilege management, federation, MFA |
+| 9 | SOC Operations | 33 | SOC maturity, shift handoff, metrics, analyst workflows |
+| 10 | Container Security | 29 | Kubernetes security, image scanning, runtime protection |
+| 11 | API Security | 28 | API gateway protection, OAuth security, rate limiting |
+| 12 | OT/ICS Security | 28 | Industrial control systems, SCADA, operational technology |
+| 13 | Security Operations | 28 | Operational procedures, playbooks, escalation frameworks |
+| 14 | Incident Response | 26 | IR procedures, containment, eradication, recovery |
+| 15 | Vulnerability Management | 25 | Scanning, prioritization, patching, risk scoring |
+| 16 | Red Teaming | 24 | Adversary simulation, assumed breach, purple team |
+| 17 | Penetration Testing | 20 | Methodology, tools, reporting, remediation validation |
+| 18 | DevSecOps | 17 | CI/CD security, SAST/DAST, shift-left practices |
+| 19 | Endpoint Security | 17 | EDR, host hardening, endpoint detection |
+| 20 | Zero Trust Architecture | 17 | Zero trust principles, microsegmentation, continuous verification |
+| 21 | Cryptography | 15 | Key management, PKI, encryption standards |
+| 22 | Phishing Defense | 15 | Anti-phishing, awareness, simulation, response |
+| 23 | Ransomware Defense | 13 | Prevention, detection, recovery, negotiation frameworks |
+| 24 | Mobile Security | 13 | MDM, mobile threat defense, app security |
+| 25 | Threat Detection | 7 | Detection methodologies, alert correlation, enrichment |
+| 26 | Application Security | 4 | Secure SDLC, code review, dependency management |
+| 27 | Compliance & Governance | 4 | Regulatory frameworks, audit preparation, policy management |
+| 28 | Deception Technology | 3 | Honeypots, honeytokens, deception platforms |
+| 29 | Supply Chain Security | 3 | Software supply chain, SBOM, vendor risk |
+| 30 | AI Security | 2 | AI/ML model security, adversarial attacks, LLM safety |
+| 31 | Identity & Access (Legacy) | 2 | Legacy IAM patterns and migration paths |
+| 32 | Offensive Security | 2 | Offensive security methodology and tooling |
+| 33 | Privacy Compliance | 2 | GDPR, CCPA, privacy engineering |
+| 34 | Red Team | 2 | Red team operations and campaign planning |
+| 35 | Wireless Security | 2 | WiFi security, Bluetooth, RF analysis |
+| 36 | Blockchain Security | 1 | Smart contract security, DeFi risks |
+| 37 | Data Protection | 1 | Data classification, DLP, encryption at rest |
+| 38 | Firmware Analysis | 1 | Firmware extraction and vulnerability analysis |
+| 39 | Firmware Security | 1 | Secure boot, firmware integrity |
+| 40 | Governance, Risk & Compliance | 1 | GRC frameworks and integration |
+| 41 | Identity Security | 1 | Identity threat detection and response |
+| 42 | OT Security | 1 | Operational technology fundamentals |
+| 43 | Purple Team | 1 | Purple team exercises and collaboration |
+| 44 | Social Engineering Defense | 1 | Social engineering awareness and countermeasures |
+| 45 | Zero Trust | 1 | Zero trust implementation basics |
 
 ---
 
