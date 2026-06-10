@@ -177,7 +177,7 @@ function Ensure-FoundryResource {
 }
 
 function Ensure-ModelDeployment {
-    param([string]$ResourceName, [string]$RG, [string]$DeployName)
+    param([string]$ResourceName, [string]$RG, [string]$DeployName, [string]$SubId)
 
     $existing = az cognitiveservices account deployment show `
         --name $ResourceName `
@@ -190,19 +190,55 @@ function Ensure-ModelDeployment {
     }
 
     Write-Host "[....] Deploying model: $MODEL_ID as '$DeployName' (Global Standard)" -ForegroundColor Cyan
-    if ($PSCmdlet.ShouldProcess("az cognitiveservices account deployment create --name $ResourceName --deployment-name $DeployName --model-name $MODEL_ID", "Deploy Fable 5 model")) {
-        $result = az cognitiveservices account deployment create `
-            --name $ResourceName `
-            --resource-group $RG `
-            --deployment-name $DeployName `
-            --model-name $MODEL_ID `
-            --model-version $MODEL_VERSION `
-            --model-format AML `
-            --sku-capacity $CAPACITY `
-            --sku-name $DEPLOYMENT_TYPE `
-            --only-show-errors | ConvertFrom-Json
-        Write-Host "[OK] Model deployment created: $DeployName" -ForegroundColor Green
-        return $result
+
+    # The az CLI does not yet support --model-provider-data for Anthropic models.
+    # Use the ARM REST API directly with api-version 2026-05-15-preview.
+    if ($PSCmdlet.ShouldProcess("PUT deployments/$DeployName (REST API 2026-05-15-preview)", "Deploy Fable 5 model")) {
+        $token = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv
+        if (-not $token) {
+            Write-Host "[FAIL] Could not acquire ARM access token." -ForegroundColor Red
+            exit 1
+        }
+
+        $uri = "https://management.azure.com/subscriptions/$SubId/resourceGroups/$RG/providers/Microsoft.CognitiveServices/accounts/$ResourceName/deployments/${DeployName}?api-version=2026-05-15-preview"
+
+        $body = @"
+{"sku":{"name":"$DEPLOYMENT_TYPE","capacity":$CAPACITY},"properties":{"model":{"format":"Anthropic","name":"$MODEL_ID","version":"$MODEL_VERSION"},"modelProviderData":{"organizationName":"Microsoft","countryCode":"US","industry":"technology"}}}
+"@
+
+        $headers = @{
+            "Authorization" = "Bearer $token"
+            "Content-Type"  = "application/json"
+        }
+
+        try {
+            $response = Invoke-RestMethod -Uri $uri -Method PUT -Headers $headers -Body $body -ErrorAction Stop
+            Write-Host "[OK] Model deployment created: $DeployName" -ForegroundColor Green
+            return $response
+        } catch {
+            $errBody = $_.ErrorDetails.Message | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if ($errBody.error.code -eq "InsufficientQuota") {
+                Write-Host "[FAIL] Insufficient quota for $MODEL_ID." -ForegroundColor Red
+                Write-Host "  $($errBody.error.message)" -ForegroundColor Yellow
+                Write-Host ""
+                Write-Host "  Request quota via Azure Portal:" -ForegroundColor Cyan
+                Write-Host "    Foundry resource > Quotas > 'Claude Fable 5' > Request increase" -ForegroundColor DarkGray
+                Write-Host ""
+                Write-Host "  Or via az CLI:" -ForegroundColor Cyan
+                Write-Host "    az supportticket create --ticket-name 'fable5-quota' \" -ForegroundColor DarkGray
+                Write-Host "      --title 'Quota: Claude Fable 5 TPM in eastus2' \" -ForegroundColor DarkGray
+                Write-Host "      --problem-classification '/providers/Microsoft.Support/services/.../problemClassifications/...' \" -ForegroundColor DarkGray
+                Write-Host "      --severity minimal --contact-first-name <fn> --contact-last-name <ln> \" -ForegroundColor DarkGray
+                Write-Host "      --contact-method email --contact-email <email>" -ForegroundColor DarkGray
+                Write-Host ""
+                Write-Host "  The Foundry resource is ready. Re-run this script after quota is granted." -ForegroundColor Yellow
+                exit 1
+            } else {
+                Write-Host "[FAIL] Model deployment failed:" -ForegroundColor Red
+                Write-Host "  $($_.ErrorDetails.Message)" -ForegroundColor Yellow
+                exit 1
+            }
+        }
     }
     return $null
 }
@@ -310,7 +346,7 @@ function Deploy-Fable5 {
     # 5. Deploy Fable 5 model
     Write-Host ""
     Write-Host "--- Model deployment: $DeploymentName ($MODEL_ID) ---" -ForegroundColor White
-    Ensure-ModelDeployment -ResourceName $ResourceName -RG $ResourceGroup -DeployName $DeploymentName
+    Ensure-ModelDeployment -ResourceName $ResourceName -RG $ResourceGroup -DeployName $DeploymentName -SubId $resolvedSubId
 
     # 6. Resolve endpoint and write config
     Write-Host ""
