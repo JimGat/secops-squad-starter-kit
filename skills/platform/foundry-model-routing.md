@@ -1,28 +1,29 @@
-# Foundry Model Routing — Claude Fable 5 via Azure AI Foundry
+# Foundry Model Routing — Deep Analysis via Azure AI Foundry
 
 > **Status:** Optional add-on skill — only active when `.secops/foundry.yaml` is present and `foundry.enabled: true`.
 >
-> **DEPRECATED_WHEN:** `claude-fable-5` is available in the GitHub Copilot model catalog. When that happens, remove `.secops/foundry.yaml`, delete this routing file, and use the native catalog model instead. No Azure Foundry resource is needed once Fable 5 is in the catalog.
+> **Current model:** `o4-mini` (OpenAI reasoning model) — stopgap while Anthropic quota is pending.
+> **Target model:** `claude-fable-5` — will be swapped in when quota is granted, or deprecated when available in the GitHub Copilot model catalog.
 
 ---
 
-## 1. Detection — Does This Installation Have Fable 5?
+## 1. Detection — Is a Foundry Model Available?
 
-Before routing any task to Fable 5, check whether the add-on is deployed:
+Before routing any task to Foundry, check whether the add-on is deployed:
 
 ```
 1. Look for .secops/foundry.yaml in the project root.
 2. Parse the YAML. Check foundry.enabled == true.
-3. Confirm foundry.endpoint and at least one entry in foundry.model_deployments
-   where model_id == "claude-fable-5".
-4. If any check fails → fall back to standard model. Do NOT error out.
+3. Read foundry.active_model to determine which model to use.
+4. Find the matching entry in foundry.model_deployments where status == "active".
+5. If any check fails → fall back to standard model. Do NOT error out.
 ```
 
 **Detection pseudo-code (Python):**
 ```python
 import yaml, os
 
-def fable5_available(project_root: str) -> dict | None:
+def foundry_model_available(project_root: str) -> dict | None:
     config_path = os.path.join(project_root, ".secops", "foundry.yaml")
     if not os.path.exists(config_path):
         return None
@@ -31,13 +32,17 @@ def fable5_available(project_root: str) -> dict | None:
     foundry = cfg.get("foundry", {})
     if not foundry.get("enabled", False):
         return None
+    active_id = foundry.get("active_model")
     deployments = foundry.get("model_deployments", [])
-    fable = next((d for d in deployments if d.get("model_id") == "claude-fable-5"), None)
-    if not fable:
+    active = next((d for d in deployments if d.get("model_id") == active_id and d.get("status") == "active"), None)
+    if not active:
         return None
     return {
         "endpoint": foundry["endpoint"],
-        "deployment_name": fable["deployment_name"],
+        "api_version": foundry.get("api_version", "2025-04-01-preview"),
+        "deployment_name": active["deployment_name"],
+        "api_path": active.get("api_path", ""),
+        "reasoning_model": active.get("reasoning_model", False),
         "resource_name": foundry["resource_name"],
     }
 ```
@@ -72,11 +77,11 @@ Route to Fable 5 **only** for tasks that genuinely benefit from its extended con
 
 ### Authentication
 
-Fable 5 via Foundry supports **two auth modes** — use whichever fits your deployment:
+Foundry models support **two auth modes** — use whichever fits your deployment:
 
 **Mode A: Azure Entra ID (recommended for automated/agent use)**
 ```python
-import subprocess, json
+import subprocess
 
 def get_entra_token() -> str:
     result = subprocess.run(
@@ -90,82 +95,71 @@ def get_entra_token() -> str:
 
 **Mode B: API Key**
 ```python
-# Retrieve from Azure Key Vault or environment variable
 import os
 api_key = os.environ.get("FOUNDRY_API_KEY")
 ```
 
-### SDK Pattern (Anthropic Python SDK)
+### OpenAI-compatible models (o4-mini, GPT-5.x)
 
 ```python
-import anthropic, os
+import openai
+
+def get_foundry_openai_client(endpoint: str, api_version: str) -> openai.AzureOpenAI:
+    token = get_entra_token()
+    return openai.AzureOpenAI(
+        azure_endpoint=endpoint,
+        api_version=api_version,
+        azure_ad_token=token,
+    )
+
+# Usage
+foundry = foundry_model_available(".")
+if foundry:
+    client = get_foundry_openai_client(foundry["endpoint"], foundry["api_version"])
+    params = {
+        "model": foundry["deployment_name"],
+        "messages": [{"role": "user", "content": sarif_content}],
+    }
+    if foundry["reasoning_model"]:
+        params["max_completion_tokens"] = 4096
+        params["reasoning_effort"] = "medium"
+    else:
+        params["max_tokens"] = 4096
+    response = client.chat.completions.create(**params)
+```
+
+### Anthropic models (claude-fable-5, when available)
+
+```python
+import anthropic
 
 def get_fable5_client(endpoint: str, deployment_name: str) -> anthropic.Anthropic:
-    """
-    Returns an Anthropic client pointed at the Azure AI Foundry endpoint.
-    Uses Entra token auth by default; falls back to API key if FOUNDRY_API_KEY is set.
-    """
     token = get_entra_token()
     return anthropic.Anthropic(
-        base_url=endpoint,
+        base_url=f"{endpoint}/anthropic/v1",
         default_headers={
             "Authorization": f"Bearer {token}",
             "x-ms-model-mesh-model-name": deployment_name,
         },
     )
-
-# Usage
-foundry = fable5_available(".")
-if foundry:
-    client = get_fable5_client(foundry["endpoint"], foundry["deployment_name"])
-    response = client.messages.create(
-        model=foundry["deployment_name"],
-        max_tokens=4096,
-        messages=[{"role": "user", "content": sarif_content}],
-    )
 ```
 
-### SDK Pattern (TypeScript / Node.js)
-
-```typescript
-import Anthropic from "@anthropic-ai/sdk";
-import { execSync } from "child_process";
-
-function getEntraToken(): string {
-  return execSync(
-    "az account get-access-token --resource https://cognitiveservices.azure.com --query accessToken -o tsv",
-    { encoding: "utf-8" }
-  ).trim();
-}
-
-function getFable5Client(endpoint: string, deploymentName: string): Anthropic {
-  const token = getEntraToken();
-  return new Anthropic({
-    baseURL: endpoint,
-    defaultHeaders: {
-      Authorization: `Bearer ${token}`,
-      "x-ms-model-mesh-model-name": deploymentName,
-    },
-  });
-}
-```
-
-### Raw curl (for testing)
+### Raw curl — o4-mini (current)
 
 ```bash
 TOKEN=$(az account get-access-token \
   --resource https://cognitiveservices.azure.com \
   --query accessToken -o tsv)
 
-ENDPOINT="https://secops-foundry.services.ai.azure.com/anthropic/v1"
+ENDPOINT="https://jospaid-1163-secops-squ-resource.cognitiveservices.azure.com"
 
-curl -s -X POST "${ENDPOINT}/messages" \
+curl -s -X POST "${ENDPOINT}/openai/deployments/o4-mini/chat/completions?api-version=2025-04-01-preview" \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "fable5-secops",
-    "max_tokens": 256,
-    "messages": [{"role": "user", "content": "Summarize this SARIF finding in one sentence."}]
+    "messages": [{"role": "user", "content": "Summarize this SARIF finding in one sentence."}],
+    "max_completion_tokens": 500,
+    "reasoning_effort": "medium"
   }'
 ```
 
